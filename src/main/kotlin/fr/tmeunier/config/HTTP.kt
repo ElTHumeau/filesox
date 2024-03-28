@@ -1,4 +1,4 @@
-package fr.tmeunier.plugins
+package fr.tmeunier.config
 
 import io.ktor.http.*
 import io.ktor.server.application.*

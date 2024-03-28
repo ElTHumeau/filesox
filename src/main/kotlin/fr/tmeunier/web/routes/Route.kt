@@ -6,12 +6,13 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Application.configureSerialization() {
+fun Application.configurationRoute() {
     install(ContentNegotiation) {
         json()
     }
+
     routing {
-        get("/json/kotlinx-serialization") {
+        get("/hello-word") {
             call.respond(mapOf("hello" to "world"))
         }
     }
