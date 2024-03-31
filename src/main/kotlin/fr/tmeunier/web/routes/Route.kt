@@ -12,6 +12,8 @@ fun Application.configurationRoute() {
     }
 
     routing {
+        authRouting()
+
         get("/hello-word") {
             call.respond(mapOf("hello" to "world"))
         }

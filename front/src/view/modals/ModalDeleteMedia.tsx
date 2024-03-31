@@ -7,7 +7,7 @@ export function ModalDeleteMedia() {
             <h2 className="text-lg font-semibold">Delete Media</h2>
         </ModalHeader>
         <ModalBody>
-            <p>Are you sure you want to delete this media?</p>
+            <p className="text-center  py-4">Are you sure you want to delete this media?</p>
         </ModalBody>
         <ModalFooter>
             <Button

@@ -34,6 +34,8 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-core:0.41.1")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.41.1")
     implementation("org.jetbrains.exposed:exposed-java-time:0.41.1")
+    implementation("org.jetbrains.exposed:exposed-dao:0.41.1")
+    implementation("org.mariadb.jdbc:mariadb-java-client:3.0.7")
 
     implementation("com.h2database:h2:2.1.214")
     implementation("io.ktor:ktor-server-netty-jvm")
