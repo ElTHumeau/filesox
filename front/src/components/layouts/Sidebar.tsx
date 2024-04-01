@@ -37,8 +37,6 @@ export function SidebarMenuItem({svg: SvgComponent, children, href, onClick}: {
     onClick?: (event: MouseEvent) => void | undefined
 }) {
     const location = useLocation();
-    // Check if the current path is the same as the href
-
     const isActive = location.pathname.startsWith(href!) ? 'border-indigo-700 text-indigo-700 bg-indigo-50' : 'text-gray-600 border-transparent';
 
     return <>
