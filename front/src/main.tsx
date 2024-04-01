@@ -7,6 +7,9 @@ import Register from "./view/auth/Register.tsx";
 import {App} from "./view/layouts/App.tsx";
 import {Dashboard} from "./view/Dashboard.tsx";
 import {ModalProvider} from "./context/modules/ModalContext.tsx";
+import {Profile} from "./view/profile/Profile.tsx";
+import {ProfileEdit} from "./view/profile/EditProfile.tsx";
+import {ProfileShare} from "./view/profile/ShareProfile.tsx";
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
@@ -14,7 +17,12 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<App/>}>
-                        <Route element={<Dashboard/>}/>
+                        <Route index element={<Dashboard/>}/>
+
+                        <Route path="/profile" element={<Profile/>}>
+                            <Route index element={<ProfileEdit/>}/>
+                            <Route path="share" element={<ProfileShare/>}/>
+                        </Route>
                     </Route>
 
                     <Route path="/login" element={<Login/>}/>

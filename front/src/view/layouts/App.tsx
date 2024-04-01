@@ -40,7 +40,7 @@ export function App() {
         </SidebarMenu>
         <SidebarMenu>
           <SidebarTitleMenu>Profile</SidebarTitleMenu>
-          <SidebarMenuItem href="/dashboard" svg={User}>Profile</SidebarMenuItem>
+          <SidebarMenuItem href="/profile" svg={User}>Profile</SidebarMenuItem>
           <SidebarMenuItem href="/dashboard" svg={LogOut}>Logout</SidebarMenuItem>
         </SidebarMenu>
         <SidebarMenu>
@@ -77,7 +77,10 @@ export function App() {
             </NavItemsRight>
         </NavItems>
       </Navbar>
-      <Outlet/>
+
+      <div>
+        <Outlet/>
+      </div>
     </main>
   </div>
 }
