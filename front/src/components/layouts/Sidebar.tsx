@@ -37,7 +37,9 @@ export function SidebarMenuItem({svg: SvgComponent, children, href, onClick}: {
     onClick?: (event: MouseEvent) => void | undefined
 }) {
     const location = useLocation();
-    const isActive = location.pathname === href ? 'border-indigo-700 text-indigo-700 bg-indigo-50' : 'text-gray-600 border-transparent';
+    // Check if the current path is the same as the href
+
+    const isActive = location.pathname.startsWith(href!) ? 'border-indigo-700 text-indigo-700 bg-indigo-50' : 'text-gray-600 border-transparent';
 
     return <>
         <li className={`${isActive}  pr-2 py-2 text-sm hover:text-indigo-700 border-l-4  hover:border-indigo-700 hover:bg-indigo-50`}>
