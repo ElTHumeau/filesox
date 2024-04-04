@@ -22,3 +22,15 @@ data class UserRegisterRequest(
     val email: String,
     val password: String
 )
+
+@Serializable
+data class UserUpdateRequest(
+    val name: String,
+    val email: String
+)
+
+@Serializable
+data class UserUpdatePasswordRequest(
+    val password: String,
+    val confirmPassword: String,
+)

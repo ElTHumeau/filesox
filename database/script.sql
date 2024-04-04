@@ -5,6 +5,7 @@ CREATE TABLE users
     name       VARCHAR(255) NOT NULL,
     email      VARCHAR(255) NOT NULL,
     password   VARCHAR(255) NOT NULL,
+    file_path  VARCHAR(255) NOT NULL,
     created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -26,6 +27,14 @@ CREATE TABLE permissions
     id   INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL
 );
+
+INSERT INTO permissions (name) VALUES ('Administration');
+INSERT INTO permissions (name) VALUES ('Create file or folder');
+INSERT INTO permissions (name) VALUES ('Delete file or folder');
+INSERT INTO permissions (name) VALUES ('Download');
+INSERT INTO permissions (name) VALUES ('Edit file');
+INSERT INTO permissions (name) VALUES ('Share files');
+INSERT INTO permissions (name) VALUES ('Rename file or folder');
 
 -- table users_permissions
 CREATE TABLE users_permissions

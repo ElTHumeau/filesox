@@ -2,12 +2,11 @@ package fr.tmeunier.domaine.services
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import fr.tmeunier.config.Security
 import fr.tmeunier.domaine.models.User
 import fr.tmeunier.domaine.repositories.RefreshTokenRepository
-import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.*
 
 class AuthentificatorService
 {
@@ -19,11 +18,13 @@ class AuthentificatorService
     fun createJwtToken(user: User): String {
         return JWT.create()
             .withSubject(user.id.toString())
+            .withClaim("id", user.id)
             .withClaim("name", user.name)
             .withClaim("email", user.email)
-            .withIssuer("cdn.tmeunier.fr")
-            .withExpiresAt(Date(System.currentTimeMillis() + TOKEN_DURATION_MS))
-            .sign(Algorithm.HMAC256("IAmSecret"))
+            .withAudience(Security.jwtAudience)
+            .withIssuer(Security.jwtIssuer)
+            .withExpiresAt(LocalDateTime.now().plusMinutes(TOKEN_DURATION_MS).atZone(ZoneId.systemDefault()).toInstant())
+            .sign(Algorithm.HMAC256(Security.jwtSecret))
     }
 
     suspend fun createRefreshToken(userId: Int): String {

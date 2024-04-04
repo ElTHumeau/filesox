@@ -4,6 +4,7 @@ import fr.tmeunier.config.Database
 import fr.tmeunier.domaine.models.User
 import fr.tmeunier.domaine.services.HashService
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDateTime
@@ -38,6 +39,31 @@ class UserRepository {
                 it[Users.createdAt] = LocalDateTime.now()
                 it[Users.updatedAt] = LocalDateTime.now()
             } get Users.id
+        }
+    }
+
+    suspend fun update(id: Int, name: String, email: String): Int {
+        return transaction(database) {
+            Users.update({ Users.id eq id }) {
+                it[Users.name] = name
+                it[Users.email] = email
+                it[Users.updatedAt] = LocalDateTime.now()
+            }
+        }
+    }
+
+    suspend fun updatePassword(id: Int, password: String): Int {
+        return transaction(database) {
+            Users.update({ Users.id eq id }) {
+                it[Users.password] = HashService().hashPassword(password)
+                it[Users.updatedAt] = LocalDateTime.now()
+            }
+        }
+    }
+
+    suspend fun delete(id: Int) {
+        transaction(database) {
+            Users.deleteWhere { Users.id eq id }
         }
     }
 
