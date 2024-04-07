@@ -3,6 +3,8 @@ package fr.tmeunier.web.routes
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import fr.tmeunier.config.Security
+import fr.tmeunier.web.controller.admin.AdminUserController
+import fr.tmeunier.web.routes.admin.adminUserRouting
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -36,7 +38,14 @@ fun Application.configurationRoute() {
         authRouting()
 
         authenticate("jwt") {
+            get("/admin/users")
+            {
+                val users = AdminUserController().getAll()
+                call.respond(users)
+            }
+
             profileRouting()
+            adminUserRouting()
 
             get("/hello-word") {
                 call.respond(mapOf("hello" to  Security.getUserId()))

@@ -30,6 +30,13 @@ class UserRepository {
         }
     }
 
+    suspend fun getAll(): List<User> {
+        return transaction(database) {
+            Users.selectAll()
+                .map { User(it[Users.id], it[Users.name], it[Users.email], it[Users.password], it[Users.createdAt], it[Users.updatedAt]) }
+        }
+    }
+
     suspend fun create(name: String, email: String, password: String): Int {
         return transaction(database) {
             Users.insert {
