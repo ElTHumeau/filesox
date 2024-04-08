@@ -28,13 +28,20 @@ CREATE TABLE permissions
     name VARCHAR(255) NOT NULL
 );
 
-INSERT INTO permissions (name) VALUES ('Administration');
-INSERT INTO permissions (name) VALUES ('Create file or folder');
-INSERT INTO permissions (name) VALUES ('Delete file or folder');
-INSERT INTO permissions (name) VALUES ('Download');
-INSERT INTO permissions (name) VALUES ('Edit file');
-INSERT INTO permissions (name) VALUES ('Share files');
-INSERT INTO permissions (name) VALUES ('Rename file or folder');
+INSERT INTO permissions (name)
+VALUES ('Administration');
+INSERT INTO permissions (name)
+VALUES ('Create file or folder');
+INSERT INTO permissions (name)
+VALUES ('Delete file or folder');
+INSERT INTO permissions (name)
+VALUES ('Download');
+INSERT INTO permissions (name)
+VALUES ('Edit file');
+INSERT INTO permissions (name)
+VALUES ('Share files');
+INSERT INTO permissions (name)
+VALUES ('Rename file or folder');
 
 -- table users_permissions
 CREATE TABLE users_permissions
@@ -72,6 +79,18 @@ INSERT INTO settings (`key`, value)
 VALUES ('view_register', 'false');
 INSERT INTO settings (`key`, value)
 VALUES ('user_default_path', 'true');
+
+-- table logs
+CREATE TABLE logs
+(
+    id         INT PRIMARY KEY AUTO_INCREMENT,
+    user_id    INT          NOT NULL,
+    action     VARCHAR(255) NOT NULL,
+    subject    VARCHAR(255) NOT NULL,
+    created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id) REFERENCES users (id)
+);
 
 
 

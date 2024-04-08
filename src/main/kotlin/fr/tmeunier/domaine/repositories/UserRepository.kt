@@ -1,8 +1,10 @@
 package fr.tmeunier.domaine.repositories
 
 import fr.tmeunier.config.Database
+import fr.tmeunier.config.Security
 import fr.tmeunier.domaine.models.User
 import fr.tmeunier.domaine.services.HashService
+import fr.tmeunier.domaine.services.LogService
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.javatime.datetime
@@ -30,8 +32,9 @@ class UserRepository {
             SchemaUtils.create(Users)
         }
     }
-
     suspend fun create(name: String, email: String, password: String, filePath: String? = null): Int {
+        LogService().add(Security.getUserId(), LogService.ACTION_CREATE, "${name} created")
+
         return transaction(database) {
             Users.insert {
                 it[Users.name] = name
@@ -45,6 +48,8 @@ class UserRepository {
     }
 
     suspend fun update(id: Int, name: String, email: String): Int {
+        LogService().add(Security.getUserId(), LogService.ACTION_UPDATE, "${name} updated")
+
         return transaction(database) {
             Users.update({ Users.id eq id }) {
                 it[Users.name] = name
@@ -55,6 +60,8 @@ class UserRepository {
     }
 
     suspend fun updatePassword(id: Int, password: String): Int {
+        LogService().add(Security.getUserId(), LogService.ACTION_UPDATE, "updated account")
+
         return transaction(database) {
             Users.update({ Users.id eq id }) {
                 it[Users.password] = HashService().hashPassword(password)
@@ -64,6 +71,8 @@ class UserRepository {
     }
 
     suspend fun delete(id: Int) {
+        LogService().add(Security.getUserId(), LogService.ACTION_DELETE, "updated account")
+
         transaction(database) {
             Users.deleteWhere { Users.id eq id }
         }
