@@ -16,7 +16,7 @@ class AdminUserController {
     private val repository = UserRepository()
 
     suspend fun getAll(): PaginationService.PaginationResponse<UsersResponse> {
-       return PaginationService().paginate<UserRepository.Users, UsersResponse>(1, 10, { UserRepository.Users.selectAll() }) { row ->
+       return PaginationService().paginate(1, 10, { UserRepository.Users.selectAll() }) { row ->
             UsersResponse(
                 row[UserRepository.Users.id],
                 row[UserRepository.Users.name],

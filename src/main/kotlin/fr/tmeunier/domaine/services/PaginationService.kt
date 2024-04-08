@@ -19,7 +19,7 @@ class PaginationService {
         val to: Int
     )
 
-    fun <T : Table, R> paginate(page: Int, perPage: Int, query: () -> Query, mapper: (ResultRow) -> R): PaginationResponse<R> {
+    fun <R> paginate(page: Int, perPage: Int, query: () -> Query, mapper: (ResultRow) -> R): PaginationResponse<R> {
         val total = transaction {
             query().count()
         }
