@@ -1,8 +1,8 @@
 package fr.tmeunier.domaine.models
 
-import fr.tmeunier.domaine.services.PaginationModel
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
+
 
 data class User(
     val id: Int,
@@ -19,14 +19,16 @@ data class UsersResponse(
     val id: Int = 0,
     val name: String = "",
     val email: String = "",
-) : PaginationModel {
+    val filePath: String = ""
+)
 
-    override fun toMap(): Map<String, Any> = mapOf(
-        "id" to id,
-        "name" to name,
-        "email" to email,
-    )
-}
+@Serializable
+data class UserPaginationResponse(
+    val data: List<UsersResponse>,
+    val total: Int,
+    val totalPages: Int,
+    val page: Int
+)
 
 data class RefreshToken(val id: Int, val token: String, val userId: Int, val expiredAt: LocalDateTime)
 

@@ -1,40 +1,27 @@
 package fr.tmeunier.domaine.services
 
-import fr.tmeunier.config.Database
-import fr.tmeunier.domaine.models.UsersResponse
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.selectAll
+import kotlinx.serialization.Serializable
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.math.ceil
 
-interface PaginationModel {
-    fun toMap(): Map<String, Any>
-}
+class PaginationService {
+    @Serializable
+    data class PaginationResponse<T>(val data: List<T>, val total: Int, val totalPages: Int, val currentPage: Int)
 
-class PaginationService
-{
-
-    private val database = Database.getConnexion()
-
-    fun paginate(page: Int = 1, table: Table): Map<String, Any> {
-        val total = transaction(database) {
-            table.selectAll().count()
+    fun <T : Table, R> paginate(page: Int, perPage: Int, query: () -> Query, mapper: (ResultRow) -> R): PaginationResponse<R> {
+        val total = transaction {
+            query().count()
         }
 
-        val offset = (page - 1) * 10
-        val perPage = 10
+        val data = transaction {
+            query().limit(perPage, offset = ((page - 1) * perPage).toLong()).map {
+                mapper(it)
+            }
+        }
+
         val totalPages = ceil(total.toDouble() / perPage).toInt()
 
-        val data = transaction(database) {
-            table.selectAll().limit(perPage, offset.toLong()).map {}
-        }
-
-        return mapOf(
-            "page" to page,
-            "perPage" to perPage,
-            "total" to total,
-            "totalPages" to totalPages,
-            "data" to data
-        )
+        return PaginationResponse(data, total.toInt(), totalPages, page)
     }
 }
