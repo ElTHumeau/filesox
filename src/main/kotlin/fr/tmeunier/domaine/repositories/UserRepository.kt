@@ -17,6 +17,7 @@ class UserRepository {
         val id: Column<Int> = integer("id").autoIncrement()
         val name: Column<String> = varchar("name", length = 255)
         val email: Column<String> = varchar("email", length = 255)
+        val filePath: Column<String> = varchar("file_path", length = 255)
         val password: Column<String> = varchar("password", length = 255)
         val createdAt: Column<LocalDateTime> = datetime("created_at")
         val updatedAt: Column<LocalDateTime> = datetime("updated_at")
@@ -30,18 +31,12 @@ class UserRepository {
         }
     }
 
-    suspend fun getAll(): List<User> {
-        return transaction(database) {
-            Users.selectAll()
-                .map { User(it[Users.id], it[Users.name], it[Users.email], it[Users.password], it[Users.createdAt], it[Users.updatedAt]) }
-        }
-    }
-
-    suspend fun create(name: String, email: String, password: String): Int {
+    suspend fun create(name: String, email: String, password: String, filePath: String? = null): Int {
         return transaction(database) {
             Users.insert {
                 it[Users.name] = name
                 it[Users.email] = email
+                it[Users.filePath] = filePath ?: "./$name"
                 it[Users.password] = HashService().hashPassword(password)
                 it[Users.createdAt] = LocalDateTime.now()
                 it[Users.updatedAt] = LocalDateTime.now()
@@ -77,7 +72,7 @@ class UserRepository {
     suspend fun findByEmail(email: String): User? {
         return transaction(database) {
             Users.select { Users.email eq email }
-                .map { User(it[Users.id], it[Users.name], it[Users.email], it[Users.password], it[Users.createdAt], it[Users.updatedAt]) }
+                .map { User(it[Users.id], it[Users.name], it[Users.email], it[Users.password], it[Users.filePath], it[Users.createdAt], it[Users.updatedAt]) }
                 .singleOrNull()
         }
     }
@@ -85,7 +80,7 @@ class UserRepository {
     suspend fun findById(id: Int): User? {
         return transaction(database) {
             Users.select { Users.id eq id }
-                .map { User(it[Users.id], it[Users.name], it[Users.email], it[Users.password], it[Users.createdAt], it[Users.updatedAt]) }
+                .map { User(it[Users.id], it[Users.name], it[Users.email], it[Users.password], it[Users.filePath], it[Users.createdAt], it[Users.updatedAt]) }
                 .singleOrNull()
         }
     }

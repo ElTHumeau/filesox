@@ -20,7 +20,18 @@ data class UserLoginRequest(
 data class UserRegisterRequest(
     val name: String,
     val email: String,
-    val password: String
+    val password: String,
+    val filePath: String? = null,
+    val permissions: Array<Int>? = null
+)
+
+@Serializable
+data class AdminUserRequest(
+    val name: String,
+    val email: String,
+    val filePath: String,
+    val permissions: Array<Int>,
+    val password: String? = null
 )
 
 @Serializable
