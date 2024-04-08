@@ -3,7 +3,6 @@ package fr.tmeunier.domaine.repositories
 import fr.tmeunier.config.Database
 import fr.tmeunier.config.Security
 import fr.tmeunier.domaine.models.User
-import fr.tmeunier.domaine.models.UserPaginationResponse
 import fr.tmeunier.domaine.models.UsersResponse
 import fr.tmeunier.domaine.services.HashService
 import fr.tmeunier.domaine.services.LogService

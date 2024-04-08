@@ -22,14 +22,6 @@ data class UsersResponse(
     val filePath: String = ""
 )
 
-@Serializable
-data class UserPaginationResponse(
-    val data: List<UsersResponse>,
-    val total: Int,
-    val totalPages: Int,
-    val page: Int
-)
-
 data class RefreshToken(val id: Int, val token: String, val userId: Int, val expiredAt: LocalDateTime)
 
 @Serializable
