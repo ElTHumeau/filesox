@@ -7,6 +7,7 @@ import fr.tmeunier.domaine.repositories.UserRepository
 import fr.tmeunier.domaine.requests.UserUpdatePasswordRequest
 import fr.tmeunier.domaine.requests.UserUpdateRequest
 import fr.tmeunier.domaine.services.PaginationService
+import fr.tmeunier.domaine.services.utils.formatDate
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -21,6 +22,7 @@ class ProfileController {
                 row[LogRepository.Logs.id],
                 row[LogRepository.Logs.action],
                 row[LogRepository.Logs.subject],
+                formatDate(row[LogRepository.Logs.createdAt]),
             )
         }
 

@@ -6,6 +6,7 @@ import fr.tmeunier.domaine.repositories.UserRepository
 import fr.tmeunier.domaine.repositories.UsersPermissionsRepository
 import fr.tmeunier.domaine.requests.AdminUserRequest
 import fr.tmeunier.domaine.services.PaginationService
+import fr.tmeunier.domaine.services.utils.formatDate
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -21,7 +22,8 @@ class AdminUserController {
                 row[UserRepository.Users.id],
                 row[UserRepository.Users.name],
                 row[UserRepository.Users.email],
-                row[UserRepository.Users.filePath]
+                formatDate(row[UserRepository.Users.createdAt]),
+                row[UserRepository.Users.filePath],
             )
        }
     }

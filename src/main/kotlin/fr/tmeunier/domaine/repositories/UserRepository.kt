@@ -3,15 +3,13 @@ package fr.tmeunier.domaine.repositories
 import fr.tmeunier.config.Database
 import fr.tmeunier.config.Security
 import fr.tmeunier.domaine.models.User
-import fr.tmeunier.domaine.models.UsersResponse
-import fr.tmeunier.domaine.services.HashService
+import fr.tmeunier.domaine.services.utils.HashService
 import fr.tmeunier.domaine.services.LogService
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDateTime
-import kotlin.math.ceil
 
 class UserRepository {
 

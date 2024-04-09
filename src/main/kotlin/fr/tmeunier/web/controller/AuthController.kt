@@ -7,7 +7,7 @@ import fr.tmeunier.domaine.requests.RefreshTokenRequests
 import fr.tmeunier.domaine.requests.UserLoginRequest
 import fr.tmeunier.domaine.requests.UserRegisterRequest
 import fr.tmeunier.domaine.services.AuthentificatorService
-import fr.tmeunier.domaine.services.HashService
+import fr.tmeunier.domaine.services.utils.HashService
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*

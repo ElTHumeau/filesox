@@ -1,4 +1,4 @@
-package fr.tmeunier.domaine.services
+package fr.tmeunier.domaine.services.utils
 
 import at.favre.lib.crypto.bcrypt.BCrypt
 

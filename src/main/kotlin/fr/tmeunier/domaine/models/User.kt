@@ -19,6 +19,7 @@ data class UsersResponse(
     val id: Int = 0,
     val name: String = "",
     val email: String = "",
+    val createdAt: String = "",
     val filePath: String = ""
 )
 
