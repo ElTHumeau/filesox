@@ -1,10 +1,7 @@
 package fr.tmeunier.domaine.repositories
 
 import fr.tmeunier.config.Database
-import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDateTime
@@ -16,7 +13,7 @@ class LogRepository
     object Logs : Table()
     {
         val id: Column<Int> = integer("id").autoIncrement()
-        val userId: Column<Int> = integer("user_id")
+        val userId: Column<Int> = integer("user_id").references(UserRepository.Users.id)
         val action: Column<String> = varchar("action", length = 255)
         val subject: Column<String> = varchar("subject", length = 255)
         val createdAt: Column<LocalDateTime> = datetime("created_at")
@@ -27,6 +24,20 @@ class LogRepository
     init {
         transaction(database) {
             SchemaUtils.create(Logs)
+        }
+    }
+
+    fun findAll(): Query {
+        return transaction(database) {
+            Logs.innerJoin(UserRepository.Users)
+                .selectAll()
+        }
+    }
+
+    fun findAllByUser(user: Int): Query {
+        return transaction(database) {
+            Logs.innerJoin(UserRepository.Users)
+                .select { Logs.userId eq user }
         }
     }
 

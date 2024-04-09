@@ -9,6 +9,10 @@ fun Route.profileRouting()
     route("/profile")
     {
 
+        get("/logs") {
+            return@get ProfileController().getLogs(call)
+        }
+
         post("/update")
         {
             return@post ProfileController().update(call)
