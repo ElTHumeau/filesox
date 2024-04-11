@@ -2,6 +2,9 @@ import {FormError, FormField, FormFields, FormLabel} from "../../components/modu
 import {SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
+import {loginUserfn} from "../../api/authApi.ts";
+import {useAuth} from "../../context/AuthContext.tsx";
+import {useNavigate} from "react-router-dom";
 
 const schema = z.object({
     email: z.string().email(),
@@ -11,16 +14,25 @@ const schema = z.object({
 type FormFields = z.infer<typeof schema>
 
 export default function Login() {
+    const {setRefreshToken, setToken} = useAuth()
+    const nav = useNavigate()
+
     const {
         register,
         handleSubmit,
-        formState: {errors, isSubmitted}
+        formState: {errors}
     } = useForm<FormFields>({
         resolver: zodResolver(schema)
     })
 
     const onSubmit: SubmitHandler<FormFields> = async (data) => {
-        console.log(data)
+        let response = await loginUserfn(data)
+        setToken(response.token)
+        setRefreshToken(response.refreshToken)
+
+        console.log('Logged in')
+
+        nav('/')
     }
 
     return <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
@@ -64,9 +76,8 @@ export default function Login() {
 
                 <div className='mt-3'>
                     <button type="submit"
-                            disabled={isSubmitted}
                             className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                        {isSubmitted ? 'Submitting...' : 'Sign up'}
+                        Sign up
                     </button>
                 </div>
             </FormFields>

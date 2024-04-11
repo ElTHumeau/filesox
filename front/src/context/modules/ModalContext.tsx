@@ -1,6 +1,6 @@
 import {createContext, FC, ReactNode, useState} from "react";
-import {Modal} from "../../components/modules/Modal.tsx";
 import {ModalContextProps, ModalProviderProps} from "../../types/components/modal.ts";
+import {Modal} from "../../components/modules/Modal.tsx";
 
 export const ModalContext = createContext<ModalContextProps | null>(null);
 

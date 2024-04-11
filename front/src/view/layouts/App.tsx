@@ -1,86 +1,97 @@
 import {
-  Sidebar, SidebarItemVersion, SidebarMenu, SidebarMenuContent,
-  SidebarMenuItem,
-  SidebarTitleMenu
+    Sidebar, SidebarItemVersion, SidebarMenu, SidebarMenuContent,
+    SidebarMenuItem,
+    SidebarTitleMenu
 } from "../../components/layouts/Sidebar.tsx";
 import {
-  Archive, Download,
-  FolderPlus,
-  Home, Info, LayoutTemplate,
-  LogOut, MoveUpRight, Search,
-  Settings,
-  Share2,
-  SquarePen,
-  Trash2,
-  Upload,
-  User,
-  Users
+    Archive, Download,
+    FolderPlus,
+    Home, Info, LayoutTemplate,
+    LogOut, MoveUpRight, Search,
+    Settings,
+    Share2,
+    SquarePen,
+    Trash2,
+    Upload,
+    User,
+    Users
 } from "lucide-react";
-import {Outlet} from "react-router-dom";
+import {Outlet, useNavigate} from "react-router-dom";
 import {Navbar, NavItem, NavItems, NavItemsLeft, NavItemsRight} from "../../components/layouts/nav.tsx";
 import {ButtonIcon} from "../../components/modules/Button.tsx";
 import {InputIcon} from "../../components/modules/Form.tsx";
-import {useModal} from "../../hooks/useModal.ts";
 import {ModalCreateFolder} from "../modals/folders/ModalCreateFolder.tsx";
 import {ModalShareMedia} from "../modals/ModalShareMedia.tsx";
 import {ModalMoveMedia} from "../modals/ModalMoveMedia.tsx";
 import {ModalDeleteMedia} from "../modals/ModalDeleteMedia.tsx";
 import {ModalEditMedia} from "../modals/ModalEditMedia.tsx";
+import {useModal} from "../../hooks/useModal.ts";
+import {useAuth} from "../../context/AuthContext.tsx";
 
 export function App() {
-  const {openModal} = useModal()
+    const {openModal} = useModal()
+    const {logout} = useAuth()
+    const nav = useNavigate()
 
-  return <div className="grid grid-cols-8">
-    <Sidebar>
-      <SidebarMenuContent>
-        <SidebarMenu>
-          <SidebarTitleMenu>Menu</SidebarTitleMenu>
-          <SidebarMenuItem href="/" svg={Home}>Dashboard</SidebarMenuItem>
-          <SidebarMenuItem svg={FolderPlus} onClick={() => openModal(ModalCreateFolder, "md")}>Create folder</SidebarMenuItem>
-        </SidebarMenu>
-        <SidebarMenu>
-          <SidebarTitleMenu>Profile</SidebarTitleMenu>
-          <SidebarMenuItem href="/profile" svg={User}>Profile</SidebarMenuItem>
-          <SidebarMenuItem href="/dashboard" svg={LogOut}>Logout</SidebarMenuItem>
-        </SidebarMenu>
-        <SidebarMenu>
-          <SidebarTitleMenu>Administration</SidebarTitleMenu>
-          <SidebarMenuItem href="/dashboard" svg={Settings}>Settings</SidebarMenuItem>
-          <SidebarMenuItem href="/dashboard" svg={Users}>Users</SidebarMenuItem>
-          <SidebarMenuItem href="/dashboard" svg={Share2}>Shares</SidebarMenuItem>
-          <SidebarMenuItem href="/dashboard" svg={Archive}>Logs</SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarMenuContent>
-      <SidebarMenuContent>
-        <SidebarItemVersion>v 1.0.8</SidebarItemVersion>
-      </SidebarMenuContent>
-    </Sidebar>
-    <main className="lg:col-span-7 sm:col-span-6 xs:col-span-8">
-      <Navbar>
-        <NavItems>
-            <NavItemsLeft>
-              <NavItem>
-                  <InputIcon svg={Search}/>
-              </NavItem>
-            </NavItemsLeft>
-            <NavItemsRight>
-                <NavItem>
-                  <ButtonIcon svg={Share2} title="Share" onClick={() => openModal(ModalShareMedia, "md")}/>
-                  <ButtonIcon svg={SquarePen} title="Rename" onClick={() => openModal(ModalEditMedia, "md")}/>
-                  <ButtonIcon svg={MoveUpRight} title="Move to file" onClick={() => openModal(ModalMoveMedia, "md")}/>
-                  <ButtonIcon svg={Trash2} title="Delete" onClick={() => openModal(ModalDeleteMedia, "md")}/>
-                  <ButtonIcon svg={Info} title="Information"/>
-                  <ButtonIcon svg={LayoutTemplate} title="Switch template"/>
-                  <ButtonIcon svg={Download} title="Download"/>
-                  <ButtonIcon svg={Upload} title="Upload" />
-                </NavItem>
-            </NavItemsRight>
-        </NavItems>
-      </Navbar>
+    const handleClickLogout = (e: MouseEvent) => {
+        e.preventDefault()
+        logout()
+        nav('/login')
+    }
 
-      <div>
-        <Outlet/>
-      </div>
-    </main>
-  </div>
+    return <div className="grid grid-cols-8">
+        <Sidebar>
+            <SidebarMenuContent>
+                <SidebarMenu>
+                    <SidebarTitleMenu>Menu</SidebarTitleMenu>
+                    <SidebarMenuItem href="/" svg={Home}>Dashboard</SidebarMenuItem>
+                    <SidebarMenuItem svg={FolderPlus} onClick={() => openModal(ModalCreateFolder, "md")}>Create
+                        folder</SidebarMenuItem>
+                </SidebarMenu>
+                <SidebarMenu>
+                    <SidebarTitleMenu>Profile</SidebarTitleMenu>
+                    <SidebarMenuItem href="/profile" svg={User}>Profile</SidebarMenuItem>
+                    <SidebarMenuItem svg={LogOut} onClick={(e) => handleClickLogout(e)}>Logout</SidebarMenuItem>
+                </SidebarMenu>
+                <SidebarMenu>
+                    <SidebarTitleMenu>Administration</SidebarTitleMenu>
+                    <SidebarMenuItem href="/dashboard" svg={Settings}>Settings</SidebarMenuItem>
+                    <SidebarMenuItem href="/dashboard" svg={Users}>Users</SidebarMenuItem>
+                    <SidebarMenuItem href="/dashboard" svg={Share2}>Shares</SidebarMenuItem>
+                    <SidebarMenuItem href="/dashboard" svg={Archive}>Logs</SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarMenuContent>
+            <SidebarMenuContent>
+                <SidebarItemVersion>v 1.0.8</SidebarItemVersion>
+            </SidebarMenuContent>
+        </Sidebar>
+        <main className="lg:col-span-7 sm:col-span-6 xs:col-span-8">
+            <Navbar>
+                <NavItems>
+                    <NavItemsLeft>
+                        <NavItem>
+                            <InputIcon svg={Search}/>
+                        </NavItem>
+                    </NavItemsLeft>
+                    <NavItemsRight>
+                        <NavItem>
+                            <ButtonIcon svg={Share2} title="Share" onClick={() => openModal(ModalShareMedia, "md")}/>
+                            <ButtonIcon svg={SquarePen} title="Rename" onClick={() => openModal(ModalEditMedia, "md")}/>
+                            <ButtonIcon svg={MoveUpRight} title="Move to file"
+                                        onClick={() => openModal(ModalMoveMedia, "md")}/>
+                            <ButtonIcon svg={Trash2} title="Delete" onClick={() => openModal(ModalDeleteMedia, "md")}/>
+                            <ButtonIcon svg={Info} title="Information"/>
+                            <ButtonIcon svg={LayoutTemplate} title="Switch template"/>
+                            <ButtonIcon svg={Download} title="Download"/>
+                            <ButtonIcon svg={Upload} title="Upload"/>
+                        </NavItem>
+                    </NavItemsRight>
+                </NavItems>
+            </Navbar>
+
+            <div>
+                <Outlet/>
+            </div>
+        </main>
+    </div>
 }

@@ -1,6 +1,6 @@
 import {Outlet} from "react-router-dom";
 import {Tab, TabItem, TabItems} from "../../components/modules/Tab.tsx";
-import {Share2, User} from "lucide-react";
+import {Archive, Share2, User} from "lucide-react";
 
 export function Profile() {
     return <>
@@ -13,6 +13,10 @@ export function Profile() {
                 <TabItem link="/profile/share">
                     <Share2 size={20}/>
                     Share
+                </TabItem>
+                <TabItem link="/profile/logs">
+                    <Archive size={20}/>
+                    Logs
                 </TabItem>
             </TabItems>
         </Tab>
