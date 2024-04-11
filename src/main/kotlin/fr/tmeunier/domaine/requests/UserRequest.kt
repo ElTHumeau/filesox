@@ -1,5 +1,6 @@
 package fr.tmeunier.domaine.requests
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -21,7 +22,7 @@ data class UserRegisterRequest(
     val name: String,
     val email: String,
     val password: String,
-    val filePath: String? = null,
+    @SerialName("file_path") val filePath: String? = null,
     val permissions: Array<Int>? = null
 )
 
@@ -29,7 +30,7 @@ data class UserRegisterRequest(
 data class AdminUserRequest(
     val name: String,
     val email: String,
-    val filePath: String,
+    @SerialName("file_path") val filePath: String,
     val permissions: Array<Int>,
     val password: String? = null
 )
@@ -43,5 +44,5 @@ data class UserUpdateRequest(
 @Serializable
 data class UserUpdatePasswordRequest(
     val password: String,
-    val confirmPassword: String,
+    @SerialName("confirm_password") val confirmPassword: String,
 )

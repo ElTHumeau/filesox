@@ -1,5 +1,6 @@
 package fr.tmeunier.domaine.models
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 
@@ -26,4 +27,7 @@ data class UsersResponse(
 data class RefreshToken(val id: Int, val token: String, val userId: Int, val expiredAt: LocalDateTime)
 
 @Serializable
-data class RefreshTokenResponse(val token: String, val refreshToken: String)
+data class RefreshTokenResponse(
+    val token: String,
+    @SerialName("refresh_token") val refreshToken: String
+)

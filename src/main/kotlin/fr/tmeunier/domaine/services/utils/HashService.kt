@@ -2,7 +2,7 @@ package fr.tmeunier.domaine.services.utils
 
 import at.favre.lib.crypto.bcrypt.BCrypt
 
-class HashService {
+object HashService {
     fun hashPassword(password: String): String {
         return  BCrypt.withDefaults().hashToString(12, password.toCharArray())
     }

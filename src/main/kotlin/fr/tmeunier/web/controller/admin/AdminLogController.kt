@@ -9,10 +9,10 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 
-class AdminLogController  {
+object AdminLogController  {
 
     suspend fun getAll(call: ApplicationCall) {
-        val response = PaginationService().paginate(1, 10, { LogRepository().findAll() }) { row ->
+        val response = PaginationService().paginate(1, 10, { LogRepository.findAll() }) { row ->
             LogsResponses(
                 row[LogRepository.Logs.id],
                 row[LogRepository.Logs.action],

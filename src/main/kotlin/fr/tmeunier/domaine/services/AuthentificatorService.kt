@@ -13,7 +13,6 @@ class AuthentificatorService
     private val TOKEN_DURATION_MS: Long = 5 * 60 * 1000
     private val REFRESH_TOKEN_DURATION_MS: Long = 60 * 60 * 24 * 7 * 1000
 
-    private val repository = RefreshTokenRepository()
 
     fun createJwtToken(user: User): String {
         return JWT.create()
@@ -28,11 +27,11 @@ class AuthentificatorService
     }
 
     suspend fun createRefreshToken(userId: Int): String {
-        return repository.create(userId, REFRESH_TOKEN_DURATION_MS)
+        return RefreshTokenRepository.create(userId, REFRESH_TOKEN_DURATION_MS)
     }
 
     suspend fun updateRefreshToken(refreshToken: String): String {
-        return repository.update(refreshToken, REFRESH_TOKEN_DURATION_MS)
+        return RefreshTokenRepository.update(refreshToken, REFRESH_TOKEN_DURATION_MS)
     }
 
     fun refreshTokenIsValid(expiresAt: LocalDateTime): Boolean {

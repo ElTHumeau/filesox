@@ -20,14 +20,12 @@ class PaginationService {
     )
 
     fun <R> paginate(page: Int, perPage: Int, query: () -> Query, mapper: (ResultRow) -> R): PaginationResponse<R> {
-        val total = transaction {
-            query().count()
-        }
+        val total = transaction { query().count() }
 
         val data = transaction {
-            query().limit(perPage, offset = ((page - 1) * perPage).toLong()).map {
-                mapper(it)
-            }
+            query()
+                .limit(perPage, offset = ((page - 1) * perPage).toLong())
+                .map { mapper(it) }
         }
 
         val totalPages = ceil(total.toDouble() / perPage).toInt()

@@ -13,8 +13,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import org.jetbrains.exposed.sql.selectAll
 
-class AdminUserController {
-    private val repository = UserRepository()
+object AdminUserController {
 
     suspend fun getAll(): PaginationService.PaginationResponse<UsersResponse> {
        return PaginationService().paginate(1, 10, { UserRepository.Users.selectAll() }) { row ->
@@ -29,15 +28,15 @@ class AdminUserController {
     }
 
     suspend fun getAllPermissions(call: ApplicationCall) {
-        val permissions = PermissionRepository().findAll()
+        val permissions = PermissionRepository.findAll()
         return call.respond(HttpStatusCode.OK, permissions)
     }
 
     suspend fun create(call: ApplicationCall) {
         val request = call.receive<AdminUserRequest>()
 
-        val newUser = repository.create(request.name, request.email, request.password!!, request.filePath)
-        request.permissions?.let { UsersPermissionsRepository().create(newUser, request.permissions.toList()) }
+        val newUser = UserRepository.create(request.name, request.email, request.password!!, request.filePath)
+        request.permissions?.let { UsersPermissionsRepository.create(newUser, request.permissions.toList()) }
 
         return call.respond(HttpStatusCode.Created, newUser)
     }
@@ -46,8 +45,8 @@ class AdminUserController {
         val request = call.receive<AdminUserRequest>()
         val id = call.parameters["id"]?.toInt() ?: return call.respond(HttpStatusCode.BadRequest)
 
-        val updatedUser = repository.update(id, request.name, request.email)
-        request.permissions?.let { UsersPermissionsRepository().sync(id, request.permissions.toList()) }
+        val updatedUser = UserRepository.update(id, request.name, request.email)
+        request.permissions?.let { UsersPermissionsRepository.sync(id, request.permissions.toList()) }
 
         return call.respond(HttpStatusCode.OK, updatedUser)
     }
@@ -55,8 +54,8 @@ class AdminUserController {
     suspend fun delete(call: ApplicationCall) {
         val id = call.parameters["id"]?.toInt() ?: return call.respond(HttpStatusCode.BadRequest)
 
-        UsersPermissionsRepository().delete(id)
-        repository.delete(id)
+        UsersPermissionsRepository.delete(id)
+        UserRepository.delete(id)
 
         return call.respond(HttpStatusCode.OK)
     }

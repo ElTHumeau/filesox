@@ -13,17 +13,18 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 
-class AuthController
+object AuthController
 {
-    private val userRepository = UserRepository()
-    private val refreshTokenRepository = RefreshTokenRepository()
+    private val userRepository = UserRepository
+    private val refreshTokenRepository = RefreshTokenRepository
 
     suspend fun login(call: ApplicationCall)
     {
         val request = call.receive<UserLoginRequest>()
+
         val user = userRepository.findByEmail(request.email)
 
-        if (user !== null && HashService().hashVerify(request.password, user.password))
+        if (user !== null && HashService.hashVerify(request.password, user.password))
         {
            val isRefreshToken = refreshTokenRepository.findByUserId(user.id)
 

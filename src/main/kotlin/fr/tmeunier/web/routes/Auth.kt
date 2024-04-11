@@ -8,19 +8,19 @@ fun Route.authRouting() {
 
     route("/auth") {
         post("/login") {
-            return@post AuthController().login(call)
+            return@post AuthController.login(call)
         }
 
         post("/register") {
-            return@post AuthController().register(call)
+            return@post AuthController.register(call)
         }
 
         post("/refresh") {
-           return@post AuthController().refresh(call)
+           return@post AuthController.refresh(call)
         }
 
         post("/logout") {
-            return@post AuthController().logout(call)
+            return@post AuthController.logout(call)
         }
     }
 }

@@ -11,7 +11,7 @@ import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDateTime
 
-class UserRepository {
+object UserRepository {
 
     private val database = Database.getConnexion()
 
@@ -34,14 +34,14 @@ class UserRepository {
     }
 
     suspend fun create(name: String, email: String, password: String, filePath: String? = null): Int {
-        LogService().add(Security.getUserId(), LogService.ACTION_CREATE, "${name} created")
+        LogService.add(Security.getUserId(), LogService.ACTION_CREATE, "${name} created")
 
         return transaction(database) {
             Users.insert {
                 it[Users.name] = name
                 it[Users.email] = email
                 it[Users.filePath] = filePath ?: "./$name"
-                it[Users.password] = HashService().hashPassword(password)
+                it[Users.password] = HashService.hashPassword(password)
                 it[Users.createdAt] = LocalDateTime.now()
                 it[Users.updatedAt] = LocalDateTime.now()
             } get Users.id
@@ -49,7 +49,7 @@ class UserRepository {
     }
 
     suspend fun update(id: Int, name: String, email: String): Int {
-        LogService().add(Security.getUserId(), LogService.ACTION_UPDATE, "${name} updated")
+        LogService.add(Security.getUserId(), LogService.ACTION_UPDATE, "${name} updated")
 
         return transaction(database) {
             Users.update({ Users.id eq id }) {
@@ -61,37 +61,31 @@ class UserRepository {
     }
 
     suspend fun updatePassword(id: Int, password: String): Int {
-        LogService().add(Security.getUserId(), LogService.ACTION_UPDATE, "updated account")
+        LogService.add(Security.getUserId(), LogService.ACTION_UPDATE, "updated account")
 
         return transaction(database) {
             Users.update({ Users.id eq id }) {
-                it[Users.password] = HashService().hashPassword(password)
+                it[Users.password] = HashService.hashPassword(password)
                 it[Users.updatedAt] = LocalDateTime.now()
             }
         }
     }
 
     suspend fun delete(id: Int) {
-        LogService().add(Security.getUserId(), LogService.ACTION_DELETE, "updated account")
+        LogService.add(Security.getUserId(), LogService.ACTION_DELETE, "updated account")
 
         transaction(database) {
             Users.deleteWhere { Users.id eq id }
         }
     }
 
-    suspend fun findByEmail(email: String): User? {
-        return transaction(database) {
-            Users.select { Users.email eq email }
-                .map { User(it[Users.id], it[Users.name], it[Users.email], it[Users.password], it[Users.filePath], it[Users.createdAt], it[Users.updatedAt]) }
-                .singleOrNull()
-        }
-    }
+    suspend fun findByEmail(email: String): User? = findBy { Users.email eq email }
 
-    suspend fun findById(id: Int): User? {
-        return transaction(database) {
-            Users.select { Users.id eq id }
-                .map { User(it[Users.id], it[Users.name], it[Users.email], it[Users.password], it[Users.filePath], it[Users.createdAt], it[Users.updatedAt]) }
-                .singleOrNull()
-        }
+    suspend fun findById(id: Int): User? = findBy { Users.id eq id }
+
+    suspend fun findBy(where: SqlExpressionBuilder.() -> Op<Boolean>): User? = transaction(database) {
+        Users.select(where)
+            .map { User(it[Users.id], it[Users.name], it[Users.email], it[Users.password], it[Users.filePath], it[Users.createdAt], it[Users.updatedAt]) }
+            .singleOrNull()
     }
 }

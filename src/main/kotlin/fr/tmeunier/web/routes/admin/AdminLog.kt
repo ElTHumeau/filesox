@@ -10,7 +10,7 @@ fun Route.adminLogRouting()
     {
         get("/logs")
         {
-            return@get AdminLogController().getAll(call)
+            return@get AdminLogController.getAll(call)
         }
     }
 }

@@ -13,11 +13,11 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 
-class ProfileController {
+object ProfileController {
 
     suspend fun getLogs(call: ApplicationCall) {
         val userId = Security.getUserId()
-        val respond = PaginationService().paginate(1, 10, { LogRepository().findAllByUser(userId) }) { row ->
+        val respond = PaginationService().paginate(1, 10, { LogRepository.findAllByUser(userId) }) { row ->
             LogsResponses(
                 row[LogRepository.Logs.id],
                 row[LogRepository.Logs.action],
@@ -33,7 +33,7 @@ class ProfileController {
         val request = call.receive<UserUpdateRequest>()
         val userId = Security.getUserId()
 
-        UserRepository().update(userId, request.name, request.email)
+        UserRepository.update(userId, request.name, request.email)
 
         return call.respond(HttpStatusCode.OK)
     }
@@ -44,7 +44,7 @@ class ProfileController {
 
         if (request.password != request.confirmPassword) return call.respond(HttpStatusCode.BadRequest)
 
-        UserRepository().updatePassword(userId, request.password)
+        UserRepository.updatePassword(userId, request.password)
 
         return call.respond(HttpStatusCode.OK)
     }

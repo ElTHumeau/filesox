@@ -38,6 +38,7 @@ fun Application.configurationRoute() {
         authRouting()
 
         authenticate("jwt") {
+            folderRoutes()
             profileRouting()
             adminUserRouting()
             adminLogRouting()

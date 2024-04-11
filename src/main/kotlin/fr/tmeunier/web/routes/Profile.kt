@@ -10,17 +10,17 @@ fun Route.profileRouting()
     {
 
         get("/logs") {
-            return@get ProfileController().getLogs(call)
+            return@get ProfileController.getLogs(call)
         }
 
         post("/update")
         {
-            return@post ProfileController().update(call)
+            return@post ProfileController.update(call)
         }
 
         post("/update/password")
         {
-            return@post ProfileController().updatePassword(call)
+            return@post ProfileController.updatePassword(call)
         }
     }
 }

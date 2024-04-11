@@ -37,6 +37,9 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:0.41.1")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.0.7")
 
+    // s3 client aws
+    implementation("aws.sdk.kotlin:s3:1.1.11")
+
     implementation("com.h2database:h2:2.1.214")
     implementation("io.ktor:ktor-server-netty-jvm")
     implementation("ch.qos.logback:logback-classic:$logback_version")

@@ -11,28 +11,28 @@ fun Route.adminUserRouting()
     {
 
         get("/permissions") {
-            return@get AdminUserController().getAllPermissions(call)
+            return@get AdminUserController.getAllPermissions(call)
         }
 
         get("/users")
         {
-            val users = AdminUserController().getAll()
+            val users = AdminUserController.getAll()
             call.respond(users)
         }
 
         post("/users/create")
         {
-            return@post AdminUserController().create(call)
+            return@post AdminUserController.create(call)
         }
 
         post("/users/update/{id}")
         {
-            return@post AdminUserController().update(call)
+            return@post AdminUserController.update(call)
         }
 
         delete("/users/delete/{id}")
         {
-            return@delete AdminUserController().delete(call)
+            return@delete AdminUserController.delete(call)
         }
     }
 }

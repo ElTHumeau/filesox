@@ -12,7 +12,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-class RefreshTokenRepository {
+object RefreshTokenRepository {
 
     private val database = Database.getConnexion()
 
