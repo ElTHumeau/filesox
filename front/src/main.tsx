@@ -13,6 +13,7 @@ import {ProfileShare} from "./view/profile/ShareProfile.tsx";
 import {QueryClient, QueryClientProvider} from "react-query";
 import {AuthProvider} from "./context/AuthContext.tsx";
 import {ProtectedRouteProvider} from "./context/ProtectedRouteProvider.tsx";
+import {ProfileLog} from "./view/profile/LogProfile.tsx";
 
 const queryClient = new QueryClient()
 
@@ -30,7 +31,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                                     <Route path="/profile" element={<Profile/>}>
                                         <Route index element={<ProfileEdit/>}/>
                                         <Route path="share" element={<ProfileShare/>}/>
-                                        <Route path="logs" element={<ProfileShare/>}/>
+                                        <Route path="logs" element={<ProfileLog/>}/>
                                     </Route>
                                 </Route>
                             </Route>

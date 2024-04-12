@@ -34,7 +34,9 @@ object UserRepository {
     }
 
     suspend fun create(name: String, email: String, password: String, filePath: String? = null): Int {
-        LogService.add(Security.getUserId(), LogService.ACTION_CREATE, "${name} created")
+        if (Security.getUserId() != 0) {
+            LogService.add(Security.getUserId(), LogService.ACTION_CREATE, "${name} created")
+        }
 
         return transaction(database) {
             Users.insert {

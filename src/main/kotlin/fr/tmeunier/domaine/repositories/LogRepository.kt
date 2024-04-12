@@ -38,6 +38,7 @@ object LogRepository
         return transaction(database) {
             Logs.innerJoin(UserRepository.Users)
                 .select { Logs.userId eq user }
+                .orderBy(Logs.createdAt to SortOrder.DESC)
         }
     }
 

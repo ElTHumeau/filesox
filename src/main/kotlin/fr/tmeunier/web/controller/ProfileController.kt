@@ -17,7 +17,9 @@ object ProfileController {
 
     suspend fun getLogs(call: ApplicationCall) {
         val userId = Security.getUserId()
-        val respond = PaginationService().paginate(1, 10, { LogRepository.findAllByUser(userId) }) { row ->
+        val page = call.parameters["page"]?.toInt() ?: 1
+
+        val respond = PaginationService().paginate(page, 10, { LogRepository.findAllByUser(userId) }) { row ->
             LogsResponses(
                 row[LogRepository.Logs.id],
                 row[LogRepository.Logs.action],
