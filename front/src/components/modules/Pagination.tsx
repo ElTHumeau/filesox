@@ -24,9 +24,6 @@ export function Pagination({from, to,  currentPage, totalPage, onPageChange}: {
         [totalPage, onPageChange]
     );
 
-    console.log(pages)
-
-
     return <div className="max-w-screen-xl mx-auto mt-12 px-4 text-gray-600 md:px-8">
         <div className="hidden items-center justify-between sm:flex" aria-label="Pagination">
             <a onClick={currentPage > 1 ? () => handlePageChange(currentPage - 1) : undefined}
