@@ -2,8 +2,10 @@ package fr.tmeunier.web.controller
 
 import fr.tmeunier.config.Security
 import fr.tmeunier.domaine.models.LogsResponses
+import fr.tmeunier.domaine.models.User
 import fr.tmeunier.domaine.repositories.LogRepository
 import fr.tmeunier.domaine.repositories.UserRepository
+import fr.tmeunier.domaine.repositories.UsersPermissionsRepository
 import fr.tmeunier.domaine.requests.UserUpdatePasswordRequest
 import fr.tmeunier.domaine.requests.UserUpdateRequest
 import fr.tmeunier.domaine.services.PaginationService
@@ -14,6 +16,11 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 
 object ProfileController {
+
+    suspend fun getProfile(call: ApplicationCall) {
+       val user = UsersPermissionsRepository.findUserWithPermissions(Security.getUserId())
+        return call.respond(HttpStatusCode.OK, user)
+    }
 
     suspend fun getLogs(call: ApplicationCall) {
         val userId = Security.getUserId()

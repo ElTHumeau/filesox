@@ -21,7 +21,16 @@ data class UsersResponse(
     val name: String = "",
     val email: String = "",
     val createdAt: String = "",
-    val filePath: String = ""
+    @SerialName("file_path") val filePath: String = ""
+)
+
+@Serializable
+data class UserWidthPermissionResponse(
+    val id: Int = 0,
+    val name: String = "",
+    val email: String = "",
+    @SerialName("file_path") val filePath: String = "",
+    val permissions: List<String> = emptyList()
 )
 
 data class RefreshToken(val id: Int, val token: String, val userId: Int, val expiredAt: LocalDateTime)
