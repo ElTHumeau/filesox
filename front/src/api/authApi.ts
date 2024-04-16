@@ -2,9 +2,7 @@ import {LoginUser} from "../types/api/authType.ts";
 import {API, BASE_URL} from "../config/axios.ts";
 
 export const loginUserfn = async (user: LoginUser) => {
-    const response = await API.post(BASE_URL + "/auth/login", user)
-    console.log(response)
-    return response.data
+    return await API.post(BASE_URL + "/auth/login", user)
 }
 
 export const logoutUserfn = async (refreshToken: string) => {

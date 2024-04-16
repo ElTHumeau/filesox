@@ -5,6 +5,8 @@ import {z} from "zod";
 import {loginUserfn} from "../../api/authApi.ts";
 import {useAuth} from "../../context/AuthContext.tsx";
 import {useNavigate} from "react-router-dom";
+import {getProfileInformation} from "../../api/profileApi.ts";
+import {useUserStore} from "../../stores/useStore.ts";
 
 const schema = z.object({
     email: z.string().email(),
@@ -14,6 +16,7 @@ const schema = z.object({
 type FormFields = z.infer<typeof schema>
 
 export default function Login() {
+    const {setUser} = useUserStore()
     const {setRefreshToken, setToken} = useAuth()
     const nav = useNavigate()
 
@@ -27,12 +30,15 @@ export default function Login() {
 
     const onSubmit: SubmitHandler<FormFields> = async (data) => {
         let response = await loginUserfn(data)
-        setToken(response.token)
-        setRefreshToken(response.refreshToken)
 
-        console.log('Logged in')
+        if (response.status === 200) {
+            setToken(response.data.token);
+            setRefreshToken(response.data.refreshToken);
 
-        nav('/')
+            await getProfileInformation(setUser);
+
+            nav('/');
+        }
     }
 
     return <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
