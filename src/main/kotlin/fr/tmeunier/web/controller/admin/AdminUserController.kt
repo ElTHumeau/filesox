@@ -36,7 +36,7 @@ object AdminUserController {
         val request = call.receive<AdminUserRequest>()
 
         val newUser = UserRepository.create(request.name, request.email, request.password!!, request.filePath)
-        request.permissions?.let { UsersPermissionsRepository.create(newUser, request.permissions.toList()) }
+        request.permissions.let { UsersPermissionsRepository.create(newUser, request.permissions.toList()) }
 
         return call.respond(HttpStatusCode.Created, newUser)
     }
@@ -46,7 +46,7 @@ object AdminUserController {
         val id = call.parameters["id"]?.toInt() ?: return call.respond(HttpStatusCode.BadRequest)
 
         val updatedUser = UserRepository.update(id, request.name, request.email)
-        request.permissions?.let { UsersPermissionsRepository.sync(id, request.permissions.toList()) }
+        request.permissions.let { UsersPermissionsRepository.sync(id, request.permissions.toList()) }
 
         return call.respond(HttpStatusCode.OK, updatedUser)
     }
