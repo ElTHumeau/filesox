@@ -27,6 +27,7 @@ import {ModalDeleteMedia} from "../modals/ModalDeleteMedia.tsx";
 import {ModalEditMedia} from "../modals/ModalEditMedia.tsx";
 import {useModal} from "../../hooks/useModal.ts";
 import {useAuth} from "../../context/AuthContext.tsx";
+import {AlertsFlash} from "./AlertsFlash.tsx";
 
 export function App() {
     const {openModal} = useModal()
@@ -91,6 +92,7 @@ export function App() {
 
             <div>
                 <Outlet/>
+                <AlertsFlash/>
             </div>
         </main>
     </div>
