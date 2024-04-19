@@ -28,6 +28,7 @@ data class UserRegisterRequest(
 
 @Serializable
 data class AdminUserRequest(
+    val id: Int? = null,
     val name: String,
     val email: String,
     @SerialName("file_path") val filePath: String,

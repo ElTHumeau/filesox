@@ -1,5 +1,4 @@
-import {useContext} from "react";
-import {ModalContext} from "../context/modules/ModalContext.tsx";
+import {useModalStore} from "../stores/useModalStore.ts";
 
 export function getSize(size: string): string {
     let widthModal = "sm:max-w-md md:max-w-xl lg:max-w-2xl"
@@ -38,10 +37,6 @@ export function getSize(size: string): string {
 }
 
 export function useModal() {
-    const context = useContext(ModalContext);
-
-    if (!context) {
-        throw new Error('useModal must be used within a ModalProvider');
-    }
-    return context;
+    const {show, size, content, openModal, closeModal} = useModalStore();
+    return {show, size, content, openModal, closeModal};
 }

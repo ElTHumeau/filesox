@@ -2,7 +2,9 @@ package fr.tmeunier.domaine.repositories
 
 import fr.tmeunier.config.Database
 import fr.tmeunier.config.Security
+import fr.tmeunier.domaine.models.Permission
 import fr.tmeunier.domaine.models.User
+import fr.tmeunier.domaine.repositories.UsersPermissionsRepository.UsersPermissions
 import fr.tmeunier.domaine.services.utils.HashService
 import fr.tmeunier.domaine.services.LogService
 import org.jetbrains.exposed.sql.*
@@ -87,7 +89,17 @@ object UserRepository {
 
     suspend fun findBy(where: SqlExpressionBuilder.() -> Op<Boolean>): User? = transaction(database) {
         Users.select(where)
-            .map { User(it[Users.id], it[Users.name], it[Users.email], it[Users.password], it[Users.filePath], it[Users.createdAt], it[Users.updatedAt]) }
+            .map {
+                User(
+                    it[Users.id],
+                    it[Users.name],
+                    it[Users.email],
+                    it[Users.password],
+                    it[Users.filePath],
+                    it[Users.createdAt],
+                    it[Users.updatedAt]
+                )
+            }
             .singleOrNull()
     }
 }

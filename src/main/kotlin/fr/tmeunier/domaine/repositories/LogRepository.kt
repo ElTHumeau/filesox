@@ -31,6 +31,7 @@ object LogRepository
         return transaction(database) {
             Logs.innerJoin(UserRepository.Users)
                 .selectAll()
+                .orderBy(Logs.createdAt to SortOrder.DESC)
         }
     }
 

@@ -1,6 +1,7 @@
 package fr.tmeunier.domaine.repositories
 
 import fr.tmeunier.config.Database
+import fr.tmeunier.domaine.models.Permission
 import fr.tmeunier.domaine.models.UserWidthPermissionResponse
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -23,7 +24,18 @@ object UsersPermissionsRepository {
         }
     }
 
-    // je voudrai récupérer les nom des persmission d'un utilisateur
+    fun findUserPermissions(userId: Int): List<String> {
+        return transaction(database) {
+            UsersPermissions.join(PermissionRepository.Permissions, JoinType.INNER,
+                additionalConstraint = { UsersPermissions.permissionId eq PermissionRepository.Permissions.id }
+            )
+                .select { UsersPermissions.userId eq userId }
+                .map {
+                    it[PermissionRepository.Permissions.name]
+                }
+        }
+    }
+
     fun findUserWithPermissions(userId: Int): UserWidthPermissionResponse {
         return transaction(database) {
             val user = UserRepository.Users.select { UserRepository.Users.id eq userId }.single()

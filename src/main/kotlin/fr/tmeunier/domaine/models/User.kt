@@ -20,8 +20,9 @@ data class UsersResponse(
     val id: Int = 0,
     val name: String = "",
     val email: String = "",
-    val createdAt: String = "",
-    @SerialName("file_path") val filePath: String = ""
+    @SerialName("created_at") val createdAt: String = "",
+    @SerialName("file_path") val filePath: String = "",
+    val permissions: List<String> = emptyList()
 )
 
 @Serializable

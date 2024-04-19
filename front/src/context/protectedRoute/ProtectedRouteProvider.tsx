@@ -1,4 +1,4 @@
-import {useAuth} from "./AuthContext.tsx";
+import {useAuth} from "../AuthContext.tsx";
 import {Outlet, useNavigate} from "react-router-dom";
 import {useEffect} from "react";
 

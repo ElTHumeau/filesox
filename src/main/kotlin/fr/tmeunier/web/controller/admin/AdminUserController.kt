@@ -13,18 +13,24 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import org.jetbrains.exposed.sql.selectAll
 
+
 object AdminUserController {
 
-    suspend fun getAll(): PaginationService.PaginationResponse<UsersResponse> {
-       return PaginationService().paginate(1, 10, { UserRepository.Users.selectAll() }) { row ->
+    suspend fun getAll(call: ApplicationCall) {
+        val page = call.parameters["page"]?.toInt() ?: 1
+
+        val response =  PaginationService().paginate(page, 10, { UserRepository.Users.selectAll() }) { row ->
             UsersResponse(
-                row[UserRepository.Users.id],
-                row[UserRepository.Users.name],
-                row[UserRepository.Users.email],
-                formatDate(row[UserRepository.Users.createdAt]),
-                row[UserRepository.Users.filePath],
+                id = row[UserRepository.Users.id],
+                name = row[UserRepository.Users.name],
+                email = row[UserRepository.Users.email],
+                createdAt = formatDate(row[UserRepository.Users.createdAt]),
+                filePath = row[UserRepository.Users.filePath],
+                permissions = UsersPermissionsRepository.findUserPermissions(row[UserRepository.Users.id])
             )
-       }
+        }
+
+        return call.respond(HttpStatusCode.OK, response)
     }
 
     suspend fun getAllPermissions(call: ApplicationCall) {

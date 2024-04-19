@@ -16,8 +16,7 @@ fun Route.adminUserRouting()
 
         get("/users")
         {
-            val users = AdminUserController.getAll()
-            call.respond(users)
+            return@get AdminUserController.getAll(call)
         }
 
         post("/users/create")

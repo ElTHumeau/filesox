@@ -4,15 +4,23 @@ import {Button, ButtonIcon} from "./Button.tsx";
 import {X} from "lucide-react";
 
 export function Modal() {
-    const {showModal, modalSize, modalContent} = useModal();
-    const widthModal = getSize(modalSize);
+    const {show, size, content } = useModal();
+    const widthModal = getSize(size);
+
+    const renderModalContent = (content: JSX.Element | (() => JSX.Element) | null | undefined) => {
+        if (typeof content === 'function') {
+            return content();
+        }
+        return content;
+    };
+
     return <>
-        {showModal && <div id={`modal`} className="fixed inset-0 z-50 overflow-y-auto">
+        {show && <div id={`modal`} className="fixed inset-0 z-50 overflow-y-auto">
             <div className="fixed inset-0 w-full h-full bg-black opacity-40"></div>
             <div className="flex items-center min-h-screen">
                 <div
                     className={`${widthModal} relative w-full p-4 mx-auto bg-white rounded-md shadow-lg transition duration-500 ease-in-out transform`}>
-                    {modalContent}
+                    {renderModalContent(content)}
                 </div>
             </div>
         </div>

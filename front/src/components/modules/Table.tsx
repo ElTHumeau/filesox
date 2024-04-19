@@ -33,9 +33,9 @@ export function TableBody({children}: { children: ReactNode }) {
     </tbody>
 }
 
-export function TableCell({children}: { children: ReactNode }) {
+export function TableCell({children, height = "py-4"}: { children: ReactNode, height?: string }) {
 
-    return <td className="px-6 py-4 whitespace-nowrap">
+    return <td className={`px-6 ${height} whitespace-nowrap`}>
         {children}
     </td>
 }

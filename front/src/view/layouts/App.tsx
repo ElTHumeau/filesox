@@ -28,6 +28,7 @@ import {ModalEditMedia} from "../modals/ModalEditMedia.tsx";
 import {useModal} from "../../hooks/useModal.ts";
 import {useAuth} from "../../context/AuthContext.tsx";
 import {AlertsFlash} from "./AlertsFlash.tsx";
+import {Modal} from "../../components/modules/Modal.tsx";
 
 export function App() {
     const {openModal} = useModal()
@@ -46,7 +47,7 @@ export function App() {
                 <SidebarMenu>
                     <SidebarTitleMenu>Menu</SidebarTitleMenu>
                     <SidebarMenuItem href="/" svg={Home}>Dashboard</SidebarMenuItem>
-                    <SidebarMenuItem svg={FolderPlus} onClick={() => openModal(ModalCreateFolder, "md")}>Create
+                    <SidebarMenuItem svg={FolderPlus} onClick={() => openModal(() => <ModalCreateFolder/>, "md")}>Create
                         folder</SidebarMenuItem>
                 </SidebarMenu>
                 <SidebarMenu>
@@ -56,17 +57,17 @@ export function App() {
                 </SidebarMenu>
                 <SidebarMenu>
                     <SidebarTitleMenu>Administration</SidebarTitleMenu>
-                    <SidebarMenuItem href="/dashboard" svg={Settings}>Settings</SidebarMenuItem>
-                    <SidebarMenuItem href="/dashboard" svg={Users}>Users</SidebarMenuItem>
-                    <SidebarMenuItem href="/dashboard" svg={Share2}>Shares</SidebarMenuItem>
-                    <SidebarMenuItem href="/dashboard" svg={Archive}>Logs</SidebarMenuItem>
+                    <SidebarMenuItem href="/admin/settings" svg={Settings}>Settings</SidebarMenuItem>
+                    <SidebarMenuItem href="/admin/users" svg={Users}>Users</SidebarMenuItem>
+                    <SidebarMenuItem href="/admin/shares" svg={Share2}>Shares</SidebarMenuItem>
+                    <SidebarMenuItem href="/admin/logs" svg={Archive}>Logs</SidebarMenuItem>
                 </SidebarMenu>
             </SidebarMenuContent>
             <SidebarMenuContent>
                 <SidebarItemVersion>v 1.0.8</SidebarItemVersion>
             </SidebarMenuContent>
         </Sidebar>
-        <main className="lg:col-span-7 sm:col-span-6 xs:col-span-8">
+        <main className="lg:col-span-7 sm:col-span-6 xs:col-span-8 ">
             <Navbar>
                 <NavItems>
                     <NavItemsLeft>
@@ -76,11 +77,11 @@ export function App() {
                     </NavItemsLeft>
                     <NavItemsRight>
                         <NavItem>
-                            <ButtonIcon svg={Share2} title="Share" onClick={() => openModal(ModalShareMedia, "md")}/>
-                            <ButtonIcon svg={SquarePen} title="Rename" onClick={() => openModal(ModalEditMedia, "md")}/>
+                            <ButtonIcon svg={Share2} title="Share" onClick={() => openModal(() => <ModalShareMedia/>, "md")}/>
+                            <ButtonIcon svg={SquarePen} title="Rename" onClick={() => openModal(() => <ModalEditMedia/>, "md")}/>
                             <ButtonIcon svg={MoveUpRight} title="Move to file"
                                         onClick={() => openModal(ModalMoveMedia, "md")}/>
-                            <ButtonIcon svg={Trash2} title="Delete" onClick={() => openModal(ModalDeleteMedia, "md")}/>
+                            <ButtonIcon svg={Trash2} title="Delete" onClick={() => openModal(() => <ModalDeleteMedia/>, "md")}/>
                             <ButtonIcon svg={Info} title="Information"/>
                             <ButtonIcon svg={LayoutTemplate} title="Switch template"/>
                             <ButtonIcon svg={Download} title="Download"/>
@@ -95,5 +96,7 @@ export function App() {
                 <AlertsFlash/>
             </div>
         </main>
+
+        <Modal/>
     </div>
 }
