@@ -3,7 +3,7 @@ import {Pagination} from "../../../components/modules/Pagination.tsx";
 import {useState} from "react";
 import {useQuery} from "react-query";
 import {Button, ButtonIcon} from "../../../components/modules/Button.tsx";
-import {SquarePen, Trash2} from "lucide-react";
+import {Plus, SquarePen, Trash2} from "lucide-react";
 import {useModal} from "../../../hooks/useModal.ts";
 import {AdminDeleteUserModal} from "./modals/AdminUserDeleteModal.tsx";
 import {AdminCreateUserModal} from "./modals/AdminUserCreateModal.tsx";
@@ -30,6 +30,7 @@ export function AdminUsers() {
             <h1 className="text-2xl text-indigo-950 font-semibold">Admin Users</h1>
 
             <Button title="create user" color="primary" onClick={() => openModal(() => <AdminCreateUserModal/>)}>
+                <Plus size={16} className="mr-2"/>
                 Create User
             </Button>
         </div>

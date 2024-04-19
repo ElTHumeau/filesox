@@ -48,3 +48,13 @@ export const postProfileInformation = async (data: FormFields) => {
     const {data: response} = await API.post('/profile/update', data)
     return response.data
 }
+
+interface UpdatePassword {
+    password: string
+    confirm_password: string
+}
+
+export const postProfilePassword = async (data: UpdatePassword) => {
+    const {data: response} = await API.post('/profile/update/password', data)
+    return response.data
+}

@@ -14,7 +14,7 @@ export function Button({children, color, ...props}: { children: ReactNode, color
     const colorClass = getColor(color)
 
     return <button
-        className={`${colorClass} text-sm py-2 px-4 rounded`}
+        className={`${colorClass} flex items-center text-sm py-2 px-4 rounded`}
         {...props}
     >
         {children}
