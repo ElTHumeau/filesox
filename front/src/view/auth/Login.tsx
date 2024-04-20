@@ -2,11 +2,7 @@ import {FormError, FormField, FormFields, FormLabel} from "../../components/modu
 import {SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
-import {loginUserfn} from "../../api/authApi.ts";
-import {useAuth} from "../../context/AuthContext.tsx";
-import {useNavigate} from "react-router-dom";
-import {getProfileInformation} from "../../api/profileApi.ts";
-import {useUserStore} from "../../stores/useStore.ts";
+import {useAuth} from "../../hooks/useAuth.ts";
 
 const schema = z.object({
     email: z.string().email(),
@@ -16,9 +12,7 @@ const schema = z.object({
 type FormFields = z.infer<typeof schema>
 
 export default function Login() {
-    const {setUser} = useUserStore()
-    const {setRefreshToken, setToken} = useAuth()
-    const nav = useNavigate()
+    const {authenticate} = useAuth()
 
     const {
         register,
@@ -29,15 +23,10 @@ export default function Login() {
     })
 
     const onSubmit: SubmitHandler<FormFields> = async (data) => {
-        let response = await loginUserfn(data)
+        let response = await authenticate(data.email, data.password);
 
-        if (response.status === 200) {
-            setToken(response.data.token);
-            setRefreshToken(response.data.refreshToken);
-
-            await getProfileInformation(setUser);
-
-            nav('/');
+        if (response) {
+            window.location.href = '/'
         }
     }
 

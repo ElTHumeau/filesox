@@ -1,7 +1,6 @@
 import * as axios from "axios";
 import {useLocalStorage} from "../hooks/useLocalStorage.ts";
-import {AuthEnum, useAuth} from "../context/AuthContext.tsx";
-import {logoutUserfn, refreshTokenfn} from "../api/authApi.ts";
+import {AuthEnum, useAuth} from "../hooks/useAuth.ts";
 
 export const BASE_URL = "http://localhost:8080";
 
@@ -28,36 +27,35 @@ API.interceptors.request.use(
     }
 );
 
-// on catch error, if status code is 403, then refresh token
+// on catch error, if status code is 401, then refresh token
 API.interceptors.response.use(
-    (response) => response,
+    (res) => res,
     async (error) => {
-        const baseRequest = error.config
+        const baseReq = error.config
+        const {logout, refreshToken} = useAuth()
 
-        const {setToken, setRefreshToken} = useAuth();
-        const {getItem} = useLocalStorage()
-
-        if (error.response.status === 401 && baseRequest._retry) {
-            baseRequest._retry = true;
+        if (error.response && error.response.status === 401 && !baseReq._retry) {
+            baseReq._retry = true
 
             try {
-                const access_token = getItem(AuthEnum.TOKEN);
-
-                if (access_token) {
-                    const response = await refreshTokenfn(getItem(AuthEnum.RESET_TOKEN)!!);
-                    setToken(response.data.token);
-                    setRefreshToken(response.data.refreshToken);
+                const accessToken = await refreshToken()
+                if (accessToken == null) {
+                    await logout()
+                    return Promise.reject(error)
                 }
 
-                return await API.request(baseRequest);
+                baseReq.headers.Authorization = `Bearer ${accessToken}`
+
+                return API(baseReq)
             } catch (e) {
-                await logoutUserfn(getItem(AuthEnum.RESET_TOKEN)!!);
-                return Promise.reject(e);
+                await logout()
+                return Promise.reject(error)
             }
         }
 
-        await logoutUserfn(getItem(AuthEnum.RESET_TOKEN)!!);
-        return Promise.reject(error);
+        await logout()
+        return Promise.reject(error)
     }
-);
+)
+
 

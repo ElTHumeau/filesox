@@ -1,16 +1,12 @@
-import {useAuth} from "../AuthContext.tsx";
-import {Outlet, useNavigate} from "react-router-dom";
-import {useEffect} from "react";
+import {Navigate, Outlet} from "react-router-dom";
+import {useAuthStore} from "../../stores/useAuthStore.ts";
 
 export function ProtectedRouteProvider() {
-    const {token} = useAuth()
-    const navigate = useNavigate()
+    const {user} = useAuthStore()
 
-    useEffect(() => {
-        if (!token) {
-            navigate('/login')
-        }
-    }, [token])
+    if (!user) {
+        return <Navigate to="/login"/>
+    }
 
     return <>
         <Outlet/>

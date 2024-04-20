@@ -10,7 +10,6 @@ import {Profile} from "./view/profile/Profile.tsx";
 import {ProfileEdit} from "./view/profile/EditProfile.tsx";
 import {ProfileShare} from "./view/profile/ShareProfile.tsx";
 import {QueryClient, QueryClientProvider} from "react-query";
-import {AuthProvider} from "./context/AuthContext.tsx";
 import {ProtectedRouteProvider} from "./context/protectedRoute/ProtectedRouteProvider.tsx";
 import {ProfileLog} from "./view/profile/LogProfile.tsx";
 import {AlertsProvider} from "./context/modules/AlertContext.tsx";
@@ -25,35 +24,33 @@ const queryClient = new QueryClient()
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <QueryClientProvider client={queryClient}>
-            <AuthProvider>
-                <AlertsProvider>
-                    <BrowserRouter>
-                        <Routes>
-                            <Route path="/" element={<ProtectedRouteProvider/>}>
-                                <Route path="/" element={<App/>}>
-                                    <Route index element={<Dashboard/>}/>
+            <AlertsProvider>
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/" element={<ProtectedRouteProvider/>}>
+                            <Route path="/" element={<App/>}>
+                                <Route index element={<Dashboard/>}/>
 
-                                    <Route path="/profile" element={<Profile/>}>
-                                        <Route index element={<ProfileEdit/>}/>
-                                        <Route path="share" element={<ProfileShare/>}/>
-                                        <Route path="logs" element={<ProfileLog/>}/>
-                                    </Route>
+                                <Route path="/profile" element={<Profile/>}>
+                                    <Route index element={<ProfileEdit/>}/>
+                                    <Route path="share" element={<ProfileShare/>}/>
+                                    <Route path="logs" element={<ProfileLog/>}/>
+                                </Route>
 
-                                    <Route path="/admin" element={<AdminProtectedRouteProvider/>}>
-                                        <Route path="settings" element={<AdminSettings/>}/>
-                                        <Route path="users" element={<AdminUsers/>}/>
-                                        <Route path="shares" element={<AdminShares/>}/>
-                                        <Route path="logs" element={<AdminLogs/>}/>
-                                    </Route>
+                                <Route path="/admin" element={<AdminProtectedRouteProvider/>}>
+                                    <Route path="settings" element={<AdminSettings/>}/>
+                                    <Route path="users" element={<AdminUsers/>}/>
+                                    <Route path="shares" element={<AdminShares/>}/>
+                                    <Route path="logs" element={<AdminLogs/>}/>
                                 </Route>
                             </Route>
+                        </Route>
 
-                            <Route path="/login" element={<Login/>}/>
-                            <Route path="/register" element={<Register/>}/>
-                        </Routes>
-                    </BrowserRouter>
-                </AlertsProvider>
-            </AuthProvider>
+                        <Route path="/login" element={<Login/>}/>
+                        <Route path="/register" element={<Register/>}/>
+                    </Routes>
+                </BrowserRouter>
+            </AlertsProvider>
         </QueryClientProvider>
     </React.StrictMode>
 )

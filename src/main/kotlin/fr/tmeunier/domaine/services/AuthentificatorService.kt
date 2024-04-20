@@ -10,9 +10,8 @@ import java.time.ZoneId
 
 class AuthentificatorService
 {
-    private val TOKEN_DURATION_MS: Long = 5 * 60 * 1000
-    private val REFRESH_TOKEN_DURATION_MS: Long = 60 * 60 * 24 * 7 * 1000
-
+    private val JWT_ACCESS_TOKEN_EXPIRATION_TIME: Long = 2 // access token refreshed every 2 mins
+    private val JWT_REFRESH_TOKEN_EXPIRATION_TIME: Long = 60 * 16 // maximum session lifetime of 16h
 
     fun createJwtToken(user: User): String {
         return JWT.create()
@@ -22,16 +21,16 @@ class AuthentificatorService
             .withClaim("email", user.email)
             .withAudience(Security.jwtAudience)
             .withIssuer(Security.jwtIssuer)
-            .withExpiresAt(LocalDateTime.now().plusMinutes(TOKEN_DURATION_MS).atZone(ZoneId.systemDefault()).toInstant())
+            .withExpiresAt(LocalDateTime.now().plusMinutes(JWT_ACCESS_TOKEN_EXPIRATION_TIME).atZone(ZoneId.systemDefault()).toInstant())
             .sign(Algorithm.HMAC256(Security.jwtSecret))
     }
 
     suspend fun createRefreshToken(userId: Int): String {
-        return RefreshTokenRepository.create(userId, REFRESH_TOKEN_DURATION_MS)
+        return RefreshTokenRepository.create(userId, JWT_REFRESH_TOKEN_EXPIRATION_TIME)
     }
 
     suspend fun updateRefreshToken(refreshToken: String): String {
-        return RefreshTokenRepository.update(refreshToken, REFRESH_TOKEN_DURATION_MS)
+        return RefreshTokenRepository.update(refreshToken, JWT_REFRESH_TOKEN_EXPIRATION_TIME)
     }
 
     fun refreshTokenIsValid(expiresAt: LocalDateTime): Boolean {

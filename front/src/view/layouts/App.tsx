@@ -26,9 +26,9 @@ import {ModalMoveMedia} from "../modals/ModalMoveMedia.tsx";
 import {ModalDeleteMedia} from "../modals/ModalDeleteMedia.tsx";
 import {ModalEditMedia} from "../modals/ModalEditMedia.tsx";
 import {useModal} from "../../hooks/useModal.ts";
-import {useAuth} from "../../context/AuthContext.tsx";
 import {AlertsFlash} from "./AlertsFlash.tsx";
 import {Modal} from "../../components/modules/Modal.tsx";
+import {useAuth} from "../../hooks/useAuth.ts";
 
 export function App() {
     const {openModal} = useModal()
