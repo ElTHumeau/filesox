@@ -1,18 +1,18 @@
 import {create} from "zustand";
-import {persist} from "zustand/middleware";
+import {combine} from "zustand/middleware";
 
 type Action = {
     setUser: (user: string) => void;
 }
 
 type State = {
-    user: null | any,
+    user: undefined | null | any,
 }
 
 export const useAuthStore = create<State & Action>((
-    persist(
+    combine(
         {
-            user: null as null | any,
+            user: undefined  as undefined | null | any,
         },
         (set) => ({
             setUser: (user) => {

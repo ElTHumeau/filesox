@@ -1,11 +1,11 @@
 import {Navigate, Outlet} from "react-router-dom";
-import {useAuthStore} from "../../stores/useAuthStore.ts";
+import {AuthState, useAuth} from "../../hooks/useAuth.ts";
 
 export function ProtectedRouteProvider() {
-    const {user} = useAuthStore()
+    const {status, user} = useAuth()
 
-    if (!user) {
-        return <Navigate to="/login"/>
+    if (!user || status === AuthState.Guest || status === AuthState.Unknown) {
+        return <Navigate replace to="/login"/>
     }
 
     return <>

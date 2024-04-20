@@ -48,14 +48,17 @@ object RefreshTokenRepository {
     }
 
     suspend fun create(userId: Int, duration: Long): String {
-        return transaction(database) {
+        val rt = UUID.randomUUID().toString()
+
+         transaction(database) {
             RefreshToken.insert {
-                it[RefreshToken.refreshToken] = UUID.randomUUID().toString()
+                it[RefreshToken.refreshToken] = rt
                 it[RefreshToken.userId] = userId
                 it[RefreshToken.expiredAt] = LocalDateTime.now().plusMinutes(duration)
             }
-            RefreshToken.refreshToken
-        }.toString()
+        }
+
+        return rt
     }
 
     suspend fun update(token: String, duration: Long): String {

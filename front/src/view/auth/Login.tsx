@@ -3,6 +3,7 @@ import {SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
 import {useAuth} from "../../hooks/useAuth.ts";
+import {useNavigate} from "react-router-dom";
 
 const schema = z.object({
     email: z.string().email(),
@@ -13,6 +14,7 @@ type FormFields = z.infer<typeof schema>
 
 export default function Login() {
     const {authenticate} = useAuth()
+    const nav = useNavigate()
 
     const {
         register,
@@ -26,7 +28,7 @@ export default function Login() {
         let response = await authenticate(data.email, data.password);
 
         if (response) {
-            window.location.href = '/'
+           nav("/", {replace: true})
         }
     }
 
