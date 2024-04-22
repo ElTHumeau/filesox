@@ -1,4 +1,4 @@
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "../../components/modules/Table.tsx";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "../../../components/modules/Table.tsx";
 
 export function ProfileShare() {
     return <div className="px-7 py-4">

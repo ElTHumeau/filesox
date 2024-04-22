@@ -4,20 +4,20 @@ import {Button} from "../../../components/modules/Button.tsx";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {useUserStore} from "../../../stores/useStore.ts";
 import {postProfileInformation} from "../../../api/profileApi.ts";
 import {useMutation} from "react-query";
 import {useAlerts} from "../../../context/modules/AlertContext.tsx";
+import {useAuth} from "../../../hooks/useAuth.ts";
 
 const schema = z.object({
     email: z.string().email(),
     name: z.string().min(3)
 })
 
-export type FormFields = z.infer<typeof schema>
+type FormFields = z.infer<typeof schema>
 
 export function EditProfileInformation() {
-    const {user, setUser} = useUserStore()
+    const {user, setUser} = useAuth()
     const {setAlerts} = useAlerts()
 
     const {

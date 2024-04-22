@@ -1,40 +1,19 @@
 import {API} from "../config/axios.ts";
-import {z} from "zod";
-import {FormFields} from "../view/profile/partials/EditProfileInformation.tsx";
+import {
+    logsProfileSchemaType, profileSchemaType,
+    UpdatePasswordProfileType,
+    UpdateProfileType
+} from "../types/api/userType.ts";
 
-const logsSchema = z.object({
-    total: z.number(),
-    total_pages: z.number(),
-    current_page: z.number(),
-    per_page: z.number(),
-    from: z.number(),
-    to: z.number(),
-    data: z.array(z.object({
-        id: z.number(),
-        action: z.string(),
-        subject: z.string(),
-        created_at: z.string(),
-        username: z.string().nullable(),
-    })),
-})
 
 export const getLogsProfile = async (page: number = 1) => {
     const response = await API.get('/profile/logs?page=' + page)
-    return logsSchema.parse(response.data)
+    return logsProfileSchemaType.parse(response.data)
 }
-
-const profileSchema = z.object({
-    id: z.number(),
-    name: z.string(),
-    email: z.string(),
-    file_path: z.string(),
-    permissions: z.array(z.string()),
-})
 
 export const getProfileInformation = async (setUser: any) => {
     const response = await API.get('/profile')
-    console.log(response.data)
-    let data  = profileSchema.parse(response.data)
+    const data  = profileSchemaType.parse(response.data)
     setUser(data)
 }
 
@@ -44,17 +23,13 @@ export const getSharedProfile = async () => {
 }
 
 // Methode POST
-export const postProfileInformation = async (data: FormFields) => {
+export const postProfileInformation = async (data: UpdateProfileType) => {
     const {data: response} = await API.post('/profile/update', data)
     return response.data
 }
 
-interface UpdatePassword {
-    password: string
-    confirm_password: string
-}
 
-export const postProfilePassword = async (data: UpdatePassword) => {
+export const postProfilePassword = async (data: UpdatePasswordProfileType) => {
     const {data: response} = await API.post('/profile/update/password', data)
     return response.data
 }

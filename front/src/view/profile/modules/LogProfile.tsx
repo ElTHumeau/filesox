@@ -1,9 +1,9 @@
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "../../components/modules/Table.tsx";
-import {getLogsProfile} from "../../api/profileApi.ts";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "../../../components/modules/Table.tsx";
+import {getLogsProfile} from "../../../api/profileApi.ts";
 import {useQuery} from "react-query";
-import {Pagination} from "../../components/modules/Pagination.tsx";
+import {Pagination} from "../../../components/modules/Pagination.tsx";
 import {useState} from "react";
-import {Pill} from "../../components/modules/Pill.tsx";
+import {Pill} from "../../../components/modules/Pill.tsx";
 
 export function ProfileLog() {
     const [page , setPage] = useState(1)

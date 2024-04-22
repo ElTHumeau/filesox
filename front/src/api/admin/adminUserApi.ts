@@ -1,61 +1,21 @@
-import {z} from "zod";
 import {API} from "../../config/axios.ts";
-
-const userSchema = z.object({
-    total: z.number(),
-    total_pages: z.number(),
-    current_page: z.number(),
-    per_page: z.number(),
-    from: z.number(),
-    to: z.number(),
-    data: z.array(z.object({
-        id: z.number(),
-        name: z.string(),
-        email: z.string(),
-        file_path: z.string(),
-        created_at: z.string(),
-        permissions: z.array(z.string()),
-    })),
-})
+import {CreateUserType, permissionsSchemaType, UpdateUserType, usersSchemaType} from "../../types/api/userType.ts";
 
 export const getAdminUsers = async (page: number = 1) => {
     const response = await API.get('/admin/users?page=' + page)
-    return userSchema.parse(response.data)
+    return usersSchemaType.parse(response.data)
 }
-
-const permissionSchema = z.array(z.object({
-    id: z.number(),
-    name: z.string(),
-}))
 
 export const getAdminPermission = async () => {
     const response = await API.get('/admin/permissions')
-    return permissionSchema.parse(response.data)
-
+    return permissionsSchemaType.parse(response.data)
 }
 
-interface CreateUser {
-    name: string,
-    email: string,
-    password: string,
-    confirm_password: string,
-    file_path: string,
-    permissions: number[]
-}
-
-export const createUser = async (data: CreateUser) => {
+export const createUser = async (data: CreateUserType) => {
     await API.post('/admin/users/create', data)
 }
 
-interface UpdateUser {
-    id: number,
-    name: string,
-    email: string,
-    file_path: string,
-    permissions: number[]
-}
-
-export const updateUser = async (data: UpdateUser) => {
+export const updateUser = async (data: UpdateUserType) => {
     await API.post('/admin/users/update/' + data.id, data)
 }
 

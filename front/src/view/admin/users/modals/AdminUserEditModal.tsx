@@ -59,7 +59,7 @@ export function AdminEditUserModal({user}: { user: UserType }) {
     })
 
     const onSubmit: SubmitHandler<FormFields> = (dataForm: any) => {
-        let p = getPermissions(user.permissions, permissions, data)
+        const p = getPermissions(user.permissions, permissions, data)
         console.log(p)
         mutate({...dataForm, permissions: p, id: user.id})
     }

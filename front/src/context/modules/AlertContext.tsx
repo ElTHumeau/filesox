@@ -18,7 +18,7 @@ export const AlertsProvider: FC<AlertsProviderProps> = ({children}) => {
     }
 
     const deleteAlert = (index: number) => {
-        let newAlerts = [...alerts]
+        const newAlerts = [...alerts]
         newAlerts.splice(index, 1)
         setAlerts_(newAlerts)
     }

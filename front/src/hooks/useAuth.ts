@@ -1,7 +1,7 @@
-import {useUserStore} from "../stores/useStore.ts";
 import {loginApi, logoutApi, refreshTokenApi} from "../api/authApi.ts";
 import {jwtDecode} from "jwt-decode";
 import {API} from "../config/axios.ts";
+import {useUserStore} from "../stores/useUserStore.ts";
 
 export enum AuthEnum {
     TOKEN = 'token',
@@ -15,8 +15,7 @@ export enum AuthState {
 }
 
 export function useAuth() {
-    const {user,setUser} = useUserStore();
-
+    const {user, setUser} = useUserStore();
     let status;
 
     switch (user) {
@@ -60,8 +59,6 @@ export function useAuth() {
     const refreshToken = async () => {
         const refreshToken = localStorage.getItem(AuthEnum.REFRESH_TOKEN);
 
-        console.log("refresh_token" + refreshToken)
-
         if (!refreshToken) return;
 
         try {
@@ -94,16 +91,14 @@ export function useAuth() {
         (res) => res,
         async (error) => {
             const baseReq = error.config
-            
+
             if (error.response && error.response.status === 401 && !baseReq._retry) {
                 baseReq._retry = true
 
                 try {
                     const token = await refreshToken()
 
-                    console.log("token" + token)
-
-                    if (token == null) { // refresh token no longer valid
+                    if (token == null) {
                         await logout()
                         return Promise.reject(error)
                     }
@@ -126,6 +121,7 @@ export function useAuth() {
     return {
         user,
         status,
+        setUser,
         authenticate,
         logout,
         refreshToken,

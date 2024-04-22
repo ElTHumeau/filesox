@@ -25,7 +25,7 @@ export default function Login() {
     })
 
     const onSubmit: SubmitHandler<FormFields> = async (data) => {
-        let response = await authenticate(data.email, data.password);
+        const response = await authenticate(data.email, data.password);
 
         if (response) {
            nav("/", {replace: true})

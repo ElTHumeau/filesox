@@ -116,6 +116,7 @@ export function AdminCreateUserModal() {
                             onChange={(e) => {
                                 setAdmin(!isAdmin);
                                 if (e.target.checked) {
+                                    setPermissions([])
                                     setPermissions([...permissions, data![0].id])
                                 } else {
                                     setPermissions(permissions.filter((id) => id !== data![0].id))

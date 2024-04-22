@@ -4,7 +4,7 @@ export const usePagination = () => {
     const [pages, setPages] = useState<(number | string)[]>([])
 
     const arrayNumberPage = (datas: { from: number; to: number; total_pages: number }) => {
-        let arrayPage: (number | string)[] = []
+        const arrayPage: (number | string)[] = []
 
         arrayPage.push(1)
 

@@ -6,7 +6,6 @@ export function useRoles() {
             }
         })
 
-        console.log(formPermissions)
         if (typeof formPermissions !== 'undefined' && formPermissions.length === 0) {
             return userPermissionIds.filter((permissionId: number | undefined) => permissionId !== undefined)
         }
