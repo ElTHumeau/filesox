@@ -10,25 +10,24 @@ import io.ktor.server.response.*
 
 object FolderController
 {
+
+    suspend fun listFoldersAndFiles(call: ApplicationCall)
+    {
+        val path = call.receiveText()
+
+        if (path.isNotEmpty()) {
+            val data = FolderSystemService.listFoldersAndFiles(path)
+            call.respond(HttpStatusCode.OK, data)
+        } else {
+            call.respond(HttpStatusCode.BadRequest, "Invalid path")
+        }
+    }
+
     suspend fun createFolder(call: ApplicationCall)
     {
         val request = call.receive<Folder>()
         FolderSystemService.createFolder(request.path)
         call.respond(HttpStatusCode.Created)
-    }
-
-    suspend fun updateFolder(call: ApplicationCall)
-    {
-        val request = call.receive<FolderMoveRequest>()
-        FolderSystemService.renameFolder(request.path, request.newPath)
-        call.respond(HttpStatusCode.OK)
-    }
-
-    suspend fun moveFolder(call: ApplicationCall)
-    {
-        val request = call.receive<FolderMoveRequest>()
-        FolderSystemService.moveFolder(request.path, request.newPath)
-        call.respond(HttpStatusCode.OK)
     }
 
     suspend fun deleteFolder(call: ApplicationCall)

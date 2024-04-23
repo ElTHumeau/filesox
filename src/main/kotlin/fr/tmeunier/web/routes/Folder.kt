@@ -6,17 +6,13 @@ import io.ktor.server.routing.*
 
 fun Route.folderRoutes() {
 
-    route("/folder") {
+    route("/folders") {
+        get {
+            FolderController.listFoldersAndFiles(call)
+        }
+
         post("/create") {
             FolderController.createFolder(call)
-        }
-
-        post("/update") {
-            FolderController.updateFolder(call)
-        }
-
-        post("/move") {
-            FolderController.moveFolder(call)
         }
 
         post("/delete") {
