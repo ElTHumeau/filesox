@@ -30,7 +30,7 @@ function getColor(color: string) {
         case 'primary':
             return 'bg-indigo-500 hover:bg-indigo-600 text-white border-indigo-500';
         case 'white':
-            return 'bg-white hover:bg-gray-100 text-gray-800 border-gray-500';
+            return 'bg-white hover:bg-gray-100 text-gray-800 border border-gray-200';
         default:
             return 'bg-white hover:bg-gray-100 text-gray-800 border-gray-500';
     }

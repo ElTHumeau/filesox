@@ -4,6 +4,7 @@ import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.model.DeleteObjectRequest
 import aws.sdk.kotlin.services.s3.model.GetObjectRequest
+import aws.sdk.kotlin.services.s3.model.ListObjectsV2Request
 import aws.sdk.kotlin.services.s3.model.PutObjectRequest
 import aws.sdk.kotlin.services.s3.paginators.listObjectsV2Paginated
 import aws.smithy.kotlin.runtime.content.toFlow
@@ -41,11 +42,22 @@ object FolderSystemService {
         })
     }
 
-    suspend fun deleteFolder(folder: String) {
-        client.deleteObject(DeleteObjectRequest {
-            bucket = bucketName
-            key = "$folder/"
-        })
+    suspend fun deleteFolder(data: String) {
+        val folderName = data.substringAfterLast('/')
+        val isFile = folderName.contains(".")
+
+        if (isFile) {
+            client.deleteObject(DeleteObjectRequest {
+                bucket = bucketName
+                key = "$data/"
+            })
+        } else {
+            // Delete the folder itself
+            client.deleteObject(DeleteObjectRequest {
+                bucket = bucketName
+                key = "$data/"
+            })
+        }
     }
 
     suspend fun listFoldersAndFiles(currentPath: String): S3Response{
@@ -59,12 +71,12 @@ object FolderSystemService {
             maxKeys = 1000
         }.collect { res ->
             res.commonPrefixes?.filter { it.prefix != null && it.prefix != currentPath }?.forEach {
-                folders.add(S3Folder(it.prefix!!.replace("/", " ")))
+                folders.add(S3Folder(it.prefix!!.replace("/", "")))
             }
 
             res.contents?.filter { it.key != null && it.key != currentPath }?.forEach { content ->
                 if (content.key!!.endsWith("/")) {
-                    folders.add(S3Folder(content.key!!.replace("/", " ")))
+                    folders.add(S3Folder(content.key!!.replace("/", "")))
                 } else {
                     files.add(
                         S3File(

@@ -11,3 +11,11 @@ export const getFileStorage = async (path: string) => {
     });
     return URL.createObjectURL(response.data);
 }
+
+export function postCreateFolder({path}: { path: string}) {
+    return API.post("/folders/create", {path: path});
+}
+
+export function postDeleteFolder({path}: { path: string}) {
+    return API.post("/folders/delete", {path: path});
+}
