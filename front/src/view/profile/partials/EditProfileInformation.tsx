@@ -39,7 +39,7 @@ export function EditProfileInformation() {
         }
     })
 
-    const onSubmit: SubmitHandler<FormFields> = (data) => {
+    const onSubmit: SubmitHandler<FormFields> = (data: FormFields) => {
         mutate(data)
         setUser({...user!, name: data.name, email: data.email})
     }

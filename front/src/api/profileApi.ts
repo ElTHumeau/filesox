@@ -33,3 +33,7 @@ export const postProfilePassword = async (data: UpdatePasswordProfileType) => {
     const {data: response} = await API.post('/profile/update/password', data)
     return response.data
 }
+
+export const postUpdateLayout = async ({name, email, layout}: {name: string, email: string, layout: boolean}) => {
+    return await API.post('/profile/update', {name, email, layout})
+}

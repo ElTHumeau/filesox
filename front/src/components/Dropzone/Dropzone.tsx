@@ -7,7 +7,12 @@ export function Dropzone({ children} : {children: ReactNode}) {
   const {setFiles} = useFileStore();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    setFiles(acceptedFiles);
+    setFiles(acceptedFiles.map(file => ({
+        name: file.name,
+        size: file.size,
+        icon: file.type,
+        image: URL.createObjectURL(file),
+        })) as any);
   }, []);
 
   const { getRootProps, isDragActive } = useDropzone({ onDrop });

@@ -5,6 +5,7 @@ interface User {
     id: number;
     name: string;
     email: string;
+    layout: boolean;
     file_path: string;
     permissions: string[];
 }

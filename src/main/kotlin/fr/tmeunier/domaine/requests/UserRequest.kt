@@ -32,6 +32,7 @@ data class AdminUserRequest(
     val name: String,
     val email: String,
     @SerialName("file_path") val filePath: String,
+    val layout: Boolean?,
     val permissions: Array<Int>,
     val password: String? = null
 )
@@ -39,7 +40,8 @@ data class AdminUserRequest(
 @Serializable
 data class UserUpdateRequest(
     val name: String,
-    val email: String
+    val email: String,
+    val layout: Boolean?
 )
 
 @Serializable

@@ -11,6 +11,7 @@ data class User(
     val email: String,
     val password: String,
     val filePath: String,
+    val layout: Boolean,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
 )

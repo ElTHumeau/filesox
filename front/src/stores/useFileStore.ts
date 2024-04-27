@@ -1,22 +1,23 @@
-import {persist} from "zustand/middleware";
 import {create} from "zustand";
+import {FileType, FolderType} from "../types/api/storageType.ts";
 
 type State = {
-    files: undefined | File[]
-}
+    files: undefined | FileType[];
+    folders: undefined | FolderType[];
+    activeStorage: undefined | FolderType | FileType;
+};
 
 type Action = {
-    setFiles: (file: undefined | File[]) => void;
-}
+    setFiles: (file: State["files"]) => void;
+    setFolders: (folder: State["folders"]) => void;
+    setActiveStorage: (folder: State["activeStorage"]) => void;
+};
 
-export const useFileStore = create<State & Action>()(
-    persist(
-        (set) => ({
-            files: undefined,
-            setFiles: (file: any) => {
-                return set(() => ({files: file}));
-            },
-        }),
-        {name: 'file-storage'}
-    )
-)
+export const useFileStore = create<State & Action>((set) => ({
+    files: [] as FileType[],
+    folders: [] as FolderType[],
+    activeStorage: undefined,
+    setFiles: (file: undefined | FileType[]) => set(() => ({ files: file })),
+    setFolders: (folder: undefined | FolderType[]) => set(() => ({ folders: folder })),
+    setActiveStorage: (activeStorage) => set(() => ({ activeStorage: activeStorage })),
+}));

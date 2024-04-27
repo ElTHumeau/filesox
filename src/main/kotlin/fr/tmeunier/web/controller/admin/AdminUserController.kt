@@ -51,7 +51,7 @@ object AdminUserController {
         val request = call.receive<AdminUserRequest>()
         val id = call.parameters["id"]?.toInt() ?: return call.respond(HttpStatusCode.BadRequest)
 
-        val updatedUser = UserRepository.update(id, request.name, request.email)
+        val updatedUser = UserRepository.update(id, request.name, request.email, request.layout)
         request.permissions.let { UsersPermissionsRepository.sync(id, request.permissions.toList()) }
 
         return call.respond(HttpStatusCode.OK, updatedUser)

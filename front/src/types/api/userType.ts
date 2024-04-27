@@ -6,6 +6,7 @@ export interface UserType {
     name: string;
     email: string;
     file_path: string;
+    layout: boolean
     created_at: string;
     permissions: string[];
 }
@@ -18,6 +19,7 @@ export interface UpdatePasswordProfileType {
 export interface UpdateProfileType {
     email: string;
     name: string;
+    layout: boolean;
 }
 
 export interface CreateUserType {

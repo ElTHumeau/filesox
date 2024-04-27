@@ -39,6 +39,10 @@ dependencies {
 
     // s3 client aws
     implementation("aws.sdk.kotlin:s3:1.1.11")
+    implementation("com.github.ben-manes.caffeine:caffeine:2.9.0")
+
+    //coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
 
     implementation("com.h2database:h2:2.1.214")
     implementation("io.ktor:ktor-server-netty-jvm")

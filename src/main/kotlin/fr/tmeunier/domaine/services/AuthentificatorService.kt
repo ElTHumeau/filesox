@@ -19,6 +19,8 @@ class AuthentificatorService
             .withClaim("id", user.id)
             .withClaim("name", user.name)
             .withClaim("email", user.email)
+            .withClaim("file_path", user.filePath)
+            .withClaim("layout", user.layout)
             .withAudience(Security.jwtAudience)
             .withIssuer(Security.jwtIssuer)
             .withExpiresAt(LocalDateTime.now().plusMinutes(JWT_ACCESS_TOKEN_EXPIRATION_TIME).atZone(ZoneId.systemDefault()).toInstant())

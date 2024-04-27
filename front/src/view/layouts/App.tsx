@@ -6,7 +6,7 @@ import {
 import {
     Archive, Download,
     FolderPlus,
-    Home, Info, LayoutTemplate,
+    Home, Info,
     LogOut, MoveUpRight, Search,
     Settings,
     Share2,
@@ -29,6 +29,7 @@ import {useModal} from "../../hooks/useModal.ts";
 import {AlertsFlash} from "./AlertsFlash.tsx";
 import {Modal} from "../../components/modules/Modal.tsx";
 import {useAuth} from "../../hooks/useAuth.ts";
+import {ButtonLayout} from "../../components/layouts/ButtonLayout.tsx";
 
 export function App() {
     const {openModal} = useModal()
@@ -83,7 +84,7 @@ export function App() {
                                         onClick={() => openModal(ModalMoveMedia, "md")}/>
                             <ButtonIcon svg={Trash2} title="Delete" onClick={() => openModal(() => <ModalDeleteMedia/>, "md")}/>
                             <ButtonIcon svg={Info} title="Information"/>
-                            <ButtonIcon svg={LayoutTemplate} title="Switch template"/>
+                            <ButtonLayout/>
                             <ButtonIcon svg={Download} title="Download"/>
                             <ButtonIcon svg={Upload} title="Upload"/>
                         </NavItem>

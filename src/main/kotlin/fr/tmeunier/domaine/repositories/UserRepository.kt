@@ -2,9 +2,7 @@ package fr.tmeunier.domaine.repositories
 
 import fr.tmeunier.config.Database
 import fr.tmeunier.config.Security
-import fr.tmeunier.domaine.models.Permission
 import fr.tmeunier.domaine.models.User
-import fr.tmeunier.domaine.repositories.UsersPermissionsRepository.UsersPermissions
 import fr.tmeunier.domaine.services.utils.HashService
 import fr.tmeunier.domaine.services.LogService
 import org.jetbrains.exposed.sql.*
@@ -23,6 +21,7 @@ object UserRepository {
         val email: Column<String> = varchar("email", length = 255)
         val filePath: Column<String> = varchar("file_path", length = 255)
         val password: Column<String> = varchar("password", length = 255)
+        val layout: Column<Boolean> = bool("layout").default(false)
         val createdAt: Column<LocalDateTime> = datetime("created_at")
         val updatedAt: Column<LocalDateTime> = datetime("updated_at")
 
@@ -52,13 +51,14 @@ object UserRepository {
         }
     }
 
-    suspend fun update(id: Int, name: String, email: String): Int {
+    suspend fun update(id: Int, name: String, email: String, layout: Boolean?): Int {
         LogService.add(Security.getUserId(), LogService.ACTION_UPDATE, "${name} updated")
 
         return transaction(database) {
             Users.update({ Users.id eq id }) {
                 it[Users.name] = name
                 it[Users.email] = email
+                layout?.let { value -> it[Users.layout] = value }
                 it[Users.updatedAt] = LocalDateTime.now()
             }
         }
@@ -96,6 +96,7 @@ object UserRepository {
                     it[Users.email],
                     it[Users.password],
                     it[Users.filePath],
+                    it[Users.layout],
                     it[Users.createdAt],
                     it[Users.updatedAt]
                 )
