@@ -47,7 +47,7 @@ export function useAuth() {
 
         localStorage.removeItem(AuthEnum.TOKEN);
         localStorage.removeItem(AuthEnum.REFRESH_TOKEN);
-        setUser(undefined);
+        setUser(null);
 
         try {
             await logoutApi(refreshToken);
@@ -66,6 +66,8 @@ export function useAuth() {
             localStorage.setItem(AuthEnum.TOKEN, response.data.token);
             localStorage.setItem(AuthEnum.REFRESH_TOKEN, response.data.refresh_token);
 
+            // update user
+            setUser(jwtDecode(response.data.token));
             return response.data.token;
         } catch (e) {
             console.debug(e)
