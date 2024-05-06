@@ -10,7 +10,7 @@ object StorageService {
             fileName.endsWith(".doc") || fileName.endsWith(".docx") -> "word"
             fileName.endsWith(".xls") || fileName.endsWith(".xlsx") -> "excel"
             fileName.endsWith(".ppt") || fileName.endsWith(".pptx") -> "powerpoint"
-            fileName.endsWith(".txt") -> "text"
+            fileName.endsWith(".txt") -> "txt"
             fileName.endsWith(".zip") -> "zip"
             fileName.endsWith(".rar") -> "rar"
             fileName.endsWith(".tar") -> "tar"

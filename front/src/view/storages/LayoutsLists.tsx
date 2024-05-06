@@ -1,10 +1,10 @@
 import {useNavigate} from "react-router-dom";
 import {useFileStore} from "../../stores/useFileStore.ts";
-import {FileType} from "../../types/api/storageType.ts";
+import {FileType, FolderType} from "../../types/api/storageType.ts";
 import {ReactNode} from "react";
 import {LayoutModules} from "./modules/LayoutModulesImage.tsx";
 
-export function LayoutsLists({files, folders}: { files: FileType[], folders: FileType[] }) {
+export function LayoutsLists({files, folders}: { files: FileType[], folders: FolderType[] }) {
     const nav = useNavigate()
     const {activeStorage, setActiveStorage} = useFileStore();
 

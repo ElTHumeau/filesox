@@ -29,7 +29,7 @@ export function ModalDeleteMedia() {
     })
 
     const onSubmit = () => {
-        mutate({path: user!.file_path + activeStorage!.name})
+        mutate({path: user!.file_path === "./" ? activeStorage!.name : user!.file_path + activeStorage!.name})
     }
 
     return <>

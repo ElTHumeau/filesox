@@ -30,7 +30,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                         <Route path="/" element={<ProtectedRouteProvider/>}>
                             <Route path="/" element={<App/>}>
                                 <Route index element={<Dashboard/>}/>
-                                <Route path="/files(/:slug)" element={<Dashboard/>}/>
 
                                 <Route path="/profile" element={<Profile/>}>
                                     <Route index element={<ProfileEdit/>}/>

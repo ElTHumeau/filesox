@@ -5,7 +5,7 @@ import {FileType} from "../../../types/api/storageType.ts";
 import {LayoutCardList} from "../LayoutsLists.tsx";
 import {LayoutCardGrid} from "../LayoutsGrid.tsx";
 
-export function LayoutModules({files, layout}: { files: FileType[], layout: string }) {
+export function LayoutModules({files, layout}: { files: FileType[] | undefined, layout: string }) {
     const [imageUrls, setImageUrls] = useState<{ [key: string]: any }>({});
     const {activeStorage, setActiveStorage} = useFileStore();
 
@@ -13,7 +13,7 @@ export function LayoutModules({files, layout}: { files: FileType[], layout: stri
         const fetchImages = async () => {
             try {
                 const urls: Record<string, any> = {};
-                for (const file of files) {
+                for (const file of files || []) {
                     if (file.icon === 'file') {
                         urls[file.image] = await getFileStorage(file.image);
                     }
@@ -40,7 +40,7 @@ export function LayoutModules({files, layout}: { files: FileType[], layout: stri
     }
 
     return <>
-        {files && files.map((file, index) => (
+        {files ? files.map((file, index) => (
             <div
                 key={index}
                 onClick={() => {
@@ -58,6 +58,12 @@ export function LayoutModules({files, layout}: { files: FileType[], layout: stri
                     </LayoutCardList>
                 )}
             </div>
-        ))}
+        )) :
+        <div className="flex items-center justify-center h-[87.5vh]">
+            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900">
+                il y a pas de fichier
+            </div>
+        </div>
+        }
     </>
 }

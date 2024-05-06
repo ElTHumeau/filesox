@@ -64,7 +64,7 @@ object RefreshTokenRepository {
     suspend fun update(token: String, duration: Long): String {
         return transaction(database) {
             RefreshToken.update({ RefreshToken.refreshToken eq token }) {
-                it[RefreshToken.expiredAt] = LocalDateTime.now().plusSeconds(duration)
+                it[RefreshToken.expiredAt] = LocalDateTime.now().plusMinutes(duration)
             }
             token
         }

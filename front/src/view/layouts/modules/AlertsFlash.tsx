@@ -1,5 +1,5 @@
-import {Alert, AlertIcon, Alerts} from "../../components/modules/Alerts/Alert.tsx";
-import {useAlerts} from "../../context/modules/AlertContext.tsx";
+import {Alert, AlertIcon, Alerts} from "../../../components/modules/Alerts/Alert.tsx";
+import {useAlerts} from "../../../context/modules/AlertContext.tsx";
 import {useEffect} from "react";
 
 export function AlertsFlash() {

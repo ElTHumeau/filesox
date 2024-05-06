@@ -1,14 +1,18 @@
-import {FileType} from "../../types/api/storageType.ts";
-import {useNavigate} from "react-router-dom";
+import {FileType, FolderType} from "../../types/api/storageType.ts";
 import {useFileStore} from "../../stores/useFileStore.ts";
 import {Row} from "../../components/modules/Grid.tsx";
 import {LayoutModules} from "./modules/LayoutModulesImage.tsx";
 import {ReactNode} from "react";
 import {truncateString} from "../../hooks/useStore.ts";
+import {FilePaths, useLocalStorage} from "../../hooks/useLocalStorage.ts";
 
-export function LayoutsGrid({files, folders}: { files: FileType[], folders: FileType[] }) {
-    const nav = useNavigate()
+export function LayoutsGrid({files, folders}: { files: FileType[] | undefined, folders: FolderType[] | undefined}) {
     const {activeStorage, setActiveStorage} = useFileStore();
+    const {setItem} = useLocalStorage()
+
+    const handleDoubleClick = (folder_name: string) => {
+        setItem(FilePaths.path, folder_name)
+    }
 
     return <>
         <div>
@@ -21,9 +25,9 @@ export function LayoutsGrid({files, folders}: { files: FileType[], folders: File
                          onClick={() => {
                              setActiveStorage(folder)
                          }}
-                         onDoubleClick={() => {
-                             nav('/files/' + folder.name)
-                         }}
+                         onDoubleClick={() =>
+                             handleDoubleClick(folder.name)
+                         }
                          className={`flex gap-3 items-center px-4 py-2 rounded-lg' ${activeStorage && activeStorage.name === folder.name ? 'bg-indigo-50 text-indigo-500 shadow-md cursor-pointer' : 'cursor-pointer shadow-md bg-white text-black'}  `}
                     >
                         <LayoutCardGrid name={folder.name} isFolder={true}>
@@ -52,16 +56,19 @@ export function LayoutCardGrid({name, isFolder, size, children}: {
     children: ReactNode
     size?: string | number,
 }) {
+    const {getItem} = useLocalStorage()
+    const path = getItem(FilePaths.path)
+
     return <>
         {children}
 
         {!isFolder ?
             <div className="gap-3 items-center">
-                <p className="truncate">{truncateString(name, 20)}</p>
+                <p className="truncate">{truncateString(name.replace(path ?? "", ""), 20)}</p>
                 <span className="text-gray-500 text-sm">{size}</span>
             </div>
             :
-            <p className="truncate">{name}</p>
+            <p className="truncate">{name.replace(path ?? "", "")}</p>
         }
     </>
 }

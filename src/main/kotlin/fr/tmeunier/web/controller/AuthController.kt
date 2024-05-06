@@ -30,18 +30,18 @@ object AuthController
 
             if (isRefreshToken !== null)
             {
-                if (AuthentificatorService().refreshTokenIsValid(isRefreshToken.expiredAt))
+                if (AuthentificatorService.refreshTokenIsValid(isRefreshToken.expiredAt))
                 {
                     return call.respond(
                         HttpStatusCode.OK,
-                        RefreshTokenResponse(AuthentificatorService().createJwtToken(user), AuthentificatorService().updateRefreshToken(isRefreshToken.token))
+                        RefreshTokenResponse(AuthentificatorService.createJwtToken(user), AuthentificatorService.updateRefreshToken(isRefreshToken.token))
                     )
                 }
             }
 
             return call.respond(
                 HttpStatusCode.OK,
-                RefreshTokenResponse(AuthentificatorService().createJwtToken(user), AuthentificatorService().createRefreshToken(user.id))
+                RefreshTokenResponse(AuthentificatorService.createJwtToken(user), AuthentificatorService.createRefreshToken(user.id))
             )
 
         } else {
@@ -54,13 +54,13 @@ object AuthController
         val request = call.receive<RefreshTokenRequests>()
         val refreshToken = refreshTokenRepository.findByToken(request.refreshToken)
 
-        if (refreshToken !== null && AuthentificatorService().refreshTokenIsValid(refreshToken.expiredAt))
+        if (refreshToken !== null && AuthentificatorService.refreshTokenIsValid(refreshToken.expiredAt))
         {
             val user = userRepository.findById(refreshToken.userId)
 
             return call.respond(
                 HttpStatusCode.OK,
-                RefreshTokenResponse(AuthentificatorService().createJwtToken(user!!), AuthentificatorService().updateRefreshToken(refreshToken.token))
+                RefreshTokenResponse(AuthentificatorService.createJwtToken(user!!), AuthentificatorService.updateRefreshToken(refreshToken.token))
             )
         }
 

@@ -4,7 +4,6 @@ import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.model.DeleteObjectRequest
 import aws.sdk.kotlin.services.s3.model.GetObjectRequest
-import aws.sdk.kotlin.services.s3.model.ListObjectsV2Request
 import aws.sdk.kotlin.services.s3.model.PutObjectRequest
 import aws.sdk.kotlin.services.s3.paginators.listObjectsV2Paginated
 import aws.smithy.kotlin.runtime.content.toFlow
@@ -64,19 +63,21 @@ object FolderSystemService {
         val folders = mutableListOf<S3Folder>()
         val files = mutableListOf<S3File>()
 
+        val path = if (currentPath == "./") "" else currentPath
+
         client.listObjectsV2Paginated {
             bucket = bucketName
             delimiter = "/"
-            prefix = currentPath
+            prefix = path
             maxKeys = 1000
         }.collect { res ->
-            res.commonPrefixes?.filter { it.prefix != null && it.prefix != currentPath }?.forEach {
-                folders.add(S3Folder(it.prefix!!.replace("/", "")))
+            res.commonPrefixes?.filter { it.prefix != null && it.prefix != path }?.forEach {
+                folders.add(S3Folder(it.prefix!!))
             }
 
-            res.contents?.filter { it.key != null && it.key != currentPath }?.forEach { content ->
+            res.contents?.filter { it.key != null && it.key != path }?.forEach { content ->
                 if (content.key!!.endsWith("/")) {
-                    folders.add(S3Folder(content.key!!.replace("/", "")))
+                    folders.add(S3Folder(content.key!!))
                 } else {
                     files.add(
                         S3File(

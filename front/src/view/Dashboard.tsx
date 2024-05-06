@@ -1,16 +1,26 @@
 import {Dropzone} from "../components/Dropzone/Dropzone.tsx";
 import {useFileStore} from "../stores/useFileStore.ts";
-import {useQuery} from "react-query";
+import {useQuery, useQueryClient} from "react-query";
 import {getAllStorage} from "../api/storageApi.ts";
 import {LayoutsLists} from "./storages/LayoutsLists.tsx";
 import {LayoutsGrid} from "./storages/LayoutsGrid.tsx";
 import {useUserStore} from "../stores/useUserStore.ts";
+import {Breadcrumb} from "../components/modules/Breadcrumb.tsx";
+import {useEffect} from "react";
+import {FilePaths, useLocalStorage} from "../hooks/useLocalStorage.ts";
+
 
 export function Dashboard() {
     const {files, folders, setFiles, setFolders} = useFileStore();
     const {user} = useUserStore()
+    const {getItem} = useLocalStorage()
+    const queryClient = useQueryClient()
 
-    const {isLoading} = useQuery("storage", () => getAllStorage(""),
+    useEffect(() => {
+        queryClient.invalidateQueries("storage")
+    }, [getItem(FilePaths.path), queryClient])
+
+    const {isLoading} = useQuery("storage", () => getAllStorage(getItem(FilePaths.path) as string),
         {
             onSuccess: (data) => {
                 setFiles(data.files)
@@ -25,11 +35,12 @@ export function Dashboard() {
 
     return <div className="px-4 py-7 h-[87.5vh]">
         <Dropzone>
+            <Breadcrumb/>
             {files && folders &&
-                user?.layout === false ?
-                <LayoutsLists files={files} folders={folders} />
+            user?.layout === false ?
+                <LayoutsLists files={files} folders={folders}/>
                 :
-                <LayoutsGrid files={files} folders={folders} />
+                <LayoutsGrid files={files} folders={folders}/>
             }
         </Dropzone>
     </div>

@@ -26,14 +26,16 @@ import {ModalMoveMedia} from "../modals/ModalMoveMedia.tsx";
 import {ModalDeleteMedia} from "../modals/ModalDeleteMedia.tsx";
 import {ModalEditMedia} from "../modals/ModalEditMedia.tsx";
 import {useModal} from "../../hooks/useModal.ts";
-import {AlertsFlash} from "./AlertsFlash.tsx";
+import {AlertsFlash} from "./modules/AlertsFlash.tsx";
 import {Modal} from "../../components/modules/Modal.tsx";
 import {useAuth} from "../../hooks/useAuth.ts";
 import {ButtonLayout} from "../../components/layouts/ButtonLayout.tsx";
+import {useFileStore} from "../../stores/useFileStore.ts";
 
 export function App() {
     const {openModal} = useModal()
     const {logout} = useAuth()
+    const {activeStorage} = useFileStore()
     const nav = useNavigate()
 
     const handleClickLogout = (e: MouseEvent) => {
@@ -78,26 +80,29 @@ export function App() {
                     </NavItemsLeft>
                     <NavItemsRight>
                         <NavItem>
-                            <ButtonIcon svg={Share2} title="Share" onClick={() => openModal(() => <ModalShareMedia/>, "md")}/>
-                            <ButtonIcon svg={SquarePen} title="Rename" onClick={() => openModal(() => <ModalEditMedia/>, "md")}/>
-                            <ButtonIcon svg={MoveUpRight} title="Move to file"
-                                        onClick={() => openModal(ModalMoveMedia, "md")}/>
-                            <ButtonIcon svg={Trash2} title="Delete" onClick={() => openModal(() => <ModalDeleteMedia/>, "md")}/>
-                            <ButtonIcon svg={Info} title="Information"/>
-                            <ButtonLayout/>
-                            <ButtonIcon svg={Download} title="Download"/>
-                            <ButtonIcon svg={Upload} title="Upload"/>
-                        </NavItem>
-                    </NavItemsRight>
-                </NavItems>
-            </Navbar>
+                            {activeStorage &&
+                                <>
+                                    <ButtonIcon svg={Share2} title="Share" onClick={() => openModal(() => <ModalShareMedia/>, "md")}/>
+                                    <ButtonIcon svg={SquarePen} title="Rename" onClick={() => openModal(() => <ModalEditMedia/>, "md")}/>
+                                    <ButtonIcon svg={MoveUpRight} title="Move to file" onClick={() => openModal(() => <ModalMoveMedia/>, "md")}/>
+                                    <ButtonIcon svg={Trash2} title="Delete" onClick={() => openModal(() => <ModalDeleteMedia/>, "md")}/>
+                                    <ButtonIcon svg={Info} title="Information"/>
+                                </>
+                            }
+                        <ButtonLayout/>
+                        <ButtonIcon svg={Download} title="Download"/>
+                        <ButtonIcon svg={Upload} title="Upload"/>
+                    </NavItem>
+                </NavItemsRight>
+            </NavItems>
+        </Navbar>
 
-            <div>
-                <Outlet/>
-                <AlertsFlash/>
-            </div>
-        </main>
+        <div>
+            <Outlet/>
+            <AlertsFlash/>
+        </div>
+    </main>
 
-        <Modal/>
-    </div>
+    <Modal/>
+</div>
 }

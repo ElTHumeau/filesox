@@ -2,6 +2,8 @@ import {loginApi, logoutApi, refreshTokenApi} from "../api/authApi.ts";
 import {jwtDecode} from "jwt-decode";
 import {API} from "../config/axios.ts";
 import {useUserStore} from "../stores/useUserStore.ts";
+import {FilePaths} from "./useLocalStorage.ts";
+import {UserType} from "../types/api/userType.ts";
 
 export enum AuthEnum {
     TOKEN = 'token',
@@ -35,7 +37,9 @@ export function useAuth() {
         localStorage.setItem(AuthEnum.TOKEN, response.data.token);
         localStorage.setItem(AuthEnum.REFRESH_TOKEN, response.data.refresh_token);
 
-        setUser(jwtDecode(response.data.token));
+        let user: UserType = jwtDecode(response.data.token);
+        setUser(user);
+        localStorage.setItem(FilePaths.path, user.file_path);
 
         return response.data.token;
     }

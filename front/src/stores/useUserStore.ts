@@ -15,7 +15,7 @@ export const useUserStore = create(
             user: undefined as undefined | null | User
         },
         (set) => ({
-            setUser: (user: User | null) => set({user})
+            setUser: (user: User | null | undefined) => set({user})
         })
     )
 )

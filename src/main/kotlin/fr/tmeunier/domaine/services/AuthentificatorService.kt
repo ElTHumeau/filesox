@@ -8,7 +8,7 @@ import fr.tmeunier.domaine.repositories.RefreshTokenRepository
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-class AuthentificatorService
+object AuthentificatorService
 {
     private val JWT_ACCESS_TOKEN_EXPIRATION_TIME: Long = 2 // access token refreshed every 2 mins
     private val JWT_REFRESH_TOKEN_EXPIRATION_TIME: Long = 60 * 16 // maximum session lifetime of 16h
@@ -36,6 +36,6 @@ class AuthentificatorService
     }
 
     fun refreshTokenIsValid(expiresAt: LocalDateTime): Boolean {
-        return System.currentTimeMillis() < expiresAt.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        return LocalDateTime.now().isBefore(expiresAt)
     }
 }

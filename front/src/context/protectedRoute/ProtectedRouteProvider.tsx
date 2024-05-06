@@ -1,16 +1,16 @@
 import {Navigate, Outlet} from "react-router-dom";
-import {AuthState, useAuth} from "../../hooks/useAuth.ts";
+import {AuthEnum, AuthState, useAuth} from "../../hooks/useAuth.ts";
 
 export function ProtectedRouteProvider() {
     const {status, user, refreshToken} = useAuth()
 
+    if (!user || status === AuthState.Guest || localStorage.getItem(AuthEnum.REFRESH_TOKEN) === null) {
+        return <Navigate replace to="/login"/>
+    }
+
     if (status === AuthState.Unknown) {
         refreshToken();
         return <div>Loading...</div>
-    }
-
-    if (!user || status === AuthState.Guest) {
-        return <Navigate replace to="/login"/>
     }
 
     return <>
