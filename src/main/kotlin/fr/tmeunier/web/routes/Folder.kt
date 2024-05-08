@@ -30,8 +30,6 @@ fun Route.folderRoutes() {
             val fileName =
                 call.parameters["fileName"] ?: return@get call.respond(HttpStatusCode.BadRequest, "Key is required")
 
-            println(fileName)
-
             val fileInCache = File(".cache/images/$fileName")
 
             if (!fileInCache.exists()) {

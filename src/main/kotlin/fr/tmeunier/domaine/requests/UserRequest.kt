@@ -32,7 +32,7 @@ data class AdminUserRequest(
     val name: String,
     val email: String,
     @SerialName("file_path") val filePath: String,
-    val layout: Boolean?,
+    val layout: Boolean? = false,
     val permissions: Array<Int>,
     val password: String? = null
 )

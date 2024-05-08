@@ -44,6 +44,7 @@ object UserRepository {
                 it[Users.name] = name
                 it[Users.email] = email
                 it[Users.filePath] = filePath ?: "./$name"
+                it[Users.layout] = false
                 it[Users.password] = HashService.hashPassword(password)
                 it[Users.createdAt] = LocalDateTime.now()
                 it[Users.updatedAt] = LocalDateTime.now()
