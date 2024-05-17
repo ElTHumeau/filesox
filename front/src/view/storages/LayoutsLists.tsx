@@ -1,12 +1,16 @@
-import {useNavigate} from "react-router-dom";
 import {useFileStore} from "../../stores/useFileStore.ts";
 import {FileType, FolderType} from "../../types/api/storageType.ts";
 import {ReactNode} from "react";
 import {LayoutModules} from "./modules/LayoutModulesImage.tsx";
+import {FilePaths, useLocalStorage} from "../../hooks/useLocalStorage.ts";
 
 export function LayoutsLists({files, folders}: { files: FileType[], folders: FolderType[] }) {
-    const nav = useNavigate()
     const {activeStorage, setActiveStorage} = useFileStore();
+    const {setItem} = useLocalStorage()
+
+    const handleDoubleClick = (folder_name: string) => {
+        setItem(FilePaths.path, folder_name)
+    }
 
     return <>
         <div>
@@ -16,12 +20,8 @@ export function LayoutsLists({files, folders}: { files: FileType[], folders: Fol
 
             {folders && folders.map((folder, index) => (
                 <div key={index}
-                     onClick={() => {
-                         setActiveStorage(folder)
-                     }}
-                     onDoubleClick={() => {
-                         nav('/files/' + folder.name)
-                     }}
+                     onClick={() => setActiveStorage(folder)}
+                     onDoubleClick={() => handleDoubleClick(folder.name)}
                      className={`flex items-center justify-between px-4 py-2 mt-4 rounded-lg' ${activeStorage && activeStorage.name === folder.name ? 'bg-indigo-50 text-indigo-500 shadow-md cursor-pointer' : 'cursor-pointer shadow-md bg-white text-black'}  `}
                 >
                     <LayoutCardList name={folder.name} isFolders={true}>
