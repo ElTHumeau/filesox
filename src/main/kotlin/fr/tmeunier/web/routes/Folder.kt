@@ -1,5 +1,6 @@
 package fr.tmeunier.web.routes
 
+import fr.tmeunier.config.S3Config
 import fr.tmeunier.domaine.services.filesSystem.FolderSystemService
 import fr.tmeunier.web.controller.fileSystem.FolderController
 import io.ktor.http.*
@@ -33,7 +34,8 @@ fun Route.folderRoutes() {
             val fileInCache = File(".cache/images/$fileName")
 
             if (!fileInCache.exists()) {
-                FolderSystemService.downloadFileMultipart(fileName, ".cache/images/$fileName")
+                S3Config.makeClient()
+                    ?.let { it1 -> FolderSystemService.downloadFileMultipart(it1, fileName, ".cache/images/$fileName") }
                 call.respondFile(File(".cache/images/$fileName"))
             } else {
                 call.respondFile(fileInCache)
