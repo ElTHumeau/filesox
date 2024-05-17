@@ -4,16 +4,11 @@ import './dropzone.css';
 import {useFileStore} from "../../stores/useFileStore.ts";
 
 export function Dropzone({ children} : {children: ReactNode}) {
-  const {setFiles} = useFileStore();
+  const {files, setFiles} = useFileStore();
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    setFiles(acceptedFiles.map(file => ({
-        name: file.name,
-        size: file.size,
-        icon: file.type,
-        image: URL.createObjectURL(file),
-        })) as any);
-  }, []);
+    const onDrop = useCallback((data) => {
+        console.log(data)
+    }, [files, setFiles]);
 
   const { getRootProps, isDragActive } = useDropzone({ onDrop });
 

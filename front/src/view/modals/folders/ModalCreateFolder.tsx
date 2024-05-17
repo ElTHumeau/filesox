@@ -9,6 +9,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {postCreateFolder} from "../../../api/storageApi.ts";
 import {useModal} from "../../../hooks/useModal.ts";
 import {useAuth} from "../../../hooks/useAuth.ts";
+import {FilePaths, useLocalStorage} from "../../../hooks/useLocalStorage.ts";
 
 const schema = z.object({
     path: z.string().min(2)
@@ -19,6 +20,7 @@ type FormFields = z.infer<typeof schema>
 export function ModalCreateFolder() {
     const {setAlerts} = useAlerts()
     const {closeModal} = useModal()
+    const {getItem} = useLocalStorage()
     const {user} = useAuth()
     const client = useQueryClient()
 
@@ -33,13 +35,15 @@ export function ModalCreateFolder() {
     const {mutate} = useMutation(postCreateFolder, {
         onSuccess: () => {
             client.invalidateQueries('storage')
-            setAlerts('success', 'Folder created')
+            setAlerts('success', 'Folder created successfully')
             closeModal()
         }
     })
 
     const onSubmit: SubmitHandler<FormFields> = (data: FormFields) => {
-        mutate({path: user?.file_path === "./" ? data.path :  user?.file_path + data.path})
+        mutate({
+            path: user?.file_path === "./" ? getItem(FilePaths.path) + data.path :  user?.file_path + getItem(FilePaths.path)! + data.path
+        })
     }
 
     return <>

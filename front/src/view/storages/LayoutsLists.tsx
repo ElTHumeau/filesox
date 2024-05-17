@@ -41,10 +41,13 @@ export function LayoutCardList({name, isFolders, children, size}: {
     size?: number | string,
     children: ReactNode
 }) {
+    const {getItem} = useLocalStorage()
+    const path = getItem(FilePaths.path)
+
     return <div className="flex justify-between items-center w-full">
         <div className="flex items-center gap-3">
             {children}
-            <p>{name}</p>
+            <p>{name.replace(path ?? "", "")}</p>
         </div>
         {!isFolders && <span className="text-gray-500 text-sm">{size}</span>}
     </div>

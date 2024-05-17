@@ -1,5 +1,7 @@
 package fr.tmeunier.web.controller.fileSystem
 
+import fr.tmeunier.config.S3Config
+import fr.tmeunier.domaine.models.S3File
 import fr.tmeunier.domaine.requests.Folder
 import fr.tmeunier.domaine.requests.GetPathRequest
 import fr.tmeunier.domaine.services.filesSystem.FolderSystemService
@@ -13,19 +15,24 @@ object FolderController {
     suspend fun listFoldersAndFiles(call: ApplicationCall) {
         val request = call.receive<GetPathRequest>()
 
-        val data = FolderSystemService.listFoldersAndFiles(request.path ?: "")
-        call.respond(HttpStatusCode.OK, data)
+        val data = S3Config.makeClient()?.let { FolderSystemService.listFoldersAndFiles(it, request.path ?: "") }
+
+        if (data != null) {
+            call.respond(data)
+        } else {
+            call.respond(HttpStatusCode.NotFound)
+        }
     }
 
     suspend fun createFolder(call: ApplicationCall) {
         val request = call.receive<Folder>()
-        FolderSystemService.createFolder(request.path)
+        S3Config.makeClient()?.let { FolderSystemService.createFolder(it, request.path) }
         call.respond(HttpStatusCode.Created)
     }
 
     suspend fun deleteFolder(call: ApplicationCall) {
         val request = call.receive<Folder>()
-        FolderSystemService.deleteFolder(request.path)
+        S3Config.makeClient()?.let { FolderSystemService.deleteFolder(it, request.path) }
         call.respond(HttpStatusCode.OK)
     }
 }
