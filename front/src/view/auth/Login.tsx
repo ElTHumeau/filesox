@@ -28,20 +28,19 @@ export default function Login() {
         const response = await authenticate(data.email, data.password);
 
         if (response) {
-           nav("/", {replace: true})
+            nav("/", {replace: true})
         }
     }
 
     return <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-            <img className="mx-auto h-10 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                 alt="Your Company"/>
-            <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+            <img src="/logo.png" alt="Logo" height="100" width="175" className="mx-auto"/>
+            <h2 className="mt-5 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                 Sign in to your account
             </h2>
         </div>
 
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
             <FormFields onSubmit={handleSubmit(onSubmit)}>
                 <div>
                     <FormLabel htmlFor="email">Email</FormLabel>
@@ -57,7 +56,7 @@ export default function Login() {
                         }
                     </FormField>
                 </div>
-                <div>
+                <div className="mt-3">
                     <FormLabel htmlFor="password">Password</FormLabel>
                     <FormField>
                         <input

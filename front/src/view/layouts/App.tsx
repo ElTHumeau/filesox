@@ -16,7 +16,7 @@ import {
     User,
     Users
 } from "lucide-react";
-import {Outlet, useNavigate} from "react-router-dom";
+import {Outlet, useLocation, useNavigate} from "react-router-dom";
 import {Navbar, NavItem, NavItems, NavItemsLeft, NavItemsRight} from "../../components/layouts/nav.tsx";
 import {ButtonIcon} from "../../components/modules/Button.tsx";
 import {InputIcon} from "../../components/modules/Form.tsx";
@@ -31,12 +31,14 @@ import {Modal} from "../../components/modules/Modal.tsx";
 import {useAuth} from "../../hooks/useAuth.ts";
 import {ButtonLayout} from "../../components/layouts/ButtonLayout.tsx";
 import {useFileStore} from "../../stores/useFileStore.ts";
+import {downloadFileStorage} from "../../api/storageApi.ts";
 
 export function App() {
     const {openModal} = useModal()
     const {logout} = useAuth()
     const {activeStorage} = useFileStore()
     const nav = useNavigate()
+    const location = useLocation()
 
     const handleClickLogout = (e: MouseEvent) => {
         e.preventDefault()
@@ -44,9 +46,16 @@ export function App() {
         nav('/login')
     }
 
+    const handleClickDownload = () => {
+        downloadFileStorage(activeStorage!.name)
+    }
+
     return <div className="grid grid-cols-8">
         <Sidebar>
             <SidebarMenuContent>
+                <div className="p-4">
+                    <img src="/logo.png" alt="Logo" height="100" width="175" className="mx-auto"/>
+                </div>
                 <SidebarMenu>
                     <SidebarTitleMenu>Menu</SidebarTitleMenu>
                     <SidebarMenuItem href="/" svg={Home}>Dashboard</SidebarMenuItem>
@@ -72,37 +81,50 @@ export function App() {
         </Sidebar>
         <main className="lg:col-span-7 sm:col-span-6 xs:col-span-8 ">
             <Navbar>
+
                 <NavItems>
-                    <NavItemsLeft>
-                        <NavItem>
-                            <InputIcon svg={Search}/>
-                        </NavItem>
-                    </NavItemsLeft>
-                    <NavItemsRight>
-                        <NavItem>
-                            {activeStorage &&
-                                <>
-                                    <ButtonIcon svg={Share2} title="Share" onClick={() => openModal(() => <ModalShareMedia/>, "md")}/>
-                                    <ButtonIcon svg={SquarePen} title="Rename" onClick={() => openModal(() => <ModalEditMedia/>, "md")}/>
-                                    <ButtonIcon svg={MoveUpRight} title="Move to file" onClick={() => openModal(() => <ModalMoveMedia/>, "md")}/>
-                                    <ButtonIcon svg={Trash2} title="Delete" onClick={() => openModal(() => <ModalDeleteMedia/>, "md")}/>
-                                    <ButtonIcon svg={Info} title="Information"/>
-                                </>
-                            }
-                        <ButtonLayout/>
-                        <ButtonIcon svg={Download} title="Download"/>
-                        <ButtonIcon svg={Upload} title="Upload"/>
-                    </NavItem>
-                </NavItemsRight>
-            </NavItems>
-        </Navbar>
+                    {location.pathname === '/' && (
+                        <>
+                            <NavItemsLeft>
+                                <NavItem>
+                                    <InputIcon svg={Search}/>
+                                </NavItem>
+                            </NavItemsLeft>
+                            <NavItemsRight>
+                                <NavItem>
+                                    {activeStorage &&
+                                        <>
+                                            <ButtonIcon svg={Share2} title="Share"
+                                                        onClick={() => openModal(() => <ModalShareMedia/>, "md")}/>
+                                            <ButtonIcon svg={SquarePen} title="Rename"
+                                                        onClick={() => openModal(() => <ModalEditMedia/>, "md")}/>
+                                            <ButtonIcon svg={MoveUpRight} title="Move to file"
+                                                        onClick={() => openModal(() => <ModalMoveMedia/>, "md")}/>
+                                            <ButtonIcon svg={Trash2} title="Delete"
+                                                        onClick={() => openModal(() => <ModalDeleteMedia/>, "md")}/>
+                                            <ButtonIcon svg={Info} title="Information"/>
+                                        </>
+                                    }
+                                    <ButtonLayout/>
+                                    <ButtonIcon
+                                        svg={Download}
+                                        onClick={() => handleClickDownload()}
+                                        title="Download"
+                                    />
+                                    <ButtonIcon svg={Upload} title="Upload"/>
+                                </NavItem>
+                            </NavItemsRight>
+                        </>
+                    )}
+                </NavItems>
+            </Navbar>
 
-        <div>
-            <Outlet/>
-            <AlertsFlash/>
-        </div>
-    </main>
+            <div>
+                <Outlet/>
+                <AlertsFlash/>
+            </div>
+        </main>
 
-    <Modal/>
-</div>
+        <Modal/>
+    </div>
 }

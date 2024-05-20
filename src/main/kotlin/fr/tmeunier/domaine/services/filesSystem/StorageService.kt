@@ -7,9 +7,9 @@ object StorageService {
     fun getIconForFile(fileName: String): String {
         return when {
             fileName.endsWith(".pdf") -> "pdf"
-            fileName.endsWith(".doc") || fileName.endsWith(".docx") -> "word"
+            fileName.endsWith(".doc") || fileName.endsWith(".docx") || fileName.endsWith(".odt")-> "doc"
             fileName.endsWith(".xls") || fileName.endsWith(".xlsx") -> "excel"
-            fileName.endsWith(".ppt") || fileName.endsWith(".pptx") -> "powerpoint"
+            fileName.endsWith(".ppt") || fileName.endsWith(".pptx") -> "ppt"
             fileName.endsWith(".txt") -> "txt"
             fileName.endsWith(".zip") -> "zip"
             fileName.endsWith(".rar") -> "rar"

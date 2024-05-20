@@ -12,7 +12,7 @@ data class S3File(
     val name: String,
     val size: String,
     val icon: String,
-    val image : String,
+    val image : String? = null,
 )
 
 @Serializable

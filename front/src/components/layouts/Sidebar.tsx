@@ -4,7 +4,7 @@ import {Link, useLocation} from "react-router-dom";
 export function Sidebar({children}: { children: ReactNode }) {
     return <>
         <aside
-            className="min-h-full lg:col-span-1 sm:col-span-2 h-screen pt-20 transition-transform -translate-x-full border-r md:translate-x-0">
+            className="min-h-full lg:col-span-1 sm:col-span-2 h-screen transition-transform -translate-x-full border-r md:translate-x-0">
             <div className="h-full pb-4 overflow-y-auto flex flex-col justify-between">
                 {children}
             </div>

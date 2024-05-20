@@ -18,3 +18,9 @@ data class FolderMoveRequest(
 data class GetPathRequest(
     val path: String? = ""
 )
+
+@Serializable
+data class DownloadRequest(
+    val path: String,
+    @SerialName("is_folder") val isFolder: Boolean = false
+)

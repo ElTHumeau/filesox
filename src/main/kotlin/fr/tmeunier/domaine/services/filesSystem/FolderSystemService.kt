@@ -16,7 +16,6 @@ import java.nio.file.Paths
 
 object FolderSystemService {
 
-
     suspend fun createFolder(client: S3Client, path: String) {
         client.putObject(PutObjectRequest {
             bucket = S3Config.bucketName
@@ -34,6 +33,37 @@ object FolderSystemService {
                 key = data
             })
         } else {
+            // Delete the folder itself
+            client.deleteObject(DeleteObjectRequest {
+                bucket = S3Config.bucketName
+                key = "$data/"
+            })
+        }
+    }
+
+    suspend fun moveFolder(client: S3Client, data: String, newPath: String) {
+        val folderName = data.substringAfterLast('/')
+        val isFile = folderName.contains(".")
+
+        if (isFile) {
+            client.copyObject(CopyObjectRequest {
+                bucket = S3Config.bucketName
+                key = newPath
+                copySource = S3Config.bucketName + "/" + data
+            })
+
+            client.deleteObject(DeleteObjectRequest {
+                bucket = S3Config.bucketName
+                key = data
+            })
+        } else {
+            // Copy the folder itself
+            client.copyObject(CopyObjectRequest {
+                bucket = S3Config.bucketName
+                key = newPath
+                copySource = S3Config.bucketName + "/" + data
+            })
+
             // Delete the folder itself
             client.deleteObject(DeleteObjectRequest {
                 bucket = S3Config.bucketName
@@ -62,12 +92,13 @@ object FolderSystemService {
                 if (content.key!!.endsWith("/")) {
                     folders.add(S3Folder(content.key!!))
                 } else {
+                    val icon = StorageService.getIconForFile(content.key!!)
                     files.add(
                         S3File(
                             content.key!!,
                             content.size!!.toHumanReadableValue(),
-                            StorageService.getIconForFile(content.key!!),
-                            "/images/${content.key!!}"
+                            icon,
+                            if (icon == "file") "/images/${content.key!!}" else null
                         )
                     )
                 }
