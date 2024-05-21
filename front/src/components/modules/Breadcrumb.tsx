@@ -1,11 +1,11 @@
 import {Home} from "lucide-react";
 import {ReactNode} from "react";
-import {useAuth} from "../../hooks/useAuth.ts";
 import {FilePaths, useLocalStorage} from "../../hooks/useLocalStorage.ts";
 import {useQueryClient} from "react-query";
+import {useUserStore} from "../../stores/useUserStore.ts";
 
 export function Breadcrumb() {
-    const {user} = useAuth()
+    const {user} = useUserStore()
     const {getItem} = useLocalStorage()
     const pathnames = getItem(FilePaths.path)?.split("/").filter((x: string) => x) ?? []
     const active = getItem(FilePaths.path)

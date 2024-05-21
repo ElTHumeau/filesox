@@ -8,8 +8,8 @@ import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {postCreateFolder} from "../../../api/storageApi.ts";
 import {useModal} from "../../../hooks/useModal.ts";
-import {useAuth} from "../../../hooks/useAuth.ts";
 import {FilePaths, useLocalStorage} from "../../../hooks/useLocalStorage.ts";
+import {useUserStore} from "../../../stores/useUserStore.ts";
 
 const schema = z.object({
     path: z.string().min(2)
@@ -21,7 +21,7 @@ export function ModalCreateFolder() {
     const {setAlerts} = useAlerts()
     const {closeModal} = useModal()
     const {getItem} = useLocalStorage()
-    const {user} = useAuth()
+    const {user} = useUserStore()
     const client = useQueryClient()
 
     const {

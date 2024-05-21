@@ -1,13 +1,13 @@
 import {Dropzone} from "../components/Dropzone/Dropzone.tsx";
 import {useFileStore} from "../stores/useFileStore.ts";
 import {useQuery, useQueryClient} from "react-query";
-import {getAllStorage} from "../api/storageApi.ts";
 import {LayoutsLists} from "./storages/LayoutsLists.tsx";
 import {LayoutsGrid} from "./storages/LayoutsGrid.tsx";
 import {useUserStore} from "../stores/useUserStore.ts";
 import {Breadcrumb} from "../components/modules/Breadcrumb.tsx";
 import {useEffect} from "react";
 import {FilePaths, useLocalStorage} from "../hooks/useLocalStorage.ts";
+import {useAxios} from "../config/axios.ts";
 
 
 export function Dashboard() {
@@ -15,12 +15,20 @@ export function Dashboard() {
     const {user} = useUserStore()
     const {getItem} = useLocalStorage()
     const queryClient = useQueryClient()
+    const API = useAxios()
 
     useEffect(() => {
         queryClient.invalidateQueries("storage")
     }, [getItem(FilePaths.path), queryClient])
 
-    const {isLoading} = useQuery("storage", () => getAllStorage(getItem(FilePaths.path) as string),
+    const {isLoading} = useQuery("storage",
+        async () => {
+            const response = await API.post("/folders", {
+                path: getItem(FilePaths.path)
+            })
+            return response.data
+        }
+        ,
         {
             onSuccess: (data) => {
                 setFiles(data.files)

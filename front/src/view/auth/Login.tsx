@@ -2,8 +2,8 @@ import {FormError, FormField, FormFields, FormLabel} from "../../components/modu
 import {SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
-import {useAuth} from "../../hooks/useAuth.ts";
 import {useNavigate} from "react-router-dom";
+import {useAuth} from "../../context/modules/AuthContext.tsx";
 
 const schema = z.object({
     email: z.string().email(),
@@ -13,7 +13,7 @@ const schema = z.object({
 type FormFields = z.infer<typeof schema>
 
 export default function Login() {
-    const {authenticate} = useAuth()
+    const {login} = useAuth()
     const nav = useNavigate()
 
     const {
@@ -25,11 +25,8 @@ export default function Login() {
     })
 
     const onSubmit: SubmitHandler<FormFields> = async (data) => {
-        const response = await authenticate(data.email, data.password);
-
-        if (response) {
-            nav("/", {replace: true})
-        }
+        await login(data.email, data.password);
+        nav("/")
     }
 
     return <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">

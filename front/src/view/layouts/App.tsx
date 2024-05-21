@@ -28,10 +28,10 @@ import {ModalEditMedia} from "../modals/ModalEditMedia.tsx";
 import {useModal} from "../../hooks/useModal.ts";
 import {AlertsFlash} from "./modules/AlertsFlash.tsx";
 import {Modal} from "../../components/modules/Modal.tsx";
-import {useAuth} from "../../hooks/useAuth.ts";
 import {ButtonLayout} from "../../components/layouts/ButtonLayout.tsx";
 import {useFileStore} from "../../stores/useFileStore.ts";
 import {downloadFileStorage} from "../../api/storageApi.ts";
+import {useAuth} from "../../context/modules/AuthContext.tsx";
 
 export function App() {
     const {openModal} = useModal()

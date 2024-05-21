@@ -7,7 +7,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {postProfileInformation} from "../../../api/profileApi.ts";
 import {useMutation} from "react-query";
 import {useAlerts} from "../../../context/modules/AlertContext.tsx";
-import {useAuth} from "../../../hooks/useAuth.ts";
+import {useUserStore} from "../../../stores/useUserStore.ts";
 
 const schema = z.object({
     email: z.string().email(),
@@ -17,7 +17,7 @@ const schema = z.object({
 type FormFields = z.infer<typeof schema>
 
 export function EditProfileInformation() {
-    const {user, setUser} = useAuth()
+    const {user, setUser} = useUserStore()
     const {setAlerts} = useAlerts()
 
     const {

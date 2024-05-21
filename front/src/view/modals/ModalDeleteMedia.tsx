@@ -1,17 +1,17 @@
 import {ModalBody, ModalFooter, ModalHeader} from "../../components/modules/Modal.tsx";
 import {Button} from "../../components/modules/Button.tsx";
 import {useAlerts} from "../../context/modules/AlertContext.tsx";
-import {useAuth} from "../../hooks/useAuth.ts";
 import {useFileStore} from "../../stores/useFileStore.ts";
 import {FormFields} from "../../components/modules/Form.tsx";
 import {useForm} from "react-hook-form";
 import {useMutation, useQueryClient} from "react-query";
 import {postDeleteFolder} from "../../api/storageApi.ts";
 import {useModal} from "../../hooks/useModal.ts";
+import {useUserStore} from "../../stores/useUserStore.ts";
 
 export function ModalDeleteMedia() {
     const {setAlerts} = useAlerts()
-    const {user} = useAuth()
+    const {user} = useUserStore()
     const {closeModal} = useModal()
     const {activeStorage} = useFileStore()
     const client = useQueryClient()
