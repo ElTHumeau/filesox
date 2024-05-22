@@ -5,13 +5,13 @@ import {Button} from "../../../../components/modules/Button.tsx";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Row} from "../../../../components/modules/Grid.tsx";
-import {getAdminPermission, updateUser} from "../../../../api/admin/adminUserApi.ts";
 import {useMutation, useQuery, useQueryClient} from "react-query";
 import {useState} from "react";
 import {useAlerts} from "../../../../context/modules/AlertContext.tsx";
 import {useModal} from "../../../../hooks/useModal.ts";
-import {UserType} from "../../../../types/api/userType.ts";
+import {permissionsSchemaType, UserType} from "../../../../types/api/userType.ts";
 import {useRoles} from "../../../../hooks/useRoles.ts";
+import {useAxios} from "../../../../config/axios.ts";
 
 const schema = z.object({
     name: z.string().min(3),
@@ -23,10 +23,11 @@ type FormFields = z.infer<typeof schema>
 
 export function AdminEditUserModal({user}: { user: UserType }) {
     const [isAdmin, setAdmin] = useState(
-        user.permissions.includes('Administrator') ? true : false
+        user.permissions.includes('Administrator')
     )
     const [permissions, setPermissions] = useState<number[]>([])
 
+    const API = useAxios()
     const queryClient = useQueryClient()
     const {setAlerts} = useAlerts()
     const {closeModal} = useModal()
@@ -45,12 +46,22 @@ export function AdminEditUserModal({user}: { user: UserType }) {
         }
     })
 
-    const {isLoading, data} = useQuery('permissions', getAdminPermission, {
+    const {isLoading, data} = useQuery(
+        'permissions',
+        async () => {
+            let response = await API.get('/admin/permissions')
+            return permissionsSchemaType.parse(response.data)
+        },
+        {
         refetchOnWindowFocus: false
     })
 
 
-    const {mutate} = useMutation(updateUser, {
+    const {mutate} = useMutation(
+        async (data: FormFields) => {
+            await API.post('/admin/users/update/' + user.id, {...data, permissions})
+        }
+        , {
         onSuccess: () => {
             queryClient.invalidateQueries('users')
             setAlerts('success', 'User updated successfully')

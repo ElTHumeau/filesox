@@ -25,8 +25,8 @@ const queryClient = new QueryClient()
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <QueryClientProvider client={queryClient}>
-            <AuthProvider>
-                <AlertsProvider>
+            <AlertsProvider>
+                <AuthProvider>
                     <BrowserRouter>
                         <Routes>
                             <Route path="/" element={<ProtectedRouteProvider/>}>
@@ -52,8 +52,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                             <Route path="/register" element={<Register/>}/>
                         </Routes>
                     </BrowserRouter>
-                </AlertsProvider>
-            </AuthProvider>
+                </AuthProvider>
+            </AlertsProvider>
         </QueryClientProvider>
     </React.StrictMode>
 )

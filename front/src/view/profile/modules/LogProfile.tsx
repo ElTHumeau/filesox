@@ -1,15 +1,20 @@
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "../../../components/modules/Table.tsx";
-import {getLogsProfile} from "../../../api/profileApi.ts";
 import {useQuery} from "react-query";
 import {Pagination} from "../../../components/modules/Pagination.tsx";
 import {useState} from "react";
 import {Pill} from "../../../components/modules/Pill.tsx";
+import {useAxios} from "../../../config/axios.ts";
+import {logsProfileSchemaType} from "../../../types/api/userType.ts";
 
 export function ProfileLog() {
+    const API = useAxios()
     const [page , setPage] = useState(1)
     const {data, isLoading} = useQuery(
         ['logs', page],
-        () => getLogsProfile(page),
+        async () => {
+            let response = await API.get('/profile/logs?page=' + page)
+            return logsProfileSchemaType.parse(response.data)
+        },
     );
 
     if (isLoading) {

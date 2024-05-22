@@ -5,11 +5,12 @@ import {Button} from "../../../../components/modules/Button.tsx";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Row} from "../../../../components/modules/Grid.tsx";
-import {createUser, getAdminPermission} from "../../../../api/admin/adminUserApi.ts";
 import {useMutation, useQuery, useQueryClient} from "react-query";
 import {useState} from "react";
 import {useAlerts} from "../../../../context/modules/AlertContext.tsx";
 import {useModal} from "../../../../hooks/useModal.ts";
+import {useAxios} from "../../../../config/axios.ts";
+import {permissionsSchemaType} from "../../../../types/api/userType.ts";
 
 const schema = z.object({
     name: z.string().min(3),
@@ -26,6 +27,7 @@ export function AdminCreateUserModal() {
     const queryClient = useQueryClient()
     const {setAlerts} = useAlerts()
     const {closeModal} = useModal()
+    const API = useAxios()
 
     const {
         register,
@@ -35,11 +37,21 @@ export function AdminCreateUserModal() {
         resolver: zodResolver(schema)
     })
 
-    const {isLoading, data} = useQuery('permissions', getAdminPermission, {
+    const {isLoading, data} = useQuery(
+        'permissions',
+        async () => {
+            let response = await API.get('/admin/permissions')
+            return permissionsSchemaType.parse(response.data)
+        },
+        {
         refetchOnWindowFocus: false
     })
 
-    const {mutate} = useMutation(createUser, {
+    const {mutate} = useMutation(
+        async (data: FormFields) => {
+            await API.post('/admin/users/create', {...data, permissions})
+        },
+        {
         onSuccess: () => {
             queryClient.invalidateQueries('users')
             setAlerts('success', 'User created successfully')

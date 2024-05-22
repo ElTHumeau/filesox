@@ -5,9 +5,9 @@ import {useFileStore} from "../../stores/useFileStore.ts";
 import {FormFields} from "../../components/modules/Form.tsx";
 import {useForm} from "react-hook-form";
 import {useMutation, useQueryClient} from "react-query";
-import {postDeleteFolder} from "../../api/storageApi.ts";
 import {useModal} from "../../hooks/useModal.ts";
 import {useUserStore} from "../../stores/useUserStore.ts";
+import {useAxios} from "../../config/axios.ts";
 
 export function ModalDeleteMedia() {
     const {setAlerts} = useAlerts()
@@ -15,12 +15,18 @@ export function ModalDeleteMedia() {
     const {closeModal} = useModal()
     const {activeStorage} = useFileStore()
     const client = useQueryClient()
+    const API = useAxios()
 
     const {
         handleSubmit,
     } = useForm()
 
-    const {mutate} = useMutation(postDeleteFolder, {
+    const {mutate} = useMutation(
+        async () => {
+            await API.post("/folders/delete", {
+                path: user!.file_path === "./" ? activeStorage!.name : user!.file_path + activeStorage!.name
+            })
+        }, {
         onSuccess: () => {
             client.invalidateQueries('storage')
             setAlerts('success', 'Media deleted')
@@ -29,7 +35,7 @@ export function ModalDeleteMedia() {
     })
 
     const onSubmit = () => {
-        mutate({path: user!.file_path === "./" ? activeStorage!.name : user!.file_path + activeStorage!.name})
+        mutate()
     }
 
     return <>

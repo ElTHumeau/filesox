@@ -26,7 +26,6 @@ import {ModalMoveMedia} from "../modals/ModalMoveMedia.tsx";
 import {ModalDeleteMedia} from "../modals/ModalDeleteMedia.tsx";
 import {ModalEditMedia} from "../modals/ModalEditMedia.tsx";
 import {useModal} from "../../hooks/useModal.ts";
-import {AlertsFlash} from "./modules/AlertsFlash.tsx";
 import {Modal} from "../../components/modules/Modal.tsx";
 import {ButtonLayout} from "../../components/layouts/ButtonLayout.tsx";
 import {useFileStore} from "../../stores/useFileStore.ts";
@@ -121,7 +120,6 @@ export function App() {
 
             <div>
                 <Outlet/>
-                <AlertsFlash/>
             </div>
         </main>
 

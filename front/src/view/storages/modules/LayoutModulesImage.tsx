@@ -1,11 +1,12 @@
 import {useEffect, useState} from "react";
-import {getFileStorage} from "../../../api/storageApi.ts";
 import {useFileStore} from "../../../stores/useFileStore.ts";
 import {FileType} from "../../../types/api/storageType.ts";
 import {LayoutCardList} from "../LayoutsLists.tsx";
 import {LayoutCardGrid} from "../LayoutsGrid.tsx";
+import {useAxios} from "../../../config/axios.ts";
 
 export function LayoutModules({files, layout}: { files: FileType[] | undefined, layout: string }) {
+    const API = useAxios()
     const [imageUrls, setImageUrls] = useState<{ [key: string]: any }>({});
     const {activeStorage, setActiveStorage} = useFileStore();
 
@@ -15,7 +16,13 @@ export function LayoutModules({files, layout}: { files: FileType[] | undefined, 
                 const urls: Record<string, any> = {};
                 for (const file of files || []) {
                     if (file.icon === 'file') {
-                        urls[file.image] = await getFileStorage(file.image);
+                        let response =  await API.post("/images", {
+                            'path': file.image,
+                        }, {
+                            responseType: 'blob'
+                        });
+
+                        urls[file.image] = URL.createObjectURL(response.data);
                     }
                 }
                 setImageUrls(urls);

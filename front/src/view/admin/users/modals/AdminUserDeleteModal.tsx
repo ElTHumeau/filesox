@@ -3,14 +3,17 @@ import {Button} from "../../../../components/modules/Button.tsx";
 import {useMutation, useQueryClient} from "react-query";
 import {useModal} from "../../../../hooks/useModal.ts";
 import {useAlerts} from "../../../../context/modules/AlertContext.tsx";
-import {deleteUser} from "../../../../api/admin/adminUserApi.ts";
+import {useAxios} from "../../../../config/axios.ts";
 
 export function AdminDeleteUserModal({userId}: {userId: number}) {
     const {closeModal} = useModal()
     const {setAlerts} = useAlerts()
+    const API = useAxios()
     const queryClient = useQueryClient()
 
-    const { mutate } = useMutation((id: number) => deleteUser(id), {
+    const { mutate } = useMutation(async (id: number) => {
+        await API.delete('/admin/users/delete/' + id)
+    }, {
         onSuccess: () => {
             queryClient.invalidateQueries('users');
             setAlerts('success', 'User deleted successfully');

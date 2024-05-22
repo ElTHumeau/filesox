@@ -4,6 +4,11 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../../context/modules/AuthContext.tsx";
+import {useMutation} from "react-query";
+import {useAlerts} from "../../context/modules/AlertContext.tsx";
+import axios from "axios";
+import {loginSchemaType} from "../../types/api/authType.ts";
+import {BASE_URL} from "../../config/axios.ts";
 
 const schema = z.object({
     email: z.string().email(),
@@ -15,6 +20,7 @@ type FormFields = z.infer<typeof schema>
 export default function Login() {
     const {login} = useAuth()
     const nav = useNavigate()
+    const {setAlerts} = useAlerts()
 
     const {
         register,
@@ -24,9 +30,27 @@ export default function Login() {
         resolver: zodResolver(schema)
     })
 
-    const onSubmit: SubmitHandler<FormFields> = async (data) => {
-        await login(data.email, data.password);
-        nav("/")
+    const { mutate } = useMutation(
+        async (data :  {email:string, password:string} ) => {
+            return await axios.post(BASE_URL + '/auth/login', {
+                email: data.email,
+                password: data.password
+            });
+        },
+        {
+            onSuccess: (response: any) => {
+                login(loginSchemaType.parse(response.data));
+                nav("/");
+            },
+            onError: () => {
+                setAlerts('danger',  'Invalid email or password');
+            }
+        }
+    );
+
+
+    const onSubmit: SubmitHandler<FormFields> = async (data: {email: string, password: string}) => {
+        mutate(data)
     }
 
     return <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">

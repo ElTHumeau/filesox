@@ -7,17 +7,22 @@ import {Plus, SquarePen, Trash2} from "lucide-react";
 import {useModal} from "../../../hooks/useModal.ts";
 import {AdminDeleteUserModal} from "./modals/AdminUserDeleteModal.tsx";
 import {AdminCreateUserModal} from "./modals/AdminUserCreateModal.tsx";
-import {getAdminUsers} from "../../../api/admin/adminUserApi.ts";
 import {AdminEditUserModal} from "./modals/AdminUserEditModal.tsx";
 import {Pill} from "../../../components/modules/Pill.tsx";
+import {useAxios} from "../../../config/axios.ts";
+import {usersSchemaType} from "../../../types/api/userType.ts";
 
 export function AdminUsers() {
     const {openModal} = useModal()
+    const API = useAxios()
     const [page, setPage] = useState(1)
 
     const {data, isLoading} = useQuery(
         ['users', page],
-        () => getAdminUsers(page),
+        async () => {
+            let response = await API.get('/admin/users?page=' + page)
+            return usersSchemaType.parse(response.data)
+        }
     );
 
     if (isLoading) {

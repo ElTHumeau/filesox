@@ -6,9 +6,9 @@ export interface UserType {
     name: string;
     email: string;
     file_path: string;
-    layout: boolean
     created_at: string;
     permissions: string[];
+    layout?: boolean;
 }
 
 export interface UpdatePasswordProfileType {

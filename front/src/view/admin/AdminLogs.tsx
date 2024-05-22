@@ -2,15 +2,20 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "../
 import {Pagination} from "../../components/modules/Pagination.tsx";
 import {useState} from "react";
 import {useQuery} from "react-query";
-import {getAdminLogs} from "../../api/adminApi.ts";
 import {Pill} from "../../components/modules/Pill.tsx";
+import {useAxios} from "../../config/axios.ts";
+import {adminLogsSchemaType} from "../../types/api/adminType.ts";
 
 export function AdminLogs() {
     const [page, setPage] = useState(1)
+    const API = useAxios()
 
     const {data, isLoading} = useQuery(
         ['logs', page],
-        () => getAdminLogs(page),
+        async () => {
+            let response = await  API.get('/admin/logs?page=' + page)
+            return adminLogsSchemaType.parse(response.data)
+        },
     );
 
     if (isLoading) {

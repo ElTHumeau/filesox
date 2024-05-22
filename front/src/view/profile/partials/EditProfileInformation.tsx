@@ -4,10 +4,10 @@ import {Button} from "../../../components/modules/Button.tsx";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {postProfileInformation} from "../../../api/profileApi.ts";
 import {useMutation} from "react-query";
 import {useAlerts} from "../../../context/modules/AlertContext.tsx";
 import {useUserStore} from "../../../stores/useUserStore.ts";
+import {useAxios} from "../../../config/axios.ts";
 
 const schema = z.object({
     email: z.string().email(),
@@ -18,6 +18,7 @@ type FormFields = z.infer<typeof schema>
 
 export function EditProfileInformation() {
     const {user, setUser} = useUserStore()
+    const API = useAxios()
     const {setAlerts} = useAlerts()
 
     const {
@@ -33,7 +34,14 @@ export function EditProfileInformation() {
         }
     )
 
-    const {mutate} = useMutation(postProfileInformation, {
+    const {mutate} = useMutation(
+        async ({name, email}: {name: string, email: string}) => {
+            await API.post('/profile/update', {
+                name: name,
+                email: email,
+                layout: user?.layout
+            })
+        }, {
         onSuccess: () => {
            setAlerts('success', 'Profile information updated')
         }

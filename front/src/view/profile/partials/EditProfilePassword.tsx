@@ -6,7 +6,7 @@ import {useAlerts} from "../../../context/modules/AlertContext.tsx";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useMutation} from "react-query";
-import {postProfilePassword} from "../../../api/profileApi.ts";
+import {useAxios} from "../../../config/axios.ts";
 
 const schema = z.object({
     password: z.string().min(8),
@@ -24,6 +24,7 @@ type FormFields = z.infer<typeof schema>
 
 export function EditProfilePassword() {
     const {setAlerts} = useAlerts()
+    const API = useAxios()
 
     const {
         register,
@@ -34,7 +35,13 @@ export function EditProfilePassword() {
         resolver: zodResolver(schema),
     })
 
-    const {mutate} = useMutation(postProfilePassword, {
+    const {mutate} = useMutation(
+        async ({password, confirm_password}: {password: string,  confirm_password: string}) => {
+            await API.post('/profile/update/password',{
+                password: password,
+                confirm_password: confirm_password
+            })
+        }, {
         onSuccess: () => {
             reset({password: '', confirm_password: ''})
             setAlerts('success', 'Password updated successfully')

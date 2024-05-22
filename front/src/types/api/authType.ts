@@ -1,4 +1,5 @@
 import {ReactNode} from "react";
+import {z} from "zod";
 
 export interface LoginUser {
     email: string;
@@ -24,3 +25,9 @@ export const authContextDefault: AuthContextProps = {
     setRefreshToken: () => null,
     logout: () => null
 }
+
+export const loginSchemaType = z.object({
+    token: z.string(),
+    refresh_token: z.string()
+})
+
