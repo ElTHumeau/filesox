@@ -1,8 +1,5 @@
 import axios from "axios";
 import {useAuth} from "../context/modules/AuthContext.tsx";
-import {jwtDecode} from "jwt-decode";
-import {UserType} from "../types/api/userType.ts";
-import {useUserStore} from "../stores/useUserStore.ts";
 
 export enum AuthEnum {
     TOKEN = 'token',
@@ -13,7 +10,6 @@ export const BASE_URL = "http://localhost:8080";
 
 export const useAxios = () => {
     const {setAllTokens, logout} = useAuth()
-    const {setUser} = useUserStore()
 
     const token = localStorage.getItem(AuthEnum.TOKEN)
 
@@ -50,12 +46,11 @@ export const useAxios = () => {
                     })
 
                     if (response.data.token == null) {
-                        await logout()
+                        logout()
                         return Promise.reject(error)
                     }
 
                     setAllTokens(response.data.token, response.data.refresh_token)
-                    setUser(jwtDecode<UserType>(response.data.token))
 
                     baseReq.headers.Authorization = `Bearer ${response.data.token}`
 

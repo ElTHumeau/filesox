@@ -29,10 +29,6 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
 
     const login = async (data: { token: string, refresh_token: string }) => {
         setAllTokens(data.token, data.refresh_token)
-
-        let user = jwtDecode<User>(data.token)
-        setUser(user)
-        localStorage.setItem(FilePaths.path, user!!.file_path);
     }
 
     const logout = async () => {
@@ -51,6 +47,10 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
 
         localStorage.setItem(AuthEnum.TOKEN, token);
         localStorage.setItem(AuthEnum.REFRESH_TOKEN, refreshToken);
+
+        let user = jwtDecode<User>(token)
+        setUser(user)
+        localStorage.setItem(FilePaths.path, user!!.file_path);
     }
 
     useEffect(() => {

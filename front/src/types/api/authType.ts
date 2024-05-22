@@ -1,11 +1,6 @@
 import {ReactNode} from "react";
 import {z} from "zod";
 
-export interface LoginUser {
-    email: string;
-    password: string;
-}
-
 export interface AuthProviderProps {
     children: ReactNode;
 }
