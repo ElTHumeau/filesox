@@ -23,6 +23,10 @@ fun Route.folderRoutes() {
             FolderController.createFolder(call)
         }
 
+        post("/move") {
+            FolderController.move(call)
+        }
+
         post("/delete") {
             FolderController.deleteFolder(call)
         }

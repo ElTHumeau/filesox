@@ -4,7 +4,7 @@ import {
     SidebarTitleMenu
 } from "../../components/layouts/Sidebar.tsx";
 import {
-    Archive, Download,
+    Archive,
     FolderPlus,
     Home, Info,
     LogOut, MoveUpRight, Search,
@@ -27,10 +27,10 @@ import {ModalDeleteMedia} from "../modals/ModalDeleteMedia.tsx";
 import {ModalEditMedia} from "../modals/ModalEditMedia.tsx";
 import {useModal} from "../../hooks/useModal.ts";
 import {Modal} from "../../components/modules/Modal.tsx";
-import {ButtonLayout} from "../../components/layouts/ButtonLayout.tsx";
+import {ButtonLayout} from "../../components/layouts/modules/ButtonLayout.tsx";
 import {useFileStore} from "../../stores/useFileStore.ts";
-import {downloadFileStorage} from "../../api/storageApi.ts";
 import {useAuth} from "../../context/modules/AuthContext.tsx";
+import {ButtonDownload} from "../../components/layouts/modules/ButtonDownload..tsx";
 
 export function App() {
     const {openModal} = useModal()
@@ -43,10 +43,6 @@ export function App() {
         e.preventDefault()
         logout()
         nav('/login')
-    }
-
-    const handleClickDownload = () => {
-        downloadFileStorage(activeStorage!.name)
     }
 
     return <div className="grid grid-cols-8">
@@ -105,11 +101,7 @@ export function App() {
                                         </>
                                     }
                                     <ButtonLayout/>
-                                    <ButtonIcon
-                                        svg={Download}
-                                        onClick={() => handleClickDownload()}
-                                        title="Download"
-                                    />
+                                    <ButtonDownload/>
                                     <ButtonIcon svg={Upload} title="Upload"/>
                                 </NavItem>
                             </NavItemsRight>
