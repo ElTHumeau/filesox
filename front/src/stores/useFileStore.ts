@@ -4,7 +4,7 @@ import {FileType, FolderType} from "../types/api/storageType.ts";
 type State = {
     files: undefined | FileType[];
     folders: undefined | FolderType[];
-    activeStorage: undefined | FolderType | FileType;
+    activeStorage: null | FolderType | FileType;
 };
 
 type Action = {
@@ -16,7 +16,7 @@ type Action = {
 export const useFileStore = create<State & Action>((set) => ({
     files: [] as FileType[],
     folders: [] as FolderType[],
-    activeStorage: undefined,
+    activeStorage: null,
     setFiles: (file: undefined | FileType[]) => set(() => ({ files: file })),
     setFolders: (folder: undefined | FolderType[]) => set(() => ({ folders: folder })),
     setActiveStorage: (activeStorage) => set(() => ({ activeStorage: activeStorage })),

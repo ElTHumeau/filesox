@@ -16,29 +16,35 @@ import java.nio.file.Paths
 
 object FolderSystemService {
 
-    suspend fun createFolder(client: S3Client, path: String) {
+    suspend fun createFolder(client: S3Client, nameObject: String) {
         client.putObject(PutObjectRequest {
             bucket = S3Config.bucketName
-            key = "$path/"
+            key = "$nameObject/"
         })
     }
 
-    suspend fun deleteFolder(client: S3Client, data: String) {
-        val folderName = data.substringAfterLast('/')
-        val isFile = folderName.contains(".")
-
-        if (isFile) {
-            client.deleteObject(DeleteObjectRequest {
-                bucket = S3Config.bucketName
-                key = data
-            })
-        } else {
-            // Delete the folder itself
-            client.deleteObject(DeleteObjectRequest {
-                bucket = S3Config.bucketName
-                key = "$data/"
-            })
+    suspend fun deleteFolder(client: S3Client, prefixBucket: String) {
+        client.listObjectsV2Paginated {
+            bucket = S3Config.bucketName
+            prefix = prefixBucket
+            maxKeys = 1000
+        }.collect { res ->
+            res.contents?.forEach {
+                if (it.key != prefixBucket && it.key!!.endsWith("/")) {
+                    deleteFolder(client, it.key!!)
+                } else {
+                    client.deleteObject(DeleteObjectRequest {
+                        bucket = S3Config.bucketName
+                        key = it.key!!
+                    })
+                }
+            }
         }
+
+        client.deleteObject(DeleteObjectRequest {
+            bucket = S3Config.bucketName
+            key = prefixBucket
+        })
     }
 
     suspend fun move(client: S3Client, path: String, newPath: String) {
@@ -95,7 +101,6 @@ object FolderSystemService {
             key = remotePath
             bucket = S3Config.bucketName
         }) {
-            println(Paths.get(localPath).parent)
             Files.createDirectories(Paths.get(localPath).parent)
 
             val writer = withContext(Dispatchers.IO) {
@@ -109,6 +114,29 @@ object FolderSystemService {
             }
 
             writer.close()
+        }
+    }
+
+    suspend fun downloadFolder(client: S3Client, remotePath: String, localPath: String) {
+
+        client.listObjectsV2Paginated {
+            bucket = S3Config.bucketName
+            delimiter = "/"
+            prefix = remotePath
+            maxKeys = 1000
+        }.collect { res ->
+            res.contents?.forEach { s3Object ->
+                val key = s3Object.key!!
+                val localFilePath = Paths.get(localPath, key.removePrefix(remotePath))
+
+                if (key !== remotePath && key.endsWith("/")) {
+                    if (!Files.exists(localFilePath)) {
+                        Files.createDirectories(localFilePath)
+                    }
+                } else {
+                    downloadFileMultipart(client, key, localFilePath.toString())
+                }
+            }
         }
     }
 }

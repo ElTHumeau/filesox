@@ -46,13 +46,19 @@ export function LayoutModules({files, layout}: { files: FileType[] | undefined, 
         </div>
     }
 
+    const handleFocus = (file: FileType) => {
+        setActiveStorage(file)
+    }
+
     return <>
         {files ? files.map((file, index) => (
             <div
                 key={index}
-                onClick={() => {
-                    setActiveStorage(file);
+                onClick={(e) => {
+                    e.stopPropagation()
+                    handleFocus(file)
                 }}
+                tabIndex={0}
                 className={`flex gap-3 w-full items-center px-4 py-2 mt-4 ${activeStorage && activeStorage.name === file.name ? 'bg-indigo-50 text-indigo-500 shadow-md cursor-pointer' : 'cursor-pointer shadow-md bg-white rounded'}`}
             >
                 {layout === 'grid' ? (

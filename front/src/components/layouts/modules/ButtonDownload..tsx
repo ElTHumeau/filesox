@@ -8,9 +8,11 @@ export function ButtonDownload() {
     const API = useAxios()
 
     const handleClickDownload = async () => {
+        let is_folder = activeStorage!!.name.endsWith('/');
+
         const response = await API.post("/folders/download", {
             path: activeStorage!.name,
-            is_folder: false
+            is_folder: is_folder
         }, {
             responseType: 'blob'
         });

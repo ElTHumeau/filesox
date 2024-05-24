@@ -1,13 +1,17 @@
 package fr.tmeunier.domaine.services.filesSystem
 
+import java.io.*
+import java.nio.file.Files
 import java.text.StringCharacterIterator
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 
 object StorageService {
 
     fun getIconForFile(fileName: String): String {
         return when {
             fileName.endsWith(".pdf") -> "pdf"
-            fileName.endsWith(".doc") || fileName.endsWith(".docx") || fileName.endsWith(".odt")-> "doc"
+            fileName.endsWith(".doc") || fileName.endsWith(".docx") || fileName.endsWith(".odt") -> "doc"
             fileName.endsWith(".xls") || fileName.endsWith(".xlsx") -> "excel"
             fileName.endsWith(".ppt") || fileName.endsWith(".pptx") -> "ppt"
             fileName.endsWith(".txt") -> "txt"
@@ -42,5 +46,32 @@ object StorageService {
             ci.next()
         }
         return String.format("%.2f %cB", bytes / 1000.0, ci.current())
+    }
+
+    fun zipFolder(folderPath: String, zipFilePath: String) {
+        val folder = File(folderPath)
+        val zipFile = File(zipFilePath)
+
+        ZipOutputStream(BufferedOutputStream(FileOutputStream(zipFile))).use { zos ->
+            addFolderToZip(folderPath, folder, zos)
+        }
+    }
+
+    fun addFolderToZip(parentPath: String, folder: File, zos: ZipOutputStream) {
+        folder.listFiles()?.forEach { file ->
+            val entryPath = if (parentPath.isNotEmpty()) "${File(parentPath).toPath().relativize(file.toPath())}" else file.name
+
+            if (file.isDirectory) {
+                addFolderToZip(parentPath, file, zos)
+            } else {
+                zos.putNextEntry(ZipEntry(entryPath))
+                FileInputStream(file).use { input ->
+                    BufferedInputStream(input).use { bufferedInput ->
+                        bufferedInput.copyTo(zos)
+                    }
+                }
+                zos.closeEntry()
+            }
+        }
     }
 }

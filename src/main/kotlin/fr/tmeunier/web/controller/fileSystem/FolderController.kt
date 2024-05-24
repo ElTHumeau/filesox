@@ -7,6 +7,7 @@ import fr.tmeunier.domaine.requests.Folder
 import fr.tmeunier.domaine.requests.FolderMoveRequest
 import fr.tmeunier.domaine.requests.GetPathRequest
 import fr.tmeunier.domaine.services.filesSystem.FolderSystemService
+import fr.tmeunier.domaine.services.filesSystem.StorageService
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -48,14 +49,36 @@ object FolderController {
 
     suspend fun download(call: ApplicationCall) {
         val request = call.receive<DownloadRequest>()
-        val fileInCache = File(".cache/media/${request.path}")
 
-        if (!fileInCache.exists()) {
-            S3Config.makeClient()
-                ?.let { it1 -> FolderSystemService.downloadFileMultipart(it1, "${request.path}", ".cache/media/${request.path}") }
-            call.respondFile(File(".cache/media/${request.path}"))
+        if (request.isFolder) {
+            val zipFile = File(".cache/media/${request.path}.zip")
+
+            if (!zipFile.exists()){
+                S3Config.makeClient()?.let {
+                    FolderSystemService.downloadFolder(it, request.path, ".cache/media/${request.path}")
+                }
+
+                StorageService.zipFolder(".cache/media/${request.path}", ".cache/media/${request.path}.zip")
+                call.respondFile(File(".cache/media/${request.path}.zip"))
+            } else {
+                call.respondFile(zipFile)
+            }
         } else {
-            call.respondFile(fileInCache)
+            val fileInCache = File(".cache/media/${request.path}")
+
+            if (!fileInCache.exists()) {
+                S3Config.makeClient()
+                    ?.let { it1 ->
+                        FolderSystemService.downloadFileMultipart(
+                            it1,
+                            "${request.path}",
+                            ".cache/media/${request.path}"
+                        )
+                    }
+                call.respondFile(File(".cache/media/${request.path}"))
+            } else {
+                call.respondFile(fileInCache)
+            }
         }
     }
 }

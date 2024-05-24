@@ -5,13 +5,16 @@ import {LayoutModules} from "./modules/LayoutModulesImage.tsx";
 import {ReactNode} from "react";
 import {truncateString} from "../../hooks/useStore.ts";
 import {FilePaths, useLocalStorage} from "../../hooks/useLocalStorage.ts";
+import {useQueryClient} from "react-query";
 
-export function LayoutsGrid({files, folders}: { files: FileType[] | undefined, folders: FolderType[] | undefined}) {
+export function LayoutsGrid({files, folders}: { files: FileType[] | undefined, folders: FolderType[] | undefined }) {
     const {activeStorage, setActiveStorage} = useFileStore();
     const {setItem} = useLocalStorage()
+    const queryClient = useQueryClient()
 
     const handleDoubleClick = (folder_name: string) => {
         setItem(FilePaths.path, folder_name)
+        queryClient.invalidateQueries("storage")
     }
 
     return <>
@@ -22,12 +25,15 @@ export function LayoutsGrid({files, folders}: { files: FileType[] | undefined, f
             <Row cols={5}>
                 {folders && folders.map((folder, index) => (
                     <div key={index}
-                         onClick={() => {
+                         tabIndex={0}
+                         onClick={(e) => {
                              setActiveStorage(folder)
+                             e.stopPropagation()
                          }}
-                         onDoubleClick={() =>
+                         onDoubleClick={() => {
+                             console.log("double click")
                              handleDoubleClick(folder.name)
-                         }
+                         }}
                          className={`flex gap-3 items-center px-4 py-2 rounded-lg' ${activeStorage && activeStorage.name === folder.name ? 'bg-indigo-50 text-indigo-500 shadow-md cursor-pointer' : 'cursor-pointer shadow-md bg-white text-black'}  `}
                     >
                         <LayoutCardGrid name={folder.name} isFolder={true}>
