@@ -47,7 +47,7 @@ export function ModalCreateFolder() {
 
     const onSubmit: SubmitHandler<FormFields> = (data: FormFields) => {
         mutate({
-            path: user?.file_path === "./" ? data.path :  user?.file_path + getItem(FilePaths.path)! + data.path
+            path: user?.file_path === "./" ? getItem(FilePaths.path) + data.path :  user?.file_path + getItem(FilePaths.path)! + data.path
         })
     }
 
