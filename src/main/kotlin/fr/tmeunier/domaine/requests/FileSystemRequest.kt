@@ -24,3 +24,14 @@ data class DownloadRequest(
     val path: String,
     @SerialName("is_folder") val isFolder: Boolean = false
 )
+
+@Serializable
+data class InitialUpload(
+    val filename: String,
+)
+
+@Serializable
+data class CompletedUpload(
+    val filename: String,
+    @SerialName("upload_id") val uploadId: String,
+)

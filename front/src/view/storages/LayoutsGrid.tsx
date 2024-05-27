@@ -31,7 +31,6 @@ export function LayoutsGrid({files, folders}: { files: FileType[] | undefined, f
                              e.stopPropagation()
                          }}
                          onDoubleClick={() => {
-                             console.log("double click")
                              handleDoubleClick(folder.name)
                          }}
                          className={`flex gap-3 items-center px-4 py-2 rounded-lg' ${activeStorage && activeStorage.name === folder.name ? 'bg-indigo-50 text-indigo-500 shadow-md cursor-pointer' : 'cursor-pointer shadow-md bg-white text-black'}  `}

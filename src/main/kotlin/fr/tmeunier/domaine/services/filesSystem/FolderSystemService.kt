@@ -1,6 +1,7 @@
 package fr.tmeunier.domaine.services.filesSystem
 
 import aws.sdk.kotlin.services.s3.S3Client
+import aws.sdk.kotlin.services.s3.createMultipartUpload
 import aws.sdk.kotlin.services.s3.model.*
 import aws.sdk.kotlin.services.s3.paginators.listObjectsV2Paginated
 import aws.smithy.kotlin.runtime.content.toFlow
@@ -139,5 +140,56 @@ object FolderSystemService {
             }
         }
     }
+
+    suspend fun initiateMultipartUpload(client: S3Client, key: String): String? {
+        return client.createMultipartUpload {
+            bucket = S3Config.bucketName
+            this.key = key
+        }.uploadId
+    }
+
+    suspend fun uploadMultipart(client: S3Client, key: String, uploadId: String?, chunkNumber: Int, fileBytes: ByteArray?, totalChunks: Int): String? {
+        try {
+
+            client.uploadPart(UploadPartRequest {
+                bucket = S3Config.bucketName
+                this.key = key
+                this.uploadId = uploadId
+                partNumber = chunkNumber
+                contentLength = fileBytes!!.size.toLong()
+                body = fileBytes?.toByteStream()
+            })
+
+        } catch (e: S3Exception) {
+           println("Error uploading file: ${e.message}")
+        }
+
+        return uploadId
+    }
+
+    suspend fun completeMultipartUpload(client: S3Client, key: String, uploadId: String?) {
+        val parts = mutableListOf<CompletedPart>()
+
+        client.listParts(ListPartsRequest {
+            bucket = S3Config.bucketName
+            this.key = key
+            this.uploadId = uploadId
+        }).parts?.forEach {
+            parts.add(CompletedPart {
+                partNumber = it.partNumber
+                eTag = it.eTag
+            })
+        }
+
+        client.completeMultipartUpload(CompleteMultipartUploadRequest {
+            bucket = S3Config.bucketName
+            this.key = key
+            this.uploadId = uploadId
+            multipartUpload = CompletedMultipartUpload {
+                parts
+            }
+        })
+    }
 }
 
+fun ByteArray.toByteStream() = aws.smithy.kotlin.runtime.content.ByteStream.fromBytes(this)
