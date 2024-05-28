@@ -25,9 +25,11 @@ data class DownloadRequest(
     @SerialName("is_folder") val isFolder: Boolean = false
 )
 
+// --- Uploads
 @Serializable
 data class InitialUpload(
     val filename: String,
+    @SerialName("total_chunks") val totalChunks: Int
 )
 
 @Serializable
