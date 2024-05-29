@@ -5,15 +5,18 @@ import com.auth0.jwt.algorithms.Algorithm
 import fr.tmeunier.config.Security
 import fr.tmeunier.domaine.models.User
 import fr.tmeunier.domaine.repositories.RefreshTokenRepository
+import fr.tmeunier.domaine.repositories.UsersPermissionsRepository
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-object AuthentificatorService
-{
-    private val JWT_ACCESS_TOKEN_EXPIRATION_TIME: Long = 2 // access token refreshed every 2 mins
-    private val JWT_REFRESH_TOKEN_EXPIRATION_TIME: Long = 60 * 16 // maximum session lifetime of 16h
+object AuthentificatorService {
+    private const val JWT_ACCESS_TOKEN_EXPIRATION_TIME: Long = 2 // access token refreshed every 2 mins
+    private const val JWT_REFRESH_TOKEN_EXPIRATION_TIME: Long = 60 * 16 // maximum session lifetime of 16h
 
     fun createJwtToken(user: User): String {
+
+        val role = UsersPermissionsRepository.findUserPermissions(user.id)
+
         return JWT.create()
             .withSubject(user.id.toString())
             .withClaim("id", user.id)
@@ -21,9 +24,13 @@ object AuthentificatorService
             .withClaim("email", user.email)
             .withClaim("file_path", user.filePath)
             .withClaim("layout", user.layout)
+            .withClaim("roles", role)
             .withAudience(Security.jwtAudience)
             .withIssuer(Security.jwtIssuer)
-            .withExpiresAt(LocalDateTime.now().plusMinutes(JWT_ACCESS_TOKEN_EXPIRATION_TIME).atZone(ZoneId.systemDefault()).toInstant())
+            .withExpiresAt(
+                LocalDateTime.now().plusMinutes(JWT_ACCESS_TOKEN_EXPIRATION_TIME).atZone(ZoneId.systemDefault())
+                    .toInstant()
+            )
             .sign(Algorithm.HMAC256(Security.jwtSecret))
     }
 

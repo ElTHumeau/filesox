@@ -3,7 +3,6 @@ package fr.tmeunier.web.routes
 import aws.sdk.kotlin.services.s3.model.S3Exception
 import fr.tmeunier.config.S3Config
 import fr.tmeunier.domaine.requests.CompletedUpload
-import fr.tmeunier.domaine.requests.DownloadRequest
 import fr.tmeunier.domaine.requests.GetPathRequest
 import fr.tmeunier.domaine.requests.InitialUpload
 import fr.tmeunier.domaine.services.filesSystem.FolderSystemService

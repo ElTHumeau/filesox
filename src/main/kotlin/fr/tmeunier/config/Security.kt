@@ -19,4 +19,13 @@ object Security {
     fun getUserId(): Int {
         return userId
     }
+
+    // define const permissions
+    const val ADMIN = "Administration"
+    const val CREATE_FILE_FOLDER = "Create file or folder"
+    const val DELETE_FILE_FOLDER = "Delete file or folder"
+    const val DOWNLOAD = "Download"
+    const val EDIT_FILE = "Edit file"
+    const val SHARE_FILE = "Share files"
+    const val RENAME_FILE_FOLDER = "Rename file or folder"
 }

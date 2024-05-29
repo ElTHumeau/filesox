@@ -1,16 +1,20 @@
 package fr.tmeunier.web.routes.admin
 
+import fr.tmeunier.config.Security
 import fr.tmeunier.web.controller.admin.AdminLogController
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
+import withRole
 
 fun Route.adminLogRouting()
 {
-    route("/admin")
+    route("admin")
     {
-        get("/logs")
-        {
-            return@get AdminLogController.getAll(call)
-        }
+       withRole(Security.ADMIN) {
+           get("/logs")
+           {
+               return@get AdminLogController.getAll(call)
+           }
+       }
     }
 }
