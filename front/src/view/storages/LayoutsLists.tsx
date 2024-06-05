@@ -22,15 +22,17 @@ export function LayoutsLists({files, folders}: { files: FileType[], folders: Fol
                 <div key={index}
                      onClick={() => setActiveStorage(folder)}
                      onDoubleClick={() => handleDoubleClick(folder.name)}
-                     className={`flex items-center justify-between px-4 py-2 mt-4 rounded-lg' ${activeStorage && activeStorage.name === folder.name ? 'bg-indigo-50 text-indigo-500 shadow-md cursor-pointer' : 'cursor-pointer shadow-md bg-white text-black'}  `}
+                     className={`flex items-center justify-between px-4 py-8 min-h-12 max-h-12 mt-4 rounded-lg border border-gray-200 rounded-md' ${activeStorage && activeStorage.name === folder.name ? 'bg-indigo-50 text-indigo-500 shadow-md cursor-pointer' : 'cursor-pointer shadow-md bg-white text-black'}  `}
                 >
                     <LayoutCardList name={folder.name} isFolders={true}>
-                        <img src="images/folder-icon.png" alt="folder-icon.png" width="28" height="28"/>
+                        <img src="images/folder-icon.png" alt="folder-icon.png" width="36" height="36"/>
                     </LayoutCardList>
                 </div>
             ))}
 
-            <LayoutModules files={files} layout="list"/>
+            <div className="space-y-3 mt-3">
+                <LayoutModules files={files} layout="list"/>
+            </div>
         </div>
     </>
 }
@@ -44,7 +46,7 @@ export function LayoutCardList({name, isFolders, children, size}: {
     const {getItem} = useLocalStorage()
     const path = getItem(FilePaths.path)
 
-    return <div className="flex justify-between items-center w-full">
+    return <div className="flex justify-between items-center w-full min-h-12 max-h-12">
         <div className="flex items-center gap-3">
             {children}
             <p>{name.replace(path ?? "", "")}</p>

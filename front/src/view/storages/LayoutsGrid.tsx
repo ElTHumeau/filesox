@@ -1,6 +1,5 @@
 import {FileType, FolderType} from "../../types/api/storageType.ts";
 import {useFileStore} from "../../stores/useFileStore.ts";
-import {Row} from "../../components/modules/Grid.tsx";
 import {LayoutModules} from "./modules/LayoutModulesImage.tsx";
 import {ReactNode} from "react";
 import {truncateString} from "../../hooks/useStore.ts";
@@ -22,7 +21,7 @@ export function LayoutsGrid({files, folders}: { files: FileType[] | undefined, f
             <h1 className="text-2xl font-bold text-gray-800">Folders</h1>
             <hr className="mb-4"/>
 
-            <Row cols={5}>
+            <div className="flex flex-wrap items-center mg:grid mg:grid-cols-5 gap-5">
                 {folders && folders.map((folder, index) => (
                     <div key={index}
                          tabIndex={0}
@@ -33,14 +32,14 @@ export function LayoutsGrid({files, folders}: { files: FileType[] | undefined, f
                          onDoubleClick={() => {
                              handleDoubleClick(folder.name)
                          }}
-                         className={`flex gap-3 items-center px-4 py-2 rounded-lg' ${activeStorage && activeStorage.name === folder.name ? 'bg-indigo-50 text-indigo-500 shadow-md cursor-pointer' : 'cursor-pointer shadow-md bg-white text-black'}  `}
+                         className={`min-w-full md:min-w-72 flex gap-3 items-center px-4 py-2 rounded-lg border border-gray-200 rounded-md' ${activeStorage && activeStorage.name === folder.name ? 'bg-indigo-50 text-indigo-500 shadow-md cursor-pointer' : 'cursor-pointer shadow-md bg-white text-black'}  `}
                     >
                         <LayoutCardGrid name={folder.name} isFolder={true}>
                             <img src="images/folder-icon.png" alt="folder-icon.png" width="42" height="42"/>
                         </LayoutCardGrid>
                     </div>
                 ))}
-            </Row>
+            </div>
         </div>
 
 
@@ -48,9 +47,9 @@ export function LayoutsGrid({files, folders}: { files: FileType[] | undefined, f
             <h1 className="text-2xl font-bold text-gray-800">Files</h1>
             <hr className="mb-4"/>
 
-            <Row cols={5}>
+            <div className="flex flex-wrap items-center mg:grid mg:grid-cols-5 gap-5">
                 <LayoutModules files={files} layout="grid"/>
-            </Row>
+            </div>
         </div>
     </>
 }
@@ -69,8 +68,8 @@ export function LayoutCardGrid({name, isFolder, size, children}: {
 
         {!isFolder ?
             <div className="gap-3 items-center">
-                <p className="truncate">{truncateString(name.replace(path ?? "", ""), 20)}</p>
-                <span className="text-gray-500 text-sm">{size}</span>
+                <p className="truncate">{truncateString(name.replace(path ?? "", ""), 17)}</p>
+                <span className="text-gray-500 text-xs">{size}</span>
             </div>
             :
             <p className="truncate">{name.replace(path ?? "", "")}</p>

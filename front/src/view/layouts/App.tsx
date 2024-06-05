@@ -7,7 +7,7 @@ import {
     Archive,
     FolderPlus,
     Home, Info,
-    LogOut, MoveUpRight, Search,
+    LogOut, Menu, MoveUpRight, Search,
     Settings,
     Share2,
     SquarePen,
@@ -31,10 +31,12 @@ import {ButtonLayout} from "../../components/layouts/modules/ButtonLayout.tsx";
 import {useFileStore} from "../../stores/useFileStore.ts";
 import {useAuth} from "../../context/modules/AuthContext.tsx";
 import {ButtonDownload} from "../../components/layouts/modules/ButtonDownload..tsx";
+import {useState} from "react";
 
 export function App() {
     const {openModal} = useModal()
     const {logout} = useAuth()
+    const [sidebarOpen, setSidebarOpen] = useState(false)
     const {activeStorage} = useFileStore()
     const nav = useNavigate()
     const location = useLocation()
@@ -45,8 +47,8 @@ export function App() {
         nav('/login')
     }
 
-    return <div className="grid grid-cols-8">
-        <Sidebar>
+    return <div className="xl:grid xl:grid-cols-8">
+        <Sidebar sidebarOpen={sidebarOpen} setter={setSidebarOpen}>
             <SidebarMenuContent>
                 <div className="p-4">
                     <img src="/logo.png" alt="Logo" height="100" width="175" className="mx-auto"/>
@@ -74,13 +76,23 @@ export function App() {
                 <SidebarItemVersion>v 1.0.8</SidebarItemVersion>
             </SidebarMenuContent>
         </Sidebar>
-        <main className="lg:col-span-7 sm:col-span-6 xs:col-span-8 ">
+
+        <main className={`static z-0 xl:col-span-7`}>
             <Navbar>
 
-                <NavItems>
+            <NavItems>
                     {location.pathname === '/' && (
                         <>
                             <NavItemsLeft>
+                                {!sidebarOpen &&
+                                    <NavItem>
+                                        <ButtonIcon
+                                            svg={Menu} title="menu burger"
+                                            onClick={() => setSidebarOpen(!sidebarOpen)}
+                                            className="xl:hidden"
+                                        />
+                                    </NavItem>
+                                }
                                 <NavItem>
                                     <InputIcon svg={Search}/>
                                 </NavItem>

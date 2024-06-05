@@ -60,7 +60,6 @@ export const useAxios = () => {
                 }
             }
 
-            await logout()
             return Promise.reject(error)
         }
     )

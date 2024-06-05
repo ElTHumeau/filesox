@@ -1,13 +1,22 @@
-import {ComponentType, ReactNode} from "react";
+import React, {ComponentType, ReactNode} from "react";
 import {Link, useLocation} from "react-router-dom";
+import {ChevronLeft} from "lucide-react";
 
-export function Sidebar({children}: { children: ReactNode }) {
+export function Sidebar({children, sidebarOpen, setter}: { children: ReactNode, sidebarOpen: boolean, setter: (value: boolean) => void}) {
+    console.log(sidebarOpen)
     return <>
         <aside
-            className="min-h-full lg:col-span-1 sm:col-span-2 h-screen transition-transform -translate-x-full border-r md:translate-x-0">
+            className={`bg-white absolute ${sidebarOpen ? 'translate-x-0': '' } transition-transform -translate-x-full xl:translate-x-0  z-50 min-w-60 max-w-60 min-h-full xl:col-span-1 border-r h-screen xl:sticky`}>
             <div className="h-full pb-4 overflow-y-auto flex flex-col justify-between">
                 {children}
             </div>
+
+            <button
+                className={` fixed top-6 -right-4 bg-indigo-500 rounded-full p-1 text-white cursor-pointer ${sidebarOpen ? 'lg:hidden': 'hidden'}`}
+                onClick={() => setter(false)}
+            >
+                <ChevronLeft size={20} />
+            </button>
         </aside>
     </>
 }

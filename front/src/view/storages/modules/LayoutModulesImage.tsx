@@ -59,7 +59,8 @@ export function LayoutModules({files, layout}: { files: FileType[] | undefined, 
                     handleFocus(file)
                 }}
                 tabIndex={0}
-                className={`flex gap-3 w-full items-center px-4 py-2 mt-4 ${activeStorage && activeStorage.name === file.name ? 'bg-indigo-50 text-indigo-500 shadow-md cursor-pointer' : 'cursor-pointer shadow-md bg-white rounded'}`}
+                className={`flex gap-3 items-center px-4 py-2 border border-gray-200 rounded-md
+                ${layout ==='grid' ? 'min-w-full md:min-w-72 md:max-w-72' : 'w-full'} ${activeStorage && activeStorage.name === file.name ? 'bg-indigo-50 text-indigo-500 shadow-md cursor-pointer' : 'cursor-pointer shadow-md bg-white rounded'}`}
             >
                 {layout === 'grid' ? (
                     <LayoutCardGrid name={file.name} isFolder={false} size={file.size}>
@@ -67,7 +68,7 @@ export function LayoutModules({files, layout}: { files: FileType[] | undefined, 
                     </LayoutCardGrid>
                 ) : (
                     <LayoutCardList name={file.name} isFolders={false} size={file.size}>
-                        {renderImage(file, 28)}
+                        {renderImage(file, 36)}
                     </LayoutCardList>
                 )}
             </div>
