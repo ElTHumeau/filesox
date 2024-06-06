@@ -1,29 +1,28 @@
-import React, {ComponentType, ReactNode} from "react";
+import {ComponentType, ReactNode} from "react";
 import {Link, useLocation} from "react-router-dom";
 import {ChevronLeft} from "lucide-react";
 
 export function Sidebar({children, sidebarOpen, setter}: { children: ReactNode, sidebarOpen: boolean, setter: (value: boolean) => void}) {
-    console.log(sidebarOpen)
     return <>
         <aside
-            className={`bg-white absolute ${sidebarOpen ? 'translate-x-0': '' } transition-transform -translate-x-full xl:translate-x-0  z-50 min-w-60 max-w-60 min-h-full xl:col-span-1 border-r h-screen xl:sticky`}>
-            <div className="h-full pb-4 overflow-y-auto flex flex-col justify-between">
-                {children}
-            </div>
+            className={`bg-white ${sidebarOpen ? 'translate-x-0' : ''} fixed  z-20 h-full top-0 left-0 pt-16 lg:flex flex-shrink-0 flex-col w-64  transition-transform -translate-x-full xl:translate-x-0`}>
+            <div className="relative flex-1 flex flex-col justify-between  min-h-full border-r border-gray-200 bg-white pt-0">
+                    {children}
 
-            <button
-                className={` fixed top-6 -right-4 bg-indigo-500 rounded-full p-1 text-white cursor-pointer ${sidebarOpen ? 'lg:hidden': 'hidden'}`}
-                onClick={() => setter(false)}
-            >
-                <ChevronLeft size={20} />
-            </button>
+                <button
+                    className={`absolute top-4 -right-4 bg-indigo-500 rounded-full p-1 text-white cursor-pointer ${sidebarOpen ? 'lg:hidden' : 'hidden'}`}
+                    onClick={() => setter(false)}
+                >
+                    <ChevronLeft size={20}/>
+                </button>
+            </div>
         </aside>
     </>
 }
 
 export function SidebarMenu({children}: { children: ReactNode }) {
     return <>
-        <ol className="space-y-2 mb-12 font-medium">{children}</ol>
+        <ol className="space-y-2 mt-4 mb-12 font-medium">{children}</ol>
     </>
 }
 
@@ -69,6 +68,6 @@ export function SidebarMenuItem({svg: SvgComponent, children, href, onClick}: {
 
 export function SidebarItemVersion({children}: { children: ReactNode }) {
     return <>
-        <li className="text-center text-gray-400 text-sm mb-2">{children}</li>
+        <li className="text-center text-gray-400 text-sm mb-6">{children}</li>
     </>
 }

@@ -5,20 +5,21 @@ import {LayoutsLists} from "./storages/LayoutsLists.tsx";
 import {LayoutsGrid} from "./storages/LayoutsGrid.tsx";
 import {useUserStore} from "../stores/useUserStore.ts";
 import {Breadcrumb} from "../components/modules/Breadcrumb.tsx";
-import {FilePaths, useLocalStorage} from "../hooks/useLocalStorage.ts";
 import {useAxios} from "../config/axios.ts";
+import {useCurrentPath} from "../context/modules/CurrentPathContext.tsx";
+import {FilePaths} from "../hooks/useLocalStorage.ts";
 
 
 export function Dashboard() {
     const {files, folders, setFiles, setFolders, setActiveStorage} = useFileStore();
     const {user} = useUserStore()
-    const {getItem} = useLocalStorage()
+    const {currentPath} = useCurrentPath()
     const API = useAxios()
 
     const {isLoading} = useQuery("storage",
         async () => {
             const response = await API.post("/folders", {
-                path: getItem(FilePaths.path)
+                path: localStorage.getItem(FilePaths.path) || currentPath
             })
             return response.data
         }
