@@ -10,6 +10,7 @@ import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {FilePaths, useLocalStorage} from "../../hooks/useLocalStorage.ts";
 import {useUserStore} from "../../stores/useUserStore.ts";
+import {useFileStore} from "../../stores/useFileStore.ts";
 
 const schema = z.object({
     path: z.string().min(2)
@@ -21,6 +22,7 @@ export function ModalMoveMedia() {
     const {closeModal} = useModal()
     const {setAlerts} = useAlerts()
     const {getItem} = useLocalStorage()
+    const {activeStorage} = useFileStore()
     const {user} = useUserStore()
 
     const API = useAxios()
@@ -36,8 +38,9 @@ export function ModalMoveMedia() {
 
     const {mutate} = useMutation(
         async (path: string ) => {
+            console.log(activeStorage!.name)
             await API.post("/folders/move", {
-                path: user?.file_path === "./" ? path : user?.file_path + getItem(FilePaths.path)! + path,
+                path: user?.file_path === "./" ? activeStorage!.name : user?.file_path + getItem(FilePaths.path)! + activeStorage!.name,
                 new_path: path
             })
         }, {

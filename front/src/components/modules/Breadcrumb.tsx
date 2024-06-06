@@ -1,23 +1,22 @@
 import {Home} from "lucide-react";
 import {ReactNode} from "react";
-import {FilePaths, useLocalStorage} from "../../hooks/useLocalStorage.ts";
 import {useQueryClient} from "react-query";
 import {useUserStore} from "../../stores/useUserStore.ts";
+import {useCurrentPath} from "../../context/modules/CurrentPathContext.tsx";
 
 export function Breadcrumb() {
     const {user} = useUserStore()
-    const {getItem} = useLocalStorage()
-    const pathnames = getItem(FilePaths.path)?.split("/").filter((x: string) => x) ?? []
-    const active = getItem(FilePaths.path)
+    const {currentPath} = useCurrentPath()
+    const pathnames = currentPath?.split("/").filter((x: string) => x) ?? []
 
     return <div className="mb-8">
         <div className="flex items-center gap-3">
-            <BreadcrumbItem to={user!.file_path} active={getItem(FilePaths.path) !== user!.file_path}>
+            <BreadcrumbItem to={user!.file_path} active={currentPath !== user!.file_path}>
                 <Home strokeWidth={1.5} size={20}/>
                 Home
             </BreadcrumbItem>
 
-            {active !== '/' &&
+            {currentPath !== '/' &&
                 <BreadcrumbSeparator/>
             }
 
@@ -44,10 +43,10 @@ function BreadcrumbSeparator() {
 
 function BreadcrumbItem({to, active, children}: { to: string, active: boolean, children: ReactNode }) {
     const queryClient = useQueryClient()
-    const {setItem} = useLocalStorage()
+    const {setPath} = useCurrentPath()
 
     const handleSetItem = () => {
-        setItem(FilePaths.path, to === './' ? '' : to + '/')
+        setPath( to === './' ? '' : to + '/')
         queryClient.invalidateQueries("storage")
     }
 
