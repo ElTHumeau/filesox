@@ -41,26 +41,20 @@ fun Route.folderRoutes() {
 
         route("/upload") {
             post("/init") {
-                println("init")
                 val request = call.receive<InitialUpload>()
 
-                if (request.filename != null) {
-                    val uploadId = S3Config.makeClient()?.let {
-                        FolderSystemService.initiateMultipartUpload(it, request.filename)
-                    }
+                val uploadId = S3Config.makeClient()?.let {
+                    FolderSystemService.initiateMultipartUpload(it, request.filename)
+                }
 
-                    if (uploadId != null) {
-                        call.respond(HttpStatusCode.OK, mapOf("uploadId" to uploadId))
-                    } else {
-                        call.respond(HttpStatusCode.InternalServerError, "Failed to initiate upload")
-                    }
+                if (uploadId != null) {
+                    call.respond(HttpStatusCode.OK, mapOf("uploadId" to uploadId))
                 } else {
-                    call.respond(HttpStatusCode.BadRequest, "Invalid parameters")
+                    call.respond(HttpStatusCode.InternalServerError, "Failed to initiate upload")
                 }
             }
 
             post {
-                println("upload multipart")
                 val multipart = call.receiveMultipart()
                 var uploadId: String? = null
                 var chunkNumber: Int? = null
@@ -94,7 +88,14 @@ fun Route.folderRoutes() {
                     runBlocking {
                         try {
                             S3Config.makeClient()?.let {
-                                FolderSystemService.uploadMultipart(it, key, uploadId, chunkNumber!!, fileBytes, totalChunks!!)
+                                FolderSystemService.uploadMultipart(
+                                    it,
+                                    key,
+                                    uploadId,
+                                    chunkNumber!!,
+                                    fileBytes,
+                                    totalChunks!!
+                                )
                             }
                             call.respond(HttpStatusCode.OK, "Chunk $chunkNumber uploaded successfully")
                         } catch (e: S3Exception) {
@@ -107,7 +108,6 @@ fun Route.folderRoutes() {
             }
 
             post("/complete") {
-                println("complete upload")
                 val request = call.receive<CompletedUpload>()
 
                 if (request.uploadId != null && request.filename != null) {
@@ -131,14 +131,22 @@ fun Route.folderRoutes() {
     route("/images") {
 
         post {
-            val request =  call.receive<GetPathRequest>()
+            val request = call.receive<GetPathRequest>()
 
-            val fileInCache = File(".cache/${request.path}")
+            val fileInCache = File(".cache/images/${request.path}")
+
+            println(fileInCache.exists())
 
             if (!fileInCache.exists()) {
                 S3Config.makeClient()
-                    ?.let { it1 -> FolderSystemService.downloadFileMultipart(it1, request.path!!, ".cache/${request.path}") }
-                call.respondFile(File(".cache/${request.path}"))
+                    ?.let { it1 ->
+                        FolderSystemService.downloadFileMultipart(
+                            it1,
+                            request.path!!,
+                            ".cache/images/${request.path}"
+                        )
+                    }
+                call.respondFile(File(".cache/images/${request.path}"))
             } else {
                 call.respondFile(fileInCache)
             }

@@ -90,7 +90,7 @@ object FolderSystemService {
                             content.key!!,
                             content.size!!.toHumanReadableValue(),
                             icon,
-                            if (icon == "file") "/images/${content.key!!}" else null
+                            if (icon == "file") content.key!! else null
                         )
                     )
                 }
