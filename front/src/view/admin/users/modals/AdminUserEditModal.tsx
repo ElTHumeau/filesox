@@ -12,6 +12,7 @@ import {useModal} from "../../../../hooks/useModal.ts";
 import {permissionsSchemaType, UserType} from "../../../../types/api/userType.ts";
 import {useRoles} from "../../../../hooks/useRoles.ts";
 import {useAxios} from "../../../../config/axios.ts";
+import {useTranslation} from "react-i18next";
 
 const schema = z.object({
     name: z.string().min(3),
@@ -27,6 +28,7 @@ export function AdminEditUserModal({user}: { user: UserType }) {
     )
     const [permissions, setPermissions] = useState<number[]>([])
 
+    const {t} = useTranslation()
     const API = useAxios()
     const queryClient = useQueryClient()
     const {setAlerts} = useAlerts()
@@ -64,7 +66,7 @@ export function AdminEditUserModal({user}: { user: UserType }) {
         , {
         onSuccess: () => {
             queryClient.invalidateQueries('users')
-            setAlerts('success', 'User updated successfully')
+            setAlerts('success', t('alerts.success.user.edit'))
             closeModal()
         }
     })
@@ -79,13 +81,15 @@ export function AdminEditUserModal({user}: { user: UserType }) {
 
     return <>
         <ModalHeader>
-            <h2 className="text-lg font-semibold">Create User</h2>
+            <h2 className="text-lg font-semibold">
+                {t('title.admin.user.edit')}
+            </h2>
         </ModalHeader>
         <FormFields onSubmit={handleSubmit(onSubmit)}>
             <ModalBody>
                 <Row cols={2}>
                     <FormField>
-                        <FormLabel htmlFor="name">Name</FormLabel>
+                        <FormLabel htmlFor="name">{t('input.label.name')}</FormLabel>
                         <input
                             {...register('name')}
                             type="text"
@@ -96,7 +100,7 @@ export function AdminEditUserModal({user}: { user: UserType }) {
                         }
                     </FormField>
                     <FormField>
-                        <FormLabel htmlFor="email">Email</FormLabel>
+                        <FormLabel htmlFor="email">{t('input.label.email')}</FormLabel>
                         <input
                             {...register('email')}
                             type="email"
@@ -108,7 +112,7 @@ export function AdminEditUserModal({user}: { user: UserType }) {
                     </FormField>
                 </Row>
                 <FormField>
-                    <FormLabel htmlFor="file_path">File path</FormLabel>
+                    <FormLabel htmlFor="file_path">{t('input.label.file_path')}</FormLabel>
                     <input
                         {...register('file_path')}
                         type="text"
@@ -119,7 +123,7 @@ export function AdminEditUserModal({user}: { user: UserType }) {
                     }
                 </FormField>
                 <FormField>
-                    <FormLabel htmlFor="permission">Permission</FormLabel>
+                    <FormLabel htmlFor="permission">{t('input.label.permissions')}</FormLabel>
                     <div className="flex items-center gap-2 my-3">
                         <input
                             type="checkbox"
@@ -168,7 +172,7 @@ export function AdminEditUserModal({user}: { user: UserType }) {
                     color="primary"
                     type="submit"
                 >
-                    Create
+                    {t('button.edit')}
                 </Button>
             </ModalFooter>
         </FormFields>

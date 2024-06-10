@@ -10,6 +10,7 @@ import {useModal} from "../../../hooks/useModal.ts";
 import {FilePaths, useLocalStorage} from "../../../hooks/useLocalStorage.ts";
 import {useUserStore} from "../../../stores/useUserStore.ts";
 import {useAxios} from "../../../config/axios.ts";
+import {useTranslation} from "react-i18next";
 
 const schema = z.object({
     path: z.string().min(2)
@@ -24,6 +25,7 @@ export function ModalCreateFolder() {
     const {user} = useUserStore()
     const client = useQueryClient()
     const API = useAxios()
+    const {t} = useTranslation()
 
     const {
         register,
@@ -40,7 +42,7 @@ export function ModalCreateFolder() {
         }, {
         onSuccess: () => {
             client.invalidateQueries('storage')
-            setAlerts('success', 'Folder created successfully')
+            setAlerts('success', t('alerts.success.folder.create'))
             closeModal()
         }
     })
@@ -53,17 +55,18 @@ export function ModalCreateFolder() {
 
     return <>
         <ModalHeader>
-            <h2 className="text-xl font-medium">Create folder</h2>
+            <h2 className="text-xl font-medium">{t('title.modal.create_folder')}</h2>
         </ModalHeader>
 
         <FormFields onSubmit={handleSubmit(onSubmit)}>
             <ModalBody>
-                <FormLabel htmlFor="name">Name</FormLabel>
+                <FormLabel htmlFor="name">
+                    {t('input.label.name')}
+                </FormLabel>
                 <FormField>
                     <input
                         {...register('path')}
                         type="text"
-                        placeholder="Name"
                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                     {errors.path &&
@@ -73,7 +76,9 @@ export function ModalCreateFolder() {
             </ModalBody>
 
             <ModalFooter>
-                <Button color="primary" type={'submit'}>Save</Button>
+                <Button color="primary" type={'submit'}>
+                    {t('button.create')}
+                </Button>
             </ModalFooter>
         </FormFields>
     </>

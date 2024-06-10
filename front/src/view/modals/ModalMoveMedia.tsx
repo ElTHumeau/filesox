@@ -11,6 +11,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {FilePaths, useLocalStorage} from "../../hooks/useLocalStorage.ts";
 import {useUserStore} from "../../stores/useUserStore.ts";
 import {useFileStore} from "../../stores/useFileStore.ts";
+import {useTranslation} from "react-i18next";
 
 const schema = z.object({
     path: z.string().min(2)
@@ -24,6 +25,7 @@ export function ModalMoveMedia() {
     const {getItem} = useLocalStorage()
     const {activeStorage} = useFileStore()
     const {user} = useUserStore()
+    const {t} = useTranslation()
 
     const API = useAxios()
     const client = useQueryClient()
@@ -46,7 +48,7 @@ export function ModalMoveMedia() {
         }, {
             onSuccess: () => {
                 client.invalidateQueries('storage')
-                setAlerts('success', 'Media moved')
+                setAlerts('success', t('alerts.success.folder.move'))
                 closeModal()
             }
         })
@@ -62,12 +64,14 @@ export function ModalMoveMedia() {
 
         <FormFields onSubmit={handleSubmit(onSubmit)}>
             <ModalBody>
-                <FormLabel htmlFor="name">Path</FormLabel>
+                <FormLabel htmlFor="name">
+                    {t('input.label.path')}
+                </FormLabel>
                 <FormField>
                     <input
                         {...register('path')}
                         type="text"
-                        placeholder="/path/to/media"
+                        placeholder= {t('input.placeholder.path')}
                         className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                     {errors.path &&
@@ -81,7 +85,7 @@ export function ModalMoveMedia() {
                     color="primary"
                     type="submit"
                 >
-                    Move
+                    {t('button.move')}
                 </Button>
             </ModalFooter>
         </FormFields>

@@ -2,6 +2,7 @@ import {SubmitHandler, useForm} from "react-hook-form"
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {FormFields, FormError, FormLabel, FormField} from "../../components/modules/Form.tsx";
+import {useTranslation} from "react-i18next";
 
 const schema = z.object({
     username: z.string().min(3),
@@ -15,6 +16,7 @@ const schema = z.object({
 type FormFields = z.infer<typeof schema>
 
 export default function Register() {
+    const {t} = useTranslation()
     const {
         register,
         handleSubmit,
@@ -27,19 +29,20 @@ export default function Register() {
         console.log(data)
     }
 
-
     return <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
             <img src="/logo.png" alt="Logo" height="100" width="175" className="mx-auto"/>
-            <h2 className="mt-5 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                Register for an account
+            <h2 className="mt-3 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+                {t('title.auth.register')}
             </h2>
         </div>
 
-        <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
+        <div className="mt-3 sm:mx-auto sm:w-full sm:max-w-sm">
             <FormFields onSubmit={handleSubmit(onSubmit)}>
                 <div>
-                    <FormLabel htmlFor='username'>Username</FormLabel>
+                    <FormLabel htmlFor='username'>
+                        {t('input.label.username')}
+                    </FormLabel>
                     <FormField>
                         <input
                             {...register('username')}
@@ -53,7 +56,9 @@ export default function Register() {
                     </FormField>
                 </div>
                 <div>
-                    <FormLabel htmlFor="email">Email</FormLabel>
+                    <FormLabel htmlFor="email">
+                        {t('input.label.email')}
+                    </FormLabel>
                     <FormField>
                         <input
                             {...register('email')}
@@ -67,7 +72,9 @@ export default function Register() {
                     </FormField>
                 </div>
                 <div>
-                    <FormLabel htmlFor="password">Password</FormLabel>
+                    <FormLabel htmlFor="password">
+                        {t('input.label.password')}
+                    </FormLabel>
                     <FormField>
                         <input
                             {...register('password')}
@@ -80,7 +87,9 @@ export default function Register() {
                     </FormField>
                 </div>
                 <div>
-                    <FormLabel htmlFor="confirmPassword">Confirm Password</FormLabel>
+                    <FormLabel htmlFor="confirmPassword">
+                        {t('input.label.password_confirm')}
+                    </FormLabel>
                     <FormField>
                         <input
                             {...register('confirmPassword')}
@@ -97,7 +106,7 @@ export default function Register() {
                     <button type="submit"
                             disabled={isSubmitted}
                             className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                        {isSubmitted ? 'Submitting...' : 'Register'}
+                        {isSubmitted ? 'Submitting...' : t('button.register')}
                     </button>
                 </div>
             </FormFields>

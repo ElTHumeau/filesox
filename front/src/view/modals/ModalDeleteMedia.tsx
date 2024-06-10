@@ -8,6 +8,7 @@ import {useMutation, useQueryClient} from "react-query";
 import {useModal} from "../../hooks/useModal.ts";
 import {useUserStore} from "../../stores/useUserStore.ts";
 import {useAxios} from "../../config/axios.ts";
+import {useTranslation} from "react-i18next";
 
 export function ModalDeleteMedia() {
     const {setAlerts} = useAlerts()
@@ -16,6 +17,7 @@ export function ModalDeleteMedia() {
     const {activeStorage} = useFileStore()
     const client = useQueryClient()
     const API = useAxios()
+    const {t} = useTranslation()
 
     const {
         handleSubmit,
@@ -29,7 +31,7 @@ export function ModalDeleteMedia() {
         }, {
         onSuccess: () => {
             client.invalidateQueries('storage')
-            setAlerts('success', 'Media deleted')
+            setAlerts('success', t('alerts.success.folder.delete'))
             closeModal()
         }
     })
@@ -40,19 +42,23 @@ export function ModalDeleteMedia() {
 
     return <>
         <ModalHeader>
-            <h2 className="text-xl font-medium">Delete media</h2>
+            <h2 className="text-xl font-medium">
+                {t('title.modal.delete_media')}
+            </h2>
         </ModalHeader>
         <FormFields onSubmit={handleSubmit(onSubmit)}>
 
             <ModalBody>
-                <p className="text-center  py-3.5">Are you sure you want to delete this media?</p>
+                <p className="text-center  py-3.5">
+                    {t('title.modal.delete_media_message')}
+                </p>
             </ModalBody>
             <ModalFooter>
                 <Button
                     color="danger"
                     type="submit"
                 >
-                    Delete
+                    {t('button.delete')}
                 </Button>
             </ModalFooter>
         </FormFields>

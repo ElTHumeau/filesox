@@ -2,6 +2,7 @@ import {getSize, useModal} from "../../hooks/useModal.ts";
 import {ReactNode} from "react";
 import {Button, ButtonIcon} from "./Button.tsx";
 import {X} from "lucide-react";
+import {useTranslation} from "react-i18next";
 
 export function Modal() {
     const {show, size, content } = useModal();
@@ -49,6 +50,7 @@ export function ModalBody({children}: { children: ReactNode }) {
 
 export function ModalFooter({children}: { children: ReactNode}) {
     const {closeModal} = useModal()
+    const {t} = useTranslation()
 
     return <div className="pt-5">
         <div className="flex justify-end items-center gap-2">
@@ -57,7 +59,7 @@ export function ModalFooter({children}: { children: ReactNode}) {
                 type="button"
                 onClick={() => closeModal()}
             >
-                Close
+                {t('button.cancel')}
             </Button>
             {children}
         </div>

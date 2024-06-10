@@ -5,10 +5,12 @@ import {useQuery} from "react-query";
 import {Pill} from "../../components/modules/Pill.tsx";
 import {useAxios} from "../../config/axios.ts";
 import {adminLogsSchemaType} from "../../types/api/adminType.ts";
+import {useTranslation} from "react-i18next";
 
 export function AdminLogs() {
     const [page, setPage] = useState(1)
     const API = useAxios()
+    const {t} = useTranslation();
 
     const {data, isLoading} = useQuery(
         ['logs', page],
@@ -23,15 +25,17 @@ export function AdminLogs() {
     }
 
     return <div className="px-7 py-4">
-        <h1 className="text-2xl text-indigo-950 font-semibold mb-4">Admin Logs</h1>
+        <h1 className="text-2xl text-indigo-950 font-semibold mb-4">
+            {t('title.admin.logs')}
+        </h1>
 
         <Table>
             <TableHead>
                 <TableRow>
-                    <TableHeader>User</TableHeader>
-                    <TableHeader>Subject</TableHeader>
-                    <TableHeader>Action</TableHeader>
-                    <TableHeader>Created At</TableHeader>
+                    <TableHeader>{t('table.user')}</TableHeader>
+                    <TableHeader>{t('table.subject')}</TableHeader>
+                    <TableHeader>{t('table.actions')}</TableHeader>
+                    <TableHeader>{t('table.created_at')}</TableHeader>
                 </TableRow>
             </TableHead>
             <TableBody>

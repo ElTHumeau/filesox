@@ -4,29 +4,35 @@ import {useMutation, useQueryClient} from "react-query";
 import {useModal} from "../../../../hooks/useModal.ts";
 import {useAlerts} from "../../../../context/modules/AlertContext.tsx";
 import {useAxios} from "../../../../config/axios.ts";
+import {useTranslation} from "react-i18next";
 
 export function AdminDeleteUserModal({userId}: {userId: number}) {
     const {closeModal} = useModal()
     const {setAlerts} = useAlerts()
     const API = useAxios()
     const queryClient = useQueryClient()
+    const {t}  = useTranslation()
 
     const { mutate } = useMutation(async (id: number) => {
         await API.delete('/admin/users/delete/' + id)
     }, {
         onSuccess: () => {
             queryClient.invalidateQueries('users');
-            setAlerts('success', 'User deleted successfully');
+            setAlerts('success', t('alerts.success.user.delete'));
             closeModal();
         }
     });
 
     return <>
         <ModalHeader>
-            <h2 className="text-lg text-indigo-950 font-semibold">Delete User</h2>
+            <h2 className="text-lg text-indigo-950 font-semibold">
+                {t('title.admin.user.delete.title')}
+            </h2>
         </ModalHeader>
         <ModalBody>
-            <p className="text-center  py-4">Are you sure you want to delete this user ?</p>
+            <p className="text-center  py-4">
+                {t('title.admin.user.delete.message')}
+            </p>
         </ModalBody>
         <ModalFooter>
             <Button
@@ -34,7 +40,7 @@ export function AdminDeleteUserModal({userId}: {userId: number}) {
                 type="button"
                 onClick={() => mutate(userId)}
             >
-                Delete
+                {t('button.delete')}
             </Button>
         </ModalFooter>
     </>

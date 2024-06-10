@@ -11,11 +11,13 @@ import {AdminEditUserModal} from "./modals/AdminUserEditModal.tsx";
 import {Pill} from "../../../components/modules/Pill.tsx";
 import {useAxios} from "../../../config/axios.ts";
 import {usersSchemaType} from "../../../types/api/userType.ts";
+import {useTranslation} from "react-i18next";
 
 export function AdminUsers() {
     const {openModal} = useModal()
     const API = useAxios()
     const [page, setPage] = useState(1)
+    const {t} = useTranslation();
 
     const {data, isLoading} = useQuery(
         ['users', page],
@@ -32,23 +34,25 @@ export function AdminUsers() {
     return <div className="px-7 py-4">
 
         <div className="flex justify-between items-center  mb-4">
-            <h1 className="text-2xl text-indigo-950 font-semibold">Admin Users</h1>
+            <h1 className="text-2xl text-indigo-950 font-semibold">
+                {t('title.admin.users')}
+            </h1>
 
             <Button title="create user" color="primary" onClick={() => openModal(() => <AdminCreateUserModal/>)}>
                 <Plus size={16} className="mr-2"/>
-                Create User
+                {t('button.create')}
             </Button>
         </div>
 
         <Table>
             <TableHead>
                 <TableRow>
-                <TableHeader>Name</TableHeader>
-                    <TableHeader>Email</TableHeader>
-                    <TableHeader>Permissions</TableHeader>
-                    <TableHeader>File Path</TableHeader>
-                    <TableHeader>Created At</TableHeader>
-                    <TableHeader>Action</TableHeader>
+                    <TableHeader>{t('table.name')}</TableHeader>
+                    <TableHeader>{t('table.email')}</TableHeader>
+                    <TableHeader>{t('table.permissions')}</TableHeader>
+                    <TableHeader>{t('table.file_path')}</TableHeader>
+                    <TableHeader>{t('table.created_at')}</TableHeader>
+                    <TableHeader>{t('table.actions')}</TableHeader>
                 </TableRow>
             </TableHead>
             <TableBody>

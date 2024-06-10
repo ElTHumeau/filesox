@@ -19,8 +19,26 @@ import {AdminSettings} from "./view/admin/AdminSettings.tsx";
 import {AdminShares} from "./view/admin/AdminShares.tsx";
 import {AdminLogs} from "./view/admin/AdminLogs.tsx";
 import {AuthProvider} from "./context/modules/AuthContext.tsx";
+import {CurrentPathProvider} from "./context/modules/CurrentPathContext.tsx";
+import {initReactI18next} from "react-i18next";
+import i18n from "i18next";
+import {fr} from "./lang/fr.ts";
+import {en} from "./lang/en.ts";
 
 const queryClient = new QueryClient()
+
+i18n.use(initReactI18next)
+    .init({
+        resources: {
+            fr: fr,
+            en: en
+        },
+        lng: 'fr',
+        fallbackLng: 'en',
+        interpolation: {
+            escapeValue: false
+        }
+    });
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
@@ -31,7 +49,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                         <Routes>
                             <Route path="/" element={<ProtectedRouteProvider/>}>
                                 <Route path="/" element={<App/>}>
-                                    <Route index element={<Dashboard/>}/>
+                                    <Route path="/" element={<CurrentPathProvider/>}>
+                                        <Route index element={<Dashboard/>}/>
+                                    </Route>
 
                                     <Route path="/profile" element={<Profile/>}>
                                         <Route index element={<ProfileEdit/>}/>

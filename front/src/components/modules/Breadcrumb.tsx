@@ -3,17 +3,19 @@ import {ReactNode} from "react";
 import {useQueryClient} from "react-query";
 import {useUserStore} from "../../stores/useUserStore.ts";
 import {useCurrentPath} from "../../context/modules/CurrentPathContext.tsx";
+import {useTranslation} from "react-i18next";
 
 export function Breadcrumb() {
     const {user} = useUserStore()
     const {currentPath} = useCurrentPath()
+    const {t} = useTranslation()
     const pathnames = currentPath?.split("/").filter((x: string) => x) ?? []
 
     return <div className="mb-8">
         <div className="flex items-center gap-3">
             <BreadcrumbItem to={user!.file_path} active={currentPath !== user!.file_path}>
                 <Home strokeWidth={1.5} size={20}/>
-                Home
+                {t('title.home')}
             </BreadcrumbItem>
 
             {currentPath !== '/' &&

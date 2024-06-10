@@ -6,11 +6,13 @@ import {FilePaths, useLocalStorage} from "../../hooks/useLocalStorage.ts";
 import {useQueryClient} from "react-query";
 import {LayoutModules} from "./modules/LayoutModulesImage.tsx";
 import {useCurrentPath} from "../../context/modules/CurrentPathContext.tsx";
+import {useTranslation} from "react-i18next";
 
 export function LayoutsGrid({files, folders}: { files: FileType[] | undefined, folders: FolderType[] | undefined }) {
     const {activeStorage, setActiveStorage} = useFileStore();
     const {setPath} = useCurrentPath()
     const queryClient = useQueryClient()
+    const {t} = useTranslation()
 
     const handleDoubleClick = (folder_name: string) => {
         setPath(folder_name)
@@ -23,7 +25,9 @@ export function LayoutsGrid({files, folders}: { files: FileType[] | undefined, f
 
     return <>
         <div>
-            <h1 className="text-2xl font-bold text-gray-800">Folders</h1>
+            <h1 className="text-2xl font-bold text-gray-800">
+                {t('title.folders')}
+            </h1>
             <hr className="mb-4" />
 
             <div className="flex flex-wrap items-center md:grid md:grid-cols-5 gap-5">
@@ -49,7 +53,9 @@ export function LayoutsGrid({files, folders}: { files: FileType[] | undefined, f
         </div>
 
         <div className="mt-7">
-            <h1 className="text-2xl font-bold text-gray-800">Files</h1>
+            <h1 className="text-2xl font-bold text-gray-800">
+                {t('title.files')}
+            </h1>
             <hr className="mb-4" />
 
             <div className="flex flex-wrap items-center md:grid md:grid-cols-5 gap-5">

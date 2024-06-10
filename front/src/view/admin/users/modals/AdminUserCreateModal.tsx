@@ -11,6 +11,7 @@ import {useAlerts} from "../../../../context/modules/AlertContext.tsx";
 import {useModal} from "../../../../hooks/useModal.ts";
 import {useAxios} from "../../../../config/axios.ts";
 import {permissionsSchemaType} from "../../../../types/api/userType.ts";
+import {useTranslation} from "react-i18next";
 
 const schema = z.object({
     name: z.string().min(3),
@@ -28,6 +29,7 @@ export function AdminCreateUserModal() {
     const {setAlerts} = useAlerts()
     const {closeModal} = useModal()
     const API = useAxios()
+    const {t} = useTranslation()
 
     const {
         register,
@@ -54,7 +56,7 @@ export function AdminCreateUserModal() {
         {
         onSuccess: () => {
             queryClient.invalidateQueries('users')
-            setAlerts('success', 'User created successfully')
+            setAlerts('success', t('alerts.success.user.create'))
             closeModal()
         }
     })
@@ -67,13 +69,15 @@ export function AdminCreateUserModal() {
 
     return <>
         <ModalHeader>
-            <h2 className="text-lg font-semibold">Create User</h2>
+            <h2 className="text-lg font-semibold">
+                {t('title.admin.user.create')}
+            </h2>
         </ModalHeader>
         <FormFields onSubmit={handleSubmit(onSubmit)}>
             <ModalBody>
                 <Row cols={2}>
                     <FormField>
-                        <FormLabel htmlFor="name">Name</FormLabel>
+                        <FormLabel htmlFor="name">{t('input.label.name')}</FormLabel>
                         <input
                             {...register('name')}
                             type="text"
@@ -84,7 +88,7 @@ export function AdminCreateUserModal() {
                         }
                     </FormField>
                     <FormField>
-                        <FormLabel htmlFor="email">Email</FormLabel>
+                        <FormLabel htmlFor="email">{t('input.label.email')}</FormLabel>
                         <input
                             {...register('email')}
                             type="email"
@@ -96,7 +100,7 @@ export function AdminCreateUserModal() {
                     </FormField>
                 </Row>
                 <FormField>
-                    <FormLabel htmlFor="password">Password</FormLabel>
+                    <FormLabel htmlFor="password">{t('input.label.password')}</FormLabel>
                     <input
                         {...register('password')}
                         type="password"
@@ -107,7 +111,7 @@ export function AdminCreateUserModal() {
                     }
                 </FormField>
                 <FormField>
-                    <FormLabel htmlFor="file_path">File path</FormLabel>
+                    <FormLabel htmlFor="file_path">{t('input.label.file_path')}</FormLabel>
                     <input
                         {...register('file_path')}
                         type="text"
@@ -119,7 +123,7 @@ export function AdminCreateUserModal() {
                 </FormField>
 
                 <FormField>
-                    <FormLabel htmlFor="permission">Permission</FormLabel>
+                    <FormLabel htmlFor="permission">{t('input.label.permissions')}</FormLabel>
                     <div className="flex items-center gap-2 my-3">
                         <input
                             type="checkbox"
@@ -167,7 +171,7 @@ export function AdminCreateUserModal() {
                     color="primary"
                     type="submit"
                 >
-                    Create
+                    {t('button.create')}
                 </Button>
             </ModalFooter>
         </FormFields>
