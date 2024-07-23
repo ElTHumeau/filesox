@@ -3,7 +3,6 @@ import {useFileStore} from "../../stores/useFileStore.ts";
 import {ReactNode} from "react";
 import {truncateString} from "../../hooks/useStore.ts";
 import {FilePaths, useLocalStorage} from "../../hooks/useLocalStorage.ts";
-import {useQueryClient} from "react-query";
 import {LayoutModules} from "./modules/LayoutModulesImage.tsx";
 import {useCurrentPath} from "../../context/modules/CurrentPathContext.tsx";
 import {useTranslation} from "react-i18next";
@@ -11,12 +10,10 @@ import {useTranslation} from "react-i18next";
 export function LayoutsGrid({files, folders}: { files: FileType[] | undefined, folders: FolderType[] | undefined }) {
     const {activeStorage, setActiveStorage} = useFileStore();
     const {setPath} = useCurrentPath()
-    const queryClient = useQueryClient()
     const {t} = useTranslation()
 
     const handleDoubleClick = (folder_name: string) => {
         setPath(folder_name)
-        queryClient.invalidateQueries("storage")
     }
 
     const handleFocus = (file: FileType) => {

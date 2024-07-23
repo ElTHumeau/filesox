@@ -1,6 +1,5 @@
 import {Home} from "lucide-react";
 import {ReactNode} from "react";
-import {useQueryClient} from "react-query";
 import {useUserStore} from "../../stores/useUserStore.ts";
 import {useCurrentPath} from "../../context/modules/CurrentPathContext.tsx";
 import {useTranslation} from "react-i18next";
@@ -44,12 +43,10 @@ function BreadcrumbSeparator() {
 }
 
 function BreadcrumbItem({to, active, children}: { to: string, active: boolean, children: ReactNode }) {
-    const queryClient = useQueryClient()
     const {setPath} = useCurrentPath()
 
     const handleSetItem = () => {
-        setPath( to === './' ? '' : to + '/')
-        queryClient.invalidateQueries("storage")
+        setPath(to === './' ? './' : to + '/')
     }
 
     return <>

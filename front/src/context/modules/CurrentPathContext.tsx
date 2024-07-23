@@ -12,22 +12,22 @@ export const CurrentPathContext = createContext<CurrentPathContext | null>(null)
 export const CurrentPathProvider = () => {
     const [currentPath, setCurrentPath] = useState<string | null>(localStorage.getItem(FilePaths.path));
 
+    const setPath_ = (path: string) => {
+        localStorage.setItem(FilePaths.path, path);
+        setCurrentPath(path)
+    }
+
     useEffect(() => {
         const storedPath = localStorage.getItem(FilePaths.path);
-        if (storedPath) {
+        if (storedPath !== currentPath) {
             setCurrentPath(storedPath);
         }
     }, []);
 
-    const setPath_ = (path: string) => {
-        setCurrentPath(path)
-        localStorage.setItem(FilePaths.path, path);
-    }
-
     const contextValue = useMemo(
         () => ({
             currentPath: currentPath,
-            setPath: setPath_
+            setPath: setPath_,
         }),
         [currentPath]
     );

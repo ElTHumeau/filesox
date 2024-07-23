@@ -7,8 +7,6 @@ import {useUserStore} from "../stores/useUserStore.ts";
 import {Breadcrumb} from "../components/modules/Breadcrumb.tsx";
 import {useAxios} from "../config/axios.ts";
 import {useCurrentPath} from "../context/modules/CurrentPathContext.tsx";
-import {FilePaths} from "../hooks/useLocalStorage.ts";
-
 
 export function Dashboard() {
     const {files, folders, setFiles, setFolders, setActiveStorage} = useFileStore();
@@ -16,10 +14,11 @@ export function Dashboard() {
     const {currentPath} = useCurrentPath()
     const API = useAxios()
 
-    const {isLoading} = useQuery("storage",
+    const {isLoading} = useQuery(
+        ["storage", currentPath],
         async () => {
             const response = await API.post("/folders", {
-                path: localStorage.getItem(FilePaths.path) || currentPath
+                path: currentPath
             })
             return response.data
         }
