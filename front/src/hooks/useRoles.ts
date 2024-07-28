@@ -1,3 +1,5 @@
+import {RoleEnum} from "../types/enum/RoleEnum.ts";
+
 export function useRoles() {
     const  getPermissions = (userPermissions: string[], formPermissions: number[], permissions : any) => {
         const userPermissionIds = permissions.map((permission: any) => {
@@ -13,5 +15,19 @@ export function useRoles() {
         return formPermissions
     }
 
-    return {getPermissions}
+    const role = (permissions: string[], userPermissions : string[]) => {
+        if (userPermissions.includes(RoleEnum.ADMIN)) {
+            return true
+        }
+
+        for (let i = 0; i < permissions.length; i++) {
+            if (userPermissions.includes(permissions[i])) {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    return {getPermissions, role}
 }

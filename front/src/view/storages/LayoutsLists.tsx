@@ -31,7 +31,7 @@ export function LayoutsLists({files, folders}: { files: FileType[], folders: Fol
             ))}
 
             <div className="space-y-3 mt-3">
-                <LayoutModules files={files} layout="list"/>
+                <LayoutModules file={files} layout="list"/>
             </div>
         </div>
     </>

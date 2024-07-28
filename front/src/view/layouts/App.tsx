@@ -32,6 +32,9 @@ import {useAuth} from "../../context/modules/AuthContext.tsx";
 import {ButtonDownload} from "../../components/layouts/modules/ButtonDownload..tsx";
 import {useState} from "react";
 import {useTranslation} from "react-i18next";
+import {useRoles} from "../../hooks/useRoles.ts";
+import {RoleEnum} from "../../types/enum/RoleEnum.ts";
+import {useUserStore} from "../../stores/useUserStore.ts";
 
 export function App() {
     const {openModal} = useModal()
@@ -41,6 +44,8 @@ export function App() {
     const nav = useNavigate()
     const location = useLocation()
     const {t} = useTranslation()
+    const {role} = useRoles()
+    const {user} = useUserStore()
 
     const handleClickLogout = (e: MouseEvent) => {
         e.preventDefault()
@@ -73,20 +78,30 @@ export function App() {
                         <NavItem>
                             {location.pathname === '/' && activeStorage &&
                                 <>
-                                    <ButtonIcon svg={Share2} title={t('tooltip.share')}
-                                                onClick={() => openModal(() => <ModalShareMedia/>, "md")}/>
-                                    <ButtonIcon svg={SquarePen} title={t('tooltip.rename')}
-                                                onClick={() => openModal(() => <ModalEditMedia/>, "md")}/>
-                                    <ButtonIcon svg={MoveUpRight} title={t('tooltip.move')}
-                                                onClick={() => openModal(() => <ModalMoveMedia/>, "md")}/>
-                                    <ButtonIcon svg={Trash2} title={t('tooltip.delete')}
-                                                onClick={() => openModal(() => <ModalDeleteMedia/>, "md")}/>
+                                    {role([RoleEnum.SHARE_OBJECT], user!.roles) && (
+                                        <ButtonIcon svg={Share2} title={t('tooltip.share')}
+                                                    onClick={() => openModal(() => <ModalShareMedia/>, "md")}/>
+                                    )}
+                                    {role([RoleEnum.EDIT_OBJECT], user!.roles) && (
+                                        <ButtonIcon svg={SquarePen} title={t('tooltip.rename')}
+                                                    onClick={() => openModal(() => <ModalEditMedia/>, "md")}/>
+                                    )}
+                                    {role([RoleEnum.EDIT_OBJECT], user!.roles) && (
+                                        <ButtonIcon svg={MoveUpRight} title={t('tooltip.move')}
+                                                    onClick={() => openModal(() => <ModalMoveMedia/>, "md")}/>
+                                    )}
+                                    {role([RoleEnum.DELETE_OBJECT], user!.roles) && (
+                                        <ButtonIcon svg={Trash2} title={t('tooltip.delete')}
+                                                    onClick={() => openModal(() => <ModalDeleteMedia/>, "md")}/>
+                                    )}
                                     <ButtonIcon svg={Info} title={t('tooltip.information')}/>
                                 </>
                             }
                             <ButtonLayout/>
                             <ButtonDownload/>
-                            <ButtonIcon svg={Upload} title={t('tooltip.upload')}/>
+                            {role([RoleEnum.CREATE_OBJECT], user!.roles) && (
+                                <ButtonIcon svg={Upload} title={t('tooltip.upload')}/>
+                            )}
                         </NavItem>
                     </NavItemsRight>
                 </>
@@ -100,9 +115,12 @@ export function App() {
                     <SidebarMenu>
                         <SidebarTitleMenu>{t('title.nav.sub.menu')}</SidebarTitleMenu>
                         <SidebarMenuItem href="/" svg={Home}>{t('title.nav.dashboard')}</SidebarMenuItem>
-                        <SidebarMenuItem svg={FolderPlus} onClick={() => openModal(() => <ModalCreateFolder/>, "md")}>
-                            {t('title.nav.create_folder')}
-                        </SidebarMenuItem>
+                        {role([RoleEnum.CREATE_OBJECT], user!.roles) && (
+                            <SidebarMenuItem svg={FolderPlus}
+                                             onClick={() => openModal(() => <ModalCreateFolder/>, "md")}>
+                                {t('title.nav.create_folder')}
+                            </SidebarMenuItem>
+                        )}
                     </SidebarMenu>
                     <SidebarMenu>
                         <SidebarTitleMenu>{t('title.nav.profile')}</SidebarTitleMenu>
@@ -113,23 +131,25 @@ export function App() {
                             {t('title.nav.logout')}
                         </SidebarMenuItem>
                     </SidebarMenu>
-                    <SidebarMenu>
-                        <SidebarTitleMenu>
-                            {t('title.nav.sub.administration')}
-                        </SidebarTitleMenu>
-                        <SidebarMenuItem href="/admin/settings" svg={Settings}>
-                            {t('title.nav.settings')}
-                        </SidebarMenuItem>
-                        <SidebarMenuItem href="/admin/users" svg={Users}>
-                            {t('title.nav.users')}
-                        </SidebarMenuItem>
-                        <SidebarMenuItem href="/admin/shares" svg={Share2}>
-                            {t('title.nav.shares')}
-                        </SidebarMenuItem>
-                        <SidebarMenuItem href="/admin/logs" svg={Archive}>
-                            {t('title.nav.logs')}
-                        </SidebarMenuItem>
-                    </SidebarMenu>
+                    {role([RoleEnum.ADMIN], user!.roles) && (
+                        <SidebarMenu>
+                            <SidebarTitleMenu>
+                                {t('title.nav.sub.administration')}
+                            </SidebarTitleMenu>
+                            <SidebarMenuItem href="/admin/settings" svg={Settings}>
+                                {t('title.nav.settings')}
+                            </SidebarMenuItem>
+                            <SidebarMenuItem href="/admin/users" svg={Users}>
+                                {t('title.nav.users')}
+                            </SidebarMenuItem>
+                            <SidebarMenuItem href="/admin/shares" svg={Share2}>
+                                {t('title.nav.shares')}
+                            </SidebarMenuItem>
+                            <SidebarMenuItem href="/admin/logs" svg={Archive}>
+                                {t('title.nav.logs')}
+                            </SidebarMenuItem>
+                        </SidebarMenu>
+                    )}
                 </SidebarMenuContent>
                 <SidebarMenuContent>
                     <SidebarItemVersion>v 1.0.8</SidebarItemVersion>

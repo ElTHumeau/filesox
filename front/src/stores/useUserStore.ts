@@ -1,5 +1,5 @@
 import {create} from "zustand";
-import {persist} from "zustand/middleware";
+import {createJSONStorage, persist} from "zustand/middleware";
 
 export interface User {
     id: number;
@@ -7,7 +7,7 @@ export interface User {
     email: string;
     layout: boolean;
     file_path: string;
-    permissions: string[];
+    roles: string[];
 }
 
 interface UserState {
@@ -23,7 +23,7 @@ export const useUserStore = create<UserState>()(
         }),
         {
             name: 'user-store',
-            getStorage: () => localStorage
+            storage: createJSONStorage(() => localStorage)
         }
     )
 );
