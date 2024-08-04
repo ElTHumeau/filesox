@@ -11,6 +11,7 @@ import {FilePaths, useLocalStorage} from "../../../hooks/useLocalStorage.ts";
 import {useUserStore} from "../../../stores/useUserStore.ts";
 import {useAxios} from "../../../config/axios.ts";
 import {useTranslation} from "react-i18next";
+import {useStorage} from "../../../hooks/useStorage.ts";
 
 const schema = z.object({
     path: z.string().min(2)
@@ -22,6 +23,7 @@ export function ModalCreateFolder() {
     const {setAlerts} = useAlerts()
     const {closeModal} = useModal()
     const {getItem} = useLocalStorage()
+    const {getPath} = useStorage()
     const {user} = useUserStore()
     const client = useQueryClient()
     const API = useAxios()
@@ -49,7 +51,7 @@ export function ModalCreateFolder() {
 
     const onSubmit: SubmitHandler<FormFields> = (data: FormFields) => {
         mutate({
-            path: user?.file_path === "./" ? getItem(FilePaths.path) + data.path :  user?.file_path + getItem(FilePaths.path)! + data.path
+            path: getPath(data.path, user?.file_path!, getItem(FilePaths.path)!)
         })
     }
 

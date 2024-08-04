@@ -8,8 +8,6 @@ import {useMutation, useQueryClient} from "react-query";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {FilePaths, useLocalStorage} from "../../hooks/useLocalStorage.ts";
-import {useUserStore} from "../../stores/useUserStore.ts";
 import {useFileStore} from "../../stores/useFileStore.ts";
 import {useTranslation} from "react-i18next";
 
@@ -22,9 +20,7 @@ type FormFields = z.infer<typeof schema>
 export function ModalMoveMedia() {
     const {closeModal} = useModal()
     const {setAlerts} = useAlerts()
-    const {getItem} = useLocalStorage()
     const {activeStorage} = useFileStore()
-    const {user} = useUserStore()
     const {t} = useTranslation()
 
     const API = useAxios()
@@ -40,10 +36,9 @@ export function ModalMoveMedia() {
 
     const {mutate} = useMutation(
         async (path: string ) => {
-            console.log(activeStorage!.name)
             await API.post("/folders/move", {
-                path: user?.file_path === "./" ? activeStorage!.name : user?.file_path + getItem(FilePaths.path)! + activeStorage!.name,
-                new_path: path
+                path: activeStorage!.name,
+                new_path: path === './' ? activeStorage?.name.split('/').reverse()[0]  : path + '/' + activeStorage!.name
             })
         }, {
             onSuccess: () => {

@@ -5,12 +5,17 @@ import {useFileStore} from "../../stores/useFileStore.ts";
 import {useAxios} from "../../config/axios.ts";
 import {useQueryClient} from "react-query";
 import {useCurrentPath} from "../../context/modules/CurrentPathContext.tsx";
+import {useStorage} from "../../hooks/useStorage.ts";
+import {useUserStore} from "../../stores/useUserStore.ts";
+import {FilePaths, useLocalStorage} from "../../hooks/useLocalStorage.ts";
 
 export function Dropzone({children}: { children: ReactNode }) {
     const {setFiles} = useFileStore();
     const API = useAxios()
     const queryClient = useQueryClient()
-    const {currentPath} = useCurrentPath()
+    const {user} = useUserStore()
+    const {getPath} = useStorage()
+    const {getItem} = useLocalStorage()
 
     const handleFileUpload = async (file: File) => {
         const chunkSize = 1024 * 1024 * 5; // 5 MB chunk size
@@ -18,7 +23,7 @@ export function Dropzone({children}: { children: ReactNode }) {
 
         // initialisation de l'upload
         const initResponse = await API.post("/folders/upload/init", {
-                filename: currentPath,
+                filename: getPath(file.path, user?.file_path!, getItem(FilePaths.path)!),
                 total_chunks: totalChunks,
             },
             {
@@ -37,7 +42,7 @@ export function Dropzone({children}: { children: ReactNode }) {
             formData.append('uploadId', uploadId.toString());
             formData.append('chunkNumber', (index + 1).toString());
             formData.append('totalChunks', totalChunks.toString());
-            formData.append('file', chunk, currentPath!!);
+            formData.append('file', chunk, getPath(file.path, user?.file_path!, getItem(FilePaths.path)!),);
 
             // Assurez-vous que `mutate` est asynchrone et retourne une promesse
             await API.post("/folders/upload", formData, {
@@ -50,7 +55,7 @@ export function Dropzone({children}: { children: ReactNode }) {
         // Finalisation de l'upload
         await API.post("/folders/upload/complete", {
             upload_id: uploadId.toString(),
-            filename: currentPath,
+            filename: getPath(file.path, user?.file_path!, getItem(FilePaths.path)!),
         });
 
         await queryClient.invalidateQueries("storage")

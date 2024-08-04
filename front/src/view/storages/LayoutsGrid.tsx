@@ -27,7 +27,7 @@ export function LayoutsGrid({files, folders}: { files: FileType[] | undefined, f
             </h1>
             <hr className="mb-4" />
 
-            <div className="flex flex-wrap items-center md:grid md:grid-cols-5 gap-5">
+            <div className="flex flex-wrap items-center gap-5">
                 {folders && folders.map((folder, index) => (
                     <div
                         key={index}
@@ -55,7 +55,7 @@ export function LayoutsGrid({files, folders}: { files: FileType[] | undefined, f
             </h1>
             <hr className="mb-4" />
 
-            <div className="flex flex-wrap items-center md:grid md:grid-cols-5 gap-5">
+            <div className="flex flex-wrap items-center gap-5">
                 {files && files.map((file, index) => (
                     <div
                         key={index}
