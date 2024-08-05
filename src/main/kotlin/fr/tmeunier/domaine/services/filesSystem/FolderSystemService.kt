@@ -7,9 +7,8 @@ import aws.sdk.kotlin.services.s3.paginators.listObjectsV2Paginated
 import aws.smithy.kotlin.runtime.content.ByteStream
 import aws.smithy.kotlin.runtime.content.toFlow
 import fr.tmeunier.config.S3Config
-import fr.tmeunier.domaine.models.S3File
-import fr.tmeunier.domaine.models.S3Folder
-import fr.tmeunier.domaine.models.S3Response
+import fr.tmeunier.domaine.models.*
+import fr.tmeunier.domaine.repositories.StorageRepository
 import fr.tmeunier.domaine.services.filesSystem.StorageService.toHumanReadableValue
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.cancellable
@@ -21,6 +20,8 @@ object FolderSystemService {
     val uploads = mutableMapOf<String, MutableList<CompletedPart>>()
 
     suspend fun createFolder(client: S3Client, nameObject: String) {
+        StorageRepository.create("$nameObject/", "folder", null, null, null, null)
+
         client.putObject(PutObjectRequest {
             bucket = S3Config.bucketName
             key = "$nameObject/"
@@ -28,27 +29,24 @@ object FolderSystemService {
     }
 
     suspend fun deleteFolder(client: S3Client, prefixBucket: String) {
-        client.listObjectsV2Paginated {
-            bucket = S3Config.bucketName
-            prefix = prefixBucket
-            maxKeys = 1000
-        }.collect { res ->
-            res.contents?.forEach {
-                if (it.key != prefixBucket && it.key!!.endsWith("/")) {
-                    deleteFolder(client, it.key!!)
-                } else {
-                    client.deleteObject(DeleteObjectRequest {
-                        bucket = S3Config.bucketName
-                        key = it.key!!
-                    })
-                }
-            }
-        }
+        try {
+            val objects = mutableListOf<S3Resource>()
 
-        client.deleteObject(DeleteObjectRequest {
-            bucket = S3Config.bucketName
-            key = prefixBucket
-        })
+            StorageRepository.findAllByFolder(prefixBucket).forEach {
+                objects.add(S3Resource(it.path, "storage", it.name, null, it.id, null, null))
+            }
+
+            objects.asReversed().forEach { it ->
+                StorageRepository.delete(it.id!!)
+
+                client.deleteObject(DeleteObjectRequest {
+                    bucket = S3Config.bucketName
+                    key = it.path
+                })
+            }
+        } catch (e: Exception) {
+            println("Error deleting folder ${e.message}")
+        }
     }
 
     suspend fun move(client: S3Client, path: String, newPath: String) {
@@ -98,6 +96,46 @@ object FolderSystemService {
         }
 
         return S3Response(folders, files)
+    }
+
+    suspend fun listAll(client: S3Client): List<S3Resource> {
+        val storages = mutableListOf<S3Resource>()
+        val path = ""
+
+        client.listObjectsV2Paginated {
+            bucket = S3Config.bucketName
+            prefix = path
+        }.collect { res ->
+            res.contents?.filter { it.key != null && it.key != path }?.forEach { content ->
+                if (content.key!!.endsWith("/")) {
+                    storages.add(
+                        S3Resource(
+                            content.key!!,
+                            "folder",
+                            null,
+                            getParentPath(content.key!!, true),
+                            null,
+                            null,
+                            null
+                        )
+                    )
+                } else {
+                    storages.add(
+                        S3Resource(
+                            content.key!!,
+                            "file",
+                            content.key!!.split('/').reversed()[0],
+                            getParentPath(content.key!!, false),
+                            null,
+                            StorageService.getIconForFile(content.key!!),
+                            content.size!!.toHumanReadableValue(),
+                        )
+                    )
+                }
+            }
+        }
+
+        return storages.reversed()
     }
 
     suspend fun downloadFileMultipart(client: S3Client, remotePath: String, localPath: String) {
@@ -156,7 +194,9 @@ object FolderSystemService {
         return multipartRes.uploadId
     }
 
-    suspend fun uploadMultipart(client: S3Client, key: String, uploadId: String?, chunkNumber: Int, fileBytes: ByteArray?, totalChunks: Int): String? {
+    suspend fun uploadMultipart(
+        client: S3Client, key: String, uploadId: String?, chunkNumber: Int, fileBytes: ByteArray?, totalChunks: Int
+    ): String? {
         try {
             val part = client.uploadPart(UploadPartRequest {
                 bucket = S3Config.bucketName
@@ -175,7 +215,7 @@ object FolderSystemService {
             uploads[uploadId!!]?.add(part)
 
         } catch (e: S3Exception) {
-           println("Error uploading file: ${e.message}")
+            println("Error uploading file: ${e.message}")
         }
 
         return uploadId
@@ -193,5 +233,12 @@ object FolderSystemService {
                 uploadId = uplId
             }
         }).also { uploads.remove(uplId) }
+    }
+
+    private fun getParentPath(filepath: String, isFolder: Boolean): String? {
+        val cleanedPath = if (isFolder) filepath.trimEnd('/') else filepath
+        val parent = cleanedPath.substringBeforeLast("/")
+
+        return if (parent == cleanedPath || parent.isEmpty()) null else "$parent/"
     }
 }

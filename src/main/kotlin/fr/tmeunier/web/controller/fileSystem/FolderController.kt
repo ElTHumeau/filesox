@@ -2,6 +2,7 @@ package fr.tmeunier.web.controller.fileSystem
 
 import aws.sdk.kotlin.services.s3.model.S3Exception
 import fr.tmeunier.config.S3Config
+import fr.tmeunier.domaine.repositories.StorageRepository
 import fr.tmeunier.domaine.requests.DownloadRequest
 import fr.tmeunier.domaine.requests.Folder
 import fr.tmeunier.domaine.requests.FolderMoveRequest
@@ -38,7 +39,10 @@ object FolderController {
 
     suspend fun move(call: ApplicationCall) {
         val request = call.receive<FolderMoveRequest>()
+
+        StorageRepository.moveByPath(request.path, request.newPath)
         S3Config.makeClient()?.let { FolderSystemService.move(it, request.path, request.newPath) }
+
         call.respond(HttpStatusCode.OK)
     }
 

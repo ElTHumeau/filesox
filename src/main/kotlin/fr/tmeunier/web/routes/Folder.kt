@@ -2,6 +2,7 @@ package fr.tmeunier.web.routes
 
 import aws.sdk.kotlin.services.s3.model.S3Exception
 import fr.tmeunier.config.S3Config
+import fr.tmeunier.domaine.repositories.StorageRepository
 import fr.tmeunier.domaine.requests.CompletedUpload
 import fr.tmeunier.domaine.requests.GetPathRequest
 import fr.tmeunier.domaine.requests.InitialUpload
@@ -42,6 +43,7 @@ fun Route.folderRoutes() {
         route("/upload") {
             post("/init") {
                 val request = call.receive<InitialUpload>()
+                StorageRepository.create(request.filename, "file", request.filename.split('/').reversed()[0], null, null, null)
 
                 val uploadId = S3Config.makeClient()?.let {
                     FolderSystemService.initiateMultipartUpload(it, request.filename)

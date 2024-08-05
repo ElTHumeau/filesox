@@ -93,5 +93,18 @@ CREATE TABLE logs
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
+-- tables files
+CREATE TABLE storages
+(
+    id         BINARY(16) PRIMARY KEY,
+    path       VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL,
+    name       VARCHAR(255) CHARACTER SET utf8mb4,
+    parent     VARCHAR(255) CHARACTER SET utf8mb4,
+    type       VARCHAR(20) NOT NULL,
+    size       varchar(10),
+    icon       VARCHAR(255),
+    updated_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 
 

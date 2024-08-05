@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import fr.tmeunier.config.Security
 import fr.tmeunier.web.routes.admin.adminLogRouting
+import fr.tmeunier.web.routes.admin.adminRouting
 import fr.tmeunier.web.routes.admin.adminUserRouting
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -64,6 +65,7 @@ fun Application.configurationRoute() {
                 withRole(Security.ADMIN){
                     adminUserRouting()
                     adminLogRouting()
+                    adminRouting()
                 }
             }
         }
