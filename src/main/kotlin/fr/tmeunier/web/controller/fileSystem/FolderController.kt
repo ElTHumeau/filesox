@@ -22,13 +22,8 @@ object FolderController {
     suspend fun listFoldersAndFiles(call: ApplicationCall) {
         val request = call.receive<GetPathRequest>()
 
-        val data = S3Config.makeClient()?.let { FolderSystemService.listFoldersAndFiles(it, request.path ?: "") }
-
-        if (data != null) {
-            call.respond(data)
-        } else {
-            call.respond(HttpStatusCode.NotFound)
-        }
+        val data = StorageRepository.findAllByPath(request.path )
+        call.respond(data)
     }
 
     suspend fun createFolder(call: ApplicationCall) {

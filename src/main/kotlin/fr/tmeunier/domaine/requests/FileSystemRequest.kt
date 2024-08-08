@@ -16,7 +16,7 @@ data class FolderMoveRequest(
 
 @Serializable
 data class GetPathRequest(
-    val path: String? = ""
+    val path: String?
 )
 
 @Serializable

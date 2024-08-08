@@ -1,9 +1,14 @@
 package fr.tmeunier.domaine.repositories
 
+import aws.smithy.kotlin.runtime.util.type
 import fr.tmeunier.config.Database
+import fr.tmeunier.domaine.models.S3File
+import fr.tmeunier.domaine.models.S3Folder
+import fr.tmeunier.domaine.models.S3Response
 import fr.tmeunier.domaine.models.Storage
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNull
 import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
@@ -29,6 +34,45 @@ object StorageRepository {
         transaction(database) {
             SchemaUtils.create(Storages)
         }
+    }
+
+    fun findAllByPath(path: String?): S3Response {
+        val folders = mutableListOf<S3Folder>()
+        val files = mutableListOf<S3File>()
+
+        transaction(database) {
+            val rows = Storages.select {
+                if (path != null) {
+                    Storages.path eq "$path%"
+                } else {
+                    Storages.parent.isNull()
+                }
+            }
+
+            rows.forEach { row ->
+                when (row[Storages.type]) {
+                    "folder" -> folders.add(
+                        S3Folder(
+                            id = row[Storages.id],
+                            path = row[Storages.path],
+                            parent = row[Storages.parent]
+                        )
+                    )
+                    else -> files.add(
+                        S3File(
+                            id = row[Storages.id],
+                            path = row[Storages.path],
+                            name = row[Storages.name],
+                            parent = row[Storages.parent],
+                            size = row[Storages.size],
+                            icon = row[Storages.icon]
+                        )
+                    )
+                }
+            }
+        }
+
+        return S3Response(folders, files)
     }
 
     fun findAllByFolder(folder: String): List<Storage> {

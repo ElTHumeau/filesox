@@ -2,6 +2,7 @@ package fr.tmeunier.domaine.services.filesSystem
 
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.createMultipartUpload
+import aws.sdk.kotlin.services.s3.express.sigV4S3Express
 import aws.sdk.kotlin.services.s3.model.*
 import aws.sdk.kotlin.services.s3.paginators.listObjectsV2Paginated
 import aws.smithy.kotlin.runtime.content.ByteStream
@@ -22,10 +23,14 @@ object FolderSystemService {
     suspend fun createFolder(client: S3Client, nameObject: String) {
         StorageRepository.create("$nameObject/", "folder", null, null, null, null)
 
-        client.putObject(PutObjectRequest {
-            bucket = S3Config.bucketName
-            key = "$nameObject/"
-        })
+        try {
+            client.putObject(PutObjectRequest {
+                bucket = S3Config.bucketName
+                key = "$nameObject/"
+            })
+        } catch (e: S3Exception) {
+            println("Error creating folder: ${e.message}")
+        }
     }
 
     suspend fun deleteFolder(client: S3Client, prefixBucket: String) {
@@ -60,42 +65,6 @@ object FolderSystemService {
             bucket = S3Config.bucketName
             key = path
         })
-    }
-
-    suspend fun listFoldersAndFiles(client: S3Client, currentPath: String): S3Response {
-        val folders = mutableListOf<S3Folder>()
-        val files = mutableListOf<S3File>()
-
-        val path = if (currentPath == "./") "" else currentPath
-
-        client.listObjectsV2Paginated {
-            bucket = S3Config.bucketName
-            delimiter = "/"
-            prefix = path
-            maxKeys = 1000
-        }.collect { res ->
-            res.commonPrefixes?.filter { it.prefix != null && it.prefix != path }?.forEach {
-                folders.add(S3Folder(it.prefix!!))
-            }
-
-            res.contents?.filter { it.key != null && it.key != path }?.forEach { content ->
-                if (content.key!!.endsWith("/")) {
-                    folders.add(S3Folder(content.key!!))
-                } else {
-                    val icon = StorageService.getIconForFile(content.key!!)
-                    files.add(
-                        S3File(
-                            content.key!!,
-                            content.size!!.toHumanReadableValue(),
-                            icon,
-                            if (icon == "file") content.key!! else null
-                        )
-                    )
-                }
-            }
-        }
-
-        return S3Response(folders, files)
     }
 
     suspend fun listAll(client: S3Client): List<S3Resource> {
