@@ -15,7 +15,7 @@ fun Route.adminRouting() {
         withRole(Security.ADMIN) {
             get("/sync-s3") {
                 val storageS3 =  S3Config.makeClient()?.let {
-                    FolderSystemService.listAll(it)
+                    FolderSystemService.listAll(it, "")
                 }
 
                 if (storageS3 != null) {

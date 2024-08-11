@@ -74,4 +74,11 @@ object StorageService {
             }
         }
     }
+
+    fun getParentPath(filepath: String, isFolder: Boolean): String? {
+        val cleanedPath = if (isFolder) filepath.trimEnd('/') else filepath
+        val parent = cleanedPath.substringBeforeLast("/")
+
+        return if (parent == cleanedPath || parent.isEmpty()) null else "$parent/"
+    }
 }

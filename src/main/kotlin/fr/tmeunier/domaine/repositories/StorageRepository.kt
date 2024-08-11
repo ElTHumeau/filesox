@@ -6,6 +6,7 @@ import fr.tmeunier.domaine.models.S3File
 import fr.tmeunier.domaine.models.S3Folder
 import fr.tmeunier.domaine.models.S3Response
 import fr.tmeunier.domaine.models.Storage
+import fr.tmeunier.domaine.services.filesSystem.StorageService
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.isNull
@@ -42,8 +43,8 @@ object StorageRepository {
 
         transaction(database) {
             val rows = Storages.select {
-                if (path != null) {
-                    Storages.path eq "$path%"
+                if (path != "null") {
+                    Storages.parent eq path
                 } else {
                     Storages.parent.isNull()
                 }
@@ -109,10 +110,13 @@ object StorageRepository {
         }
     }
 
-    fun moveByPath(path: String, newPath: String) {
+    fun moveById(id: UUID, newPath: String, isParent: Boolean = false) {
+        val parent = StorageService.getParentPath(newPath, isParent)
+
         transaction(database) {
-            Storages.update({ Storages.path eq path }) {
+            Storages.update({ Storages.id eq id }) {
                 it[Storages.path] = newPath
+                it[Storages.parent] = parent
                 it[updatedAt] = java.time.LocalDateTime.now()
             }
         }

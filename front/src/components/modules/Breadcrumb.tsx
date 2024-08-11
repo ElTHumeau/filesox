@@ -12,20 +12,20 @@ export function Breadcrumb() {
 
     return <div className="mb-8">
         <div className="flex items-center gap-3">
-            <BreadcrumbItem to={user!.file_path} active={currentPath !== user!.file_path}>
+            <BreadcrumbItem to={"null"} active={currentPath !== user!.file_path}>
                 <Home strokeWidth={1.5} size={20}/>
                 {t('title.home')}
             </BreadcrumbItem>
 
-            {currentPath !== '/' &&
+            {currentPath !== 'null' &&
                 <BreadcrumbSeparator/>
             }
 
-            {pathnames.map((name, index) =>
+            {currentPath !== 'null' && pathnames.map((name, index) =>
                 <div key={index} className="flex gap-3">
                     <BreadcrumbItem
                         key={index}
-                        to={`${pathnames.slice(0, index + 1).join("/")}`}
+                        to={`${pathnames.slice(0, index + 1).join("/")}/`}
                         active={index === pathnames.length - 2}
                     >
                         {name !== '.' ? name : ''}
@@ -46,7 +46,7 @@ function BreadcrumbItem({to, active, children}: { to: string, active: boolean, c
     const {setPath} = useCurrentPath()
 
     const handleSetItem = () => {
-        setPath(to === './' ? './' : to + '/')
+        setPath(to)
     }
 
     return <>

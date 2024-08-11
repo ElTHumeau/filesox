@@ -19,7 +19,7 @@ object UserRepository {
         val id: Column<Int> = integer("id").autoIncrement()
         val name: Column<String> = varchar("name", length = 255)
         val email: Column<String> = varchar("email", length = 255)
-        val filePath: Column<String> = varchar("file_path", length = 255)
+        val filePath: Column<String?> = varchar("file_path", length = 255).nullable()
         val password: Column<String> = varchar("password", length = 255)
         val layout: Column<Boolean> = bool("layout").default(false)
         val createdAt: Column<LocalDateTime> = datetime("created_at")

@@ -47,8 +47,6 @@ export function SidebarMenuItem({svg: SvgComponent, children, href, onClick}: {
     const location = useLocation();
     let isActive;
 
-    console.log(location.pathname)
-
     if (location.pathname === href) {
         isActive = 'border-indigo-700 text-indigo-700 bg-indigo-50';
     } else  if (location.pathname === '/' && href === '/'){

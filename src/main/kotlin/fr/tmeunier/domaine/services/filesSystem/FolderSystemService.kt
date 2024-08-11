@@ -21,8 +21,6 @@ object FolderSystemService {
     val uploads = mutableMapOf<String, MutableList<CompletedPart>>()
 
     suspend fun createFolder(client: S3Client, nameObject: String) {
-        StorageRepository.create("$nameObject/", "folder", null, null, null, null)
-
         try {
             client.putObject(PutObjectRequest {
                 bucket = S3Config.bucketName
@@ -67,41 +65,66 @@ object FolderSystemService {
         })
     }
 
-    suspend fun listAll(client: S3Client): List<S3Resource> {
+    suspend fun listAll(client: S3Client, path: String ): List<S3Resource> {
+        return listAllRecursive(client, "")
+    }
+
+    private suspend fun listAllRecursive(client: S3Client, path: String): List<S3Resource> {
         val storages = mutableListOf<S3Resource>()
-        val path = ""
 
         client.listObjectsV2Paginated {
             bucket = S3Config.bucketName
             prefix = path
+            delimiter = "/"
         }.collect { res ->
-            res.contents?.filter { it.key != null && it.key != path }?.forEach { content ->
-                if (content.key!!.endsWith("/")) {
+            res.commonPrefixes?.forEach { commonPrefix ->
+                if (commonPrefix.prefix != null && commonPrefix.prefix != path) {
+                    val folderName = commonPrefix.prefix!!.removeSuffix("/").split('/').last()
                     storages.add(
                         S3Resource(
-                            content.key!!,
-                            "folder",
-                            null,
-                            getParentPath(content.key!!, true),
-                            null,
-                            null,
-                            null
+                            path = commonPrefix.prefix!!,
+                            type = "folder",
+                            name = commonPrefix.prefix!!.split('/').last(),
+                            parent = StorageService.getParentPath(commonPrefix.prefix!!, true),
+                            icon = null,
+                            size = null,
+                            id = null
                         )
                     )
-                } else {
-                    storages.add(
-                        S3Resource(
-                            content.key!!,
-                            "file",
-                            content.key!!.split('/').reversed()[0],
-                            getParentPath(content.key!!, false),
-                            null,
-                            StorageService.getIconForFile(content.key!!),
-                            content.size!!.toHumanReadableValue(),
-                        )
-                    )
+
+                    storages.addAll(listAllRecursive(client, commonPrefix.prefix!!))
                 }
             }
+
+            res.contents
+                ?.filter { it.key != null && it.key != path }
+                ?.forEach { content ->
+                    if (content.key!!.endsWith("/")) {
+                        storages.add(
+                            S3Resource(
+                                path = content.key!!,
+                                type = "folder",
+                                name = content.key!!.split('/').last(),
+                                parent = StorageService.getParentPath(content.key!!, true),
+                                icon = null,
+                                size = null,
+                                id = null
+                            )
+                        )
+                    } else {
+                        storages.add(
+                            S3Resource(
+                                path = content.key!!,
+                                type = "storage",
+                                name = content.key!!.split('/').last(),
+                                parent = StorageService.getParentPath(content.key!!, false),
+                                icon = StorageService.getIconForFile(content.key!!),
+                                size = content.size?.toHumanReadableValue(),
+                                id = null
+                            )
+                        )
+                    }
+                }
         }
 
         return storages.reversed()
@@ -202,12 +225,5 @@ object FolderSystemService {
                 uploadId = uplId
             }
         }).also { uploads.remove(uplId) }
-    }
-
-    private fun getParentPath(filepath: String, isFolder: Boolean): String? {
-        val cleanedPath = if (isFolder) filepath.trimEnd('/') else filepath
-        val parent = cleanedPath.substringBeforeLast("/")
-
-        return if (parent == cleanedPath || parent.isEmpty()) null else "$parent/"
     }
 }

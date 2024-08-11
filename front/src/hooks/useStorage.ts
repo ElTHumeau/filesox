@@ -1,10 +1,10 @@
 export const useStorage = () => {
 
     const getPath = (path: string, userPath: string, currentPath: string) => {
-        if (userPath === './' && currentPath === './') return path
+        currentPath === 'null' ? currentPath = '' : currentPath
 
-        if (userPath === './' && currentPath !== './') {
-            return currentPath + path
+        if (typeof(userPath) === 'object' || userPath === null || userPath == 'null') {
+            userPath = ''
         }
 
         return userPath + currentPath + path

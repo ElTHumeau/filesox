@@ -39,8 +39,10 @@ export function ModalCreateFolder() {
 
     const {mutate} = useMutation(
         async ({path} :{path: string}) => {
-            await API.post("/folders/create", {path: path})
-
+            await API.post("/folders/create", {
+                path: path,
+                parent: getItem(FilePaths.path) === 'null' ? null : getItem(FilePaths.path)
+            })
         }, {
         onSuccess: () => {
             client.invalidateQueries('storage')
@@ -51,7 +53,7 @@ export function ModalCreateFolder() {
 
     const onSubmit: SubmitHandler<FormFields> = (data: FormFields) => {
         mutate({
-            path: getPath(data.path, user?.file_path!, getItem(FilePaths.path)!)
+            path: getPath(data.path, user!.file_path, getItem(FilePaths.path)!)
         })
     }
 

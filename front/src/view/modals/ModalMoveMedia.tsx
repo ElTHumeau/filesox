@@ -37,8 +37,9 @@ export function ModalMoveMedia() {
     const {mutate} = useMutation(
         async (path: string ) => {
             await API.post("/folders/move", {
-                path: activeStorage!.name,
-                new_path: path === './' ? activeStorage?.name.split('/').reverse()[0]  : path + '/' + activeStorage!.name
+                id: activeStorage!.id,
+                path: activeStorage!.path,
+                new_path: path === './' ? activeStorage?.path.split('/').reverse()[0]  : path + '/' + activeStorage!.path
             })
         }, {
             onSuccess: () => {

@@ -1,10 +1,14 @@
 export interface FileType {
+    id: string;
     name: string;
+    path: string;
+    parent?: string;
     size: number;
     icon: string;
-    image: string;
 }
 
 export interface FolderType {
-    name: string;
+    id: string;
+    path: string;
+    parent?: string;
 }

@@ -5,7 +5,7 @@ export interface UserType {
     id: number;
     name: string;
     email: string;
-    file_path: string;
+    file_path?: string;
     created_at: string;
     permissions: string[];
     layout?: boolean;
@@ -44,7 +44,7 @@ export const usersSchemaType = paginationSchemaType(
         id: z.number(),
         name: z.string(),
         email: z.string(),
-        file_path: z.string(),
+        file_path: z.string().nullable(),
         created_at: z.string(),
         permissions: z.array(z.string()),
     })),
@@ -63,7 +63,7 @@ export const profileSchemaType = z.object({
     id: z.number(),
     name: z.string(),
     email: z.string(),
-    file_path: z.string(),
+    file_path: z.string().nullable(),
     permissions: z.array(z.string()),
 })
 
