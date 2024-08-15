@@ -10,6 +10,7 @@ import {useModal} from "../../../hooks/useModal.ts";
 import {useAxios} from "../../../config/axios.ts";
 import {useTranslation} from "react-i18next";
 import {FilePaths, useLocalStorage} from "../../../hooks/useLocalStorage.ts";
+import {FolderPlus} from "lucide-react";
 
 const schema = z.object({
     path: z.string().min(2)
@@ -55,7 +56,10 @@ export function ModalCreateFolder() {
 
     return <>
         <ModalHeader>
-            <h2 className="text-xl font-medium">{t('title.modal.create_folder')}</h2>
+            <h2 className="flex items-center gap-2 text-2xl">
+                <span className="text-indigo-500"><FolderPlus height={28} width={28}/></span>
+                {t('title.modal.create_folder')}
+            </h2>
         </ModalHeader>
 
         <FormFields onSubmit={handleSubmit(onSubmit)}>

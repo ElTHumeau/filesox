@@ -1,5 +1,9 @@
-import {ModalBody, ModalFooter, ModalHeader} from "../../components/modules/Modal.tsx";
-import {Button} from "../../components/modules/Button.tsx";
+import {
+    ModalBody,
+    ModalFooterButton,
+    ModalHeaderLogo,
+} from "../../components/modules/Modal.tsx";
+import {ButtonBig} from "../../components/modules/Button.tsx";
 import {useAlerts} from "../../context/modules/AlertContext.tsx";
 import {useFileStore} from "../../stores/useFileStore.ts";
 import {FormFields} from "../../components/modules/Form.tsx";
@@ -8,6 +12,7 @@ import {useMutation, useQueryClient} from "react-query";
 import {useModal} from "../../hooks/useModal.ts";
 import {useAxios} from "../../config/axios.ts";
 import {useTranslation} from "react-i18next";
+import {Trash2} from "lucide-react";
 
 export function ModalDeleteMedia() {
     const {setAlerts} = useAlerts()
@@ -41,26 +46,31 @@ export function ModalDeleteMedia() {
     }
 
     return <>
-        <ModalHeader>
-            <h2 className="text-xl font-medium">
-                {t('title.modal.delete_media')}
-            </h2>
-        </ModalHeader>
-        <FormFields onSubmit={handleSubmit(onSubmit)}>
+        <ModalHeaderLogo color="danger">
+            <Trash2 height="42" width="42"/>
+        </ModalHeaderLogo>
 
+        <FormFields onSubmit={handleSubmit(onSubmit)}>
             <ModalBody>
-                <p className="text-center  py-3.5">
+
+                <p className="text-center mt-3 py-3.5">
                     {t('title.modal.delete_media_message')}
                 </p>
             </ModalBody>
-            <ModalFooter>
-                <Button
+            <ModalFooterButton>
+                <ButtonBig
+                    color="white"
+                    onClick={() => closeModal()}
+                >
+                    {t('button.cancel')}
+                </ButtonBig>
+                <ButtonBig
                     color="danger"
                     type="submit"
                 >
                     {t('button.delete')}
-                </Button>
-            </ModalFooter>
+                </ButtonBig>
+            </ModalFooterButton>
         </FormFields>
     </>
 }

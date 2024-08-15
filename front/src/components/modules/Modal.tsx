@@ -42,6 +42,16 @@ export function ModalHeader({children}: { children: ReactNode }) {
     </div>
 }
 
+export function ModalHeaderLogo({color, children}: {color: string, children: ReactNode }) {
+    const colorClass = getColor(color)
+
+    return <div className="flex justify-center mt-3">
+        <div className={`rounded-full p-6 ${colorClass}`}>
+            {children}
+        </div>
+    </div>
+}
+
 export function ModalBody({children}: { children: ReactNode }) {
     return <div>
         {children}
@@ -64,4 +74,23 @@ export function ModalFooter({children}: { children: ReactNode}) {
             {children}
         </div>
     </div>
+}
+
+export function ModalFooterButton({children}: { children: ReactNode}) {
+    return <div className="pt-5 mb-3">
+        <div className="flex justify-center items-center gap-2">
+            {children}
+        </div>
+    </div>
+}
+
+function getColor(color: string) {
+    switch (color) {
+        case 'danger':
+            return 'bg-red-100 text-red-500';
+        case 'primary':
+            return 'bg-indigo-100 text-indigo-500';
+        default:
+            return 'bg-white hover:bg-gray-100 text-gray-800 border-gray-500';
+    }
 }

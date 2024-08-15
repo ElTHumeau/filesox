@@ -9,6 +9,8 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
 import {useFileStore} from "../../stores/useFileStore.ts";
+import {Edit2, FolderPlus, SquarePen} from "lucide-react";
+import {useTranslation} from "react-i18next";
 
 const schema = z.object({
     name: z.string().min(2)
@@ -23,6 +25,7 @@ export function ModalEditMedia() {
 
     const API = useAxios()
     const client = useQueryClient()
+    const {t} = useTranslation()
 
     const {
         register,
@@ -58,8 +61,12 @@ export function ModalEditMedia() {
 
     return <>
         <ModalHeader>
-            <h2 className="text-2xl">Edit media</h2>
+            <h2 className="flex items-center gap-2 text-2xl">
+                <span className="text-indigo-500"><SquarePen height={28} width={28}/></span>
+                {t('title.modal.edit_media')}
+            </h2>
         </ModalHeader>
+
 
         <FormFields onSubmit={handleSubmit(onSubmit)} >
             <ModalBody>

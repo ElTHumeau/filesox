@@ -21,6 +21,17 @@ export function Button({children, color, ...props}: { children: ReactNode, color
     </button>
 }
 
+export function ButtonBig({children, color, ...props}: { children: ReactNode, color: string, [key: string]: any }) {
+    const colorClass = getColor(color)
+
+    return <button
+        className={`${colorClass} flex items-center text-md py-3 px-10 rounded`}
+        {...props}
+    >
+        {children}
+    </button>
+}
+
 function getColor(color: string) {
     switch (color) {
         case 'danger':

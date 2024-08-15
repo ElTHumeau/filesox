@@ -110,6 +110,7 @@ export const fr = {
             login: 'Connexion',
             register: 'Inscription',
             move: 'Déplacer',
+            close: 'Fermer',
         },
 
         table: {

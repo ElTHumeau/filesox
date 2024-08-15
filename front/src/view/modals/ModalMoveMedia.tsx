@@ -11,6 +11,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {useFileStore} from "../../stores/useFileStore.ts";
 import {useTranslation} from "react-i18next";
 import {useStorage} from "../../hooks/useStorage.ts";
+import {MoveUpRight} from "lucide-react";
 
 const schema = z.object({
     path: z.string().min(2)
@@ -57,7 +58,10 @@ export function ModalMoveMedia() {
 
     return <>
         <ModalHeader>
-            <h2 className="text-2xl">Move media</h2>
+            <h2 className="flex items-center gap-2 text-2xl">
+                <span className="text-indigo-500"><MoveUpRight height={28} width={28} /></span>
+                {t('title.modal.edit_media')}
+            </h2>
         </ModalHeader>
 
         <FormFields onSubmit={handleSubmit(onSubmit)}>

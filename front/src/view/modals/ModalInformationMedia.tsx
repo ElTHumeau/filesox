@@ -1,12 +1,16 @@
 import {ModalBody, ModalHeader} from "../../components/modules/Modal.tsx";
 import {useFileStore} from "../../stores/useFileStore.ts";
+import {InfoIcon} from "lucide-react";
 
 export function ModalInformationMedia() {
     const {activeStorage} = useFileStore()
 
     return <>
         <ModalHeader>
-            <h2 className="text-2xl">Information Média</h2>
+            <h2 className="flex items-center gap-2 text-2xl">
+                <span className="text-indigo-500"><InfoIcon height={28} width={28}/></span>
+                Information Média
+            </h2>
         </ModalHeader>
 
         <ModalBody>

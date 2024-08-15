@@ -2,11 +2,15 @@ import {ModalBody, ModalFooter, ModalHeader} from "../../components/modules/Moda
 import {Button} from "../../components/modules/Button.tsx";
 import {FormField, FormFields, FormLabel} from "../../components/modules/Form.tsx";
 import {Row} from "../../components/modules/Grid.tsx";
+import {Share2} from "lucide-react";
 
 export function ModalShareMedia() {
     return <>
         <ModalHeader>
-            <h2 className="text-2xl">Share media</h2>
+            <h2 className="flex items-center gap-2 text-2xl">
+                <span className="text-indigo-500"><Share2 height={28} width={28} /></span>
+                Share media
+            </h2>
         </ModalHeader>
         <ModalBody>
             <FormFields onSubmit={() => console.log('coucou')}>
