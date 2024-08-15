@@ -1,5 +1,6 @@
 export enum FilePaths {
-    path = "FILE_PATH_AUTH"
+    path = "FILE_PATH_AUTH",
+    id = "FILE_PATH_ID"
 }
 
 export function useLocalStorage() {

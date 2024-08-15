@@ -1,30 +1,28 @@
 import {Dropzone} from "../components/Dropzone/Dropzone.tsx";
 import {useFileStore} from "../stores/useFileStore.ts";
 import {useQuery} from "react-query";
-import {LayoutsLists} from "./storages/LayoutsLists.tsx";
 import {LayoutsGrid} from "./storages/LayoutsGrid.tsx";
-import {useUserStore} from "../stores/useUserStore.ts";
 import {Breadcrumb} from "../components/modules/Breadcrumb.tsx";
 import {useAxios} from "../config/axios.ts";
 import {useCurrentPath} from "../context/modules/CurrentPathContext.tsx";
 
 export function Dashboard() {
     const {files, folders, setFiles, setFolders, setActiveStorage} = useFileStore();
-    const {user} = useUserStore()
-    let {currentPath} = useCurrentPath()
+    let {currentPath, setPath} = useCurrentPath()
     const API = useAxios()
 
     const {isLoading} = useQuery(
         ["storage", currentPath],
         async () => {
-            const response = await API.post("/folders", {
-                path: currentPath
+            const response = await API.post("/storages", {
+                path: currentPath === null ? 'null' : currentPath
             })
             return response.data
         }
         ,
         {
             onSuccess: (data) => {
+                setPath(data.folder?.path, data.folder?.id)
                 setFiles(data.files)
                 setFolders(data.folders)
             }
@@ -39,9 +37,6 @@ export function Dashboard() {
         <Dropzone>
                 <Breadcrumb/>
                 {files && folders &&
-                user?.layout === false ?
-                    <LayoutsLists files={files} folders={folders}/>
-                    :
                     <LayoutsGrid files={files} folders={folders}/>
                 }
         </Dropzone>

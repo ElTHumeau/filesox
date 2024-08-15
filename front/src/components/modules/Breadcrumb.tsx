@@ -12,7 +12,10 @@ export function Breadcrumb() {
 
     return <div className="mb-8">
         <div className="flex items-center gap-3">
-            <BreadcrumbItem to={"null"} active={currentPath !== user!.file_path}>
+            <BreadcrumbItem
+                to={"null"}
+                active={currentPath !== user!.file_path}
+            >
                 <Home strokeWidth={1.5} size={20}/>
                 {t('title.home')}
             </BreadcrumbItem>
@@ -46,7 +49,7 @@ function BreadcrumbItem({to, active, children}: { to: string, active: boolean, c
     const {setPath} = useCurrentPath()
 
     const handleSetItem = () => {
-        setPath(to)
+        setPath(to, null)
     }
 
     return <>

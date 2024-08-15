@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import fr.tmeunier.config.Security
 import fr.tmeunier.domaine.models.User
+import fr.tmeunier.domaine.repositories.FolderRepository
 import fr.tmeunier.domaine.repositories.RefreshTokenRepository
 import fr.tmeunier.domaine.repositories.UsersPermissionsRepository
 import java.time.LocalDateTime
@@ -16,13 +17,15 @@ object AuthentificatorService {
     fun createJwtToken(user: User): String {
 
         val role = UsersPermissionsRepository.findUserPermissions(user.id)
+        val folder = if (user.filePath != null) FolderRepository.findById(user.filePath) else null
 
         return JWT.create()
             .withSubject(user.id.toString())
             .withClaim("id", user.id)
             .withClaim("name", user.name)
             .withClaim("email", user.email)
-            .withClaim("file_path", user.filePath)
+            .withClaim("file_path", folder?.path)
+            .withClaim("path_id", folder?.id.toString())
             .withClaim("layout", user.layout)
             .withClaim("roles", role)
             .withAudience(Security.jwtAudience)

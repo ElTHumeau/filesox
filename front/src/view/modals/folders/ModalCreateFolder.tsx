@@ -7,11 +7,9 @@ import {useAlerts} from "../../../context/modules/AlertContext.tsx";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useModal} from "../../../hooks/useModal.ts";
-import {FilePaths, useLocalStorage} from "../../../hooks/useLocalStorage.ts";
-import {useUserStore} from "../../../stores/useUserStore.ts";
 import {useAxios} from "../../../config/axios.ts";
 import {useTranslation} from "react-i18next";
-import {useStorage} from "../../../hooks/useStorage.ts";
+import {FilePaths, useLocalStorage} from "../../../hooks/useLocalStorage.ts";
 
 const schema = z.object({
     path: z.string().min(2)
@@ -22,12 +20,10 @@ type FormFields = z.infer<typeof schema>
 export function ModalCreateFolder() {
     const {setAlerts} = useAlerts()
     const {closeModal} = useModal()
-    const {getItem} = useLocalStorage()
-    const {getPath} = useStorage()
-    const {user} = useUserStore()
     const client = useQueryClient()
     const API = useAxios()
     const {t} = useTranslation()
+    const {getItem} = useLocalStorage()
 
     const {
         register,
@@ -40,8 +36,8 @@ export function ModalCreateFolder() {
     const {mutate} = useMutation(
         async ({path} :{path: string}) => {
             await API.post("/folders/create", {
-                path: path,
-                parent: getItem(FilePaths.path) === 'null' ? null : getItem(FilePaths.path)
+                path:  getItem(FilePaths.path) === 'null' ? '' + path : getItem(FilePaths.path) + path,
+                parent_id: getItem(FilePaths.id) === 'null' ? null : getItem(FilePaths.id)
             })
         }, {
         onSuccess: () => {
@@ -53,7 +49,7 @@ export function ModalCreateFolder() {
 
     const onSubmit: SubmitHandler<FormFields> = (data: FormFields) => {
         mutate({
-            path: getPath(data.path, user!.file_path, getItem(FilePaths.path)!)
+            path: data.path
         })
     }
 

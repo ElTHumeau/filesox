@@ -51,6 +51,7 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
         let user = jwtDecode<User>(token)
         setUser(user)
         localStorage.setItem(FilePaths.path, user!!.file_path);
+        localStorage.setItem(FilePaths.id, user!!.path_id);
     }
 
     useEffect(() => {

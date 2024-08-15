@@ -1,8 +1,7 @@
 export interface FileType {
     id: string;
     name: string;
-    path: string;
-    parent?: string;
+    parent_id?: string;
     size: number;
     icon: string;
 }
@@ -10,5 +9,7 @@ export interface FileType {
 export interface FolderType {
     id: string;
     path: string;
-    parent?: string;
+    parent_id?: string;
 }
+
+export type ActiveStorageType<T> = T |null;

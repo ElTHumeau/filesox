@@ -1,10 +1,10 @@
 import {create} from "zustand";
-import {FileType, FolderType} from "../types/api/storageType.ts";
+import {ActiveStorageType, FileType, FolderType} from "../types/api/storageType.ts";
 
 type State = {
     files: undefined | FileType[];
     folders: undefined | FolderType[];
-    activeStorage: null | FolderType | FileType;
+    activeStorage: ActiveStorageType<FolderType | FileType>;
 };
 
 type Action = {

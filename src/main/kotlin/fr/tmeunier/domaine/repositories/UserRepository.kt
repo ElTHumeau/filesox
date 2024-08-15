@@ -10,6 +10,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDateTime
+import java.util.UUID
 
 object UserRepository {
 
@@ -19,7 +20,7 @@ object UserRepository {
         val id: Column<Int> = integer("id").autoIncrement()
         val name: Column<String> = varchar("name", length = 255)
         val email: Column<String> = varchar("email", length = 255)
-        val filePath: Column<String?> = varchar("file_path", length = 255).nullable()
+        val filePath: Column<UUID?> = uuid("file_path").nullable()
         val password: Column<String> = varchar("password", length = 255)
         val layout: Column<Boolean> = bool("layout").default(false)
         val createdAt: Column<LocalDateTime> = datetime("created_at")
@@ -34,7 +35,7 @@ object UserRepository {
         }
     }
 
-    suspend fun create(name: String, email: String, password: String, filePath: String? = null): Int {
+    suspend fun create(name: String, email: String, password: String, filePath: UUID? = null): Int {
         if (Security.getUserId() != 0) {
             LogService.add(Security.getUserId(), LogService.ACTION_CREATE, "${name} created")
         }
@@ -43,7 +44,7 @@ object UserRepository {
             Users.insert {
                 it[Users.name] = name
                 it[Users.email] = email
-                it[Users.filePath] = filePath ?: "./$name"
+                it[Users.filePath] = filePath
                 it[Users.layout] = false
                 it[Users.password] = HashService.hashPassword(password)
                 it[Users.createdAt] = LocalDateTime.now()

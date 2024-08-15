@@ -1,8 +1,8 @@
-package fr.tmeunier.web.controller.fileSystem
+package fr.tmeunier.web.controller.storage
 
 import aws.sdk.kotlin.services.s3.model.S3Exception
 import fr.tmeunier.config.S3Config
-import fr.tmeunier.domaine.repositories.StorageRepository
+import fr.tmeunier.domaine.repositories.FolderRepository
 import fr.tmeunier.domaine.requests.*
 import fr.tmeunier.domaine.services.filesSystem.FolderSystemService
 import fr.tmeunier.domaine.services.filesSystem.StorageService
@@ -16,38 +16,10 @@ import java.io.File
 
 object FolderController {
 
-    suspend fun listFoldersAndFiles(call: ApplicationCall) {
-        val request = call.receive<GetPathRequest>()
-
-        val data = StorageRepository.findAllByPath(request.path )
-        call.respond(data)
-    }
-
-    suspend fun createFolder(call: ApplicationCall) {
+    suspend fun create(call: ApplicationCall) {
         val request = call.receive<FolderCreateRequest>()
-
-        StorageRepository.create(request.path + "/", "folder", null, null, request.parent, null)
-        S3Config.makeClient()?.let { FolderSystemService.createFolder(it, request.path) }
-
+        FolderRepository.create(request.path, request.parentId)
         call.respond(HttpStatusCode.Created)
-    }
-
-    suspend fun move(call: ApplicationCall) {
-        val request = call.receive<FolderMoveRequest>()
-
-        StorageRepository.moveById(request.id, request.newPath)
-        S3Config.makeClient()?.let { FolderSystemService.move(it, request.path, request.newPath) }
-
-        call.respond(HttpStatusCode.OK)
-    }
-
-    suspend fun deleteFolder(call: ApplicationCall) {
-        val request = call.receive<Folder>()
-
-        //StorageRepository.delete(request.id)
-        S3Config.makeClient()?.let { FolderSystemService.deleteFolder(it, request.path) }
-
-        call.respond(HttpStatusCode.OK)
     }
 
     suspend fun download(call: ApplicationCall) {

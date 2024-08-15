@@ -5,8 +5,8 @@ CREATE TABLE users
     name       VARCHAR(255) NOT NULL,
     email      VARCHAR(255) NOT NULL,
     password   VARCHAR(255) NOT NULL,
-    file_path  VARCHAR(255) NOT NULL,
-    layout TINYINT(1) default 0 not null,
+    file_path  BINARY(16),
+    layout     TINYINT(1)            default 0 not null,
     created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -93,18 +93,26 @@ CREATE TABLE logs
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
--- tables files
-CREATE TABLE storages
+-- tables storages
+CREATE TABLE folders
 (
     id         BINARY(16) PRIMARY KEY,
     path       VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL,
-    name       VARCHAR(255) CHARACTER SET utf8mb4,
-    parent     VARCHAR(255) CHARACTER SET utf8mb4,
-    type       VARCHAR(20) NOT NULL,
-    size       varchar(10),
-    icon       VARCHAR(255),
-    updated_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
+    parent_id  BINARY(16),
+    updated_at DATETIME                           NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (parent_id) REFERENCES folders (id)
 );
 
+CREATE TABLE files
+(
+    id         BINARY(16) PRIMARY KEY,
+    parent_id  BINARY(16),
+    name       VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL,
+    size       varchar(10)                        NOT NULL,
+    icon       VARCHAR(255)                       NOT NULL,
+    updated_at DATETIME                           NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
+    FOREIGN KEY (parent_id) REFERENCES folders (id)
+)
 

@@ -35,6 +35,7 @@ import {useTranslation} from "react-i18next";
 import {useRoles} from "../../hooks/useRoles.ts";
 import {RoleEnum} from "../../types/enum/RoleEnum.ts";
 import {useUserStore} from "../../stores/useUserStore.ts";
+import {ModalInformationMedia} from "../modals/ModalInformationMedia.tsx";
 
 export function App() {
     const {openModal} = useModal()
@@ -94,7 +95,8 @@ export function App() {
                                         <ButtonIcon svg={Trash2} title={t('tooltip.delete')}
                                                     onClick={() => openModal(() => <ModalDeleteMedia/>, "md")}/>
                                     )}
-                                    <ButtonIcon svg={Info} title={t('tooltip.information')}/>
+                                    <ButtonIcon svg={Info} title={t('tooltip.information')}
+                                        onClick={() => openModal(() => <ModalInformationMedia/>, "lg")}/>
                                 </>
                             }
                             <ButtonLayout/>

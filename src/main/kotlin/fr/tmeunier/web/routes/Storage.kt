@@ -2,12 +2,11 @@ package fr.tmeunier.web.routes
 
 import aws.sdk.kotlin.services.s3.model.S3Exception
 import fr.tmeunier.config.S3Config
-import fr.tmeunier.domaine.repositories.StorageRepository
 import fr.tmeunier.domaine.requests.CompletedUpload
-import fr.tmeunier.domaine.requests.GetPathRequest
 import fr.tmeunier.domaine.requests.InitialUpload
 import fr.tmeunier.domaine.services.filesSystem.FolderSystemService
-import fr.tmeunier.web.controller.fileSystem.FolderController
+import fr.tmeunier.web.controller.storage.FolderController
+import fr.tmeunier.web.controller.storage.StorageController
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
@@ -15,27 +14,34 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.runBlocking
-import java.io.File
 
-fun Route.folderRoutes() {
+fun Route.storageRoute() {
 
-    route("/folders") {
+    route("/storages") {
         post {
-            FolderController.listFoldersAndFiles(call)
+            StorageController.listFoldersAndFiles(call)
         }
 
-        post("/create") {
-            FolderController.createFolder(call)
+        post("/update") {
+            StorageController.update(call)
         }
 
         post("/move") {
-            FolderController.move(call)
+            StorageController.move(call)
         }
 
         post("/delete") {
-            FolderController.deleteFolder(call)
+            StorageController.delete(call)
         }
+    }
 
+    route("/folders") {
+        post("/create") {
+            FolderController.create(call)
+        }
+    }
+
+    route("/files") {
         post("/download") {
             FolderController.download(call)
         }
@@ -43,7 +49,7 @@ fun Route.folderRoutes() {
         route("/upload") {
             post("/init") {
                 val request = call.receive<InitialUpload>()
-                StorageRepository.create(request.filename, "file", request.filename.split('/').reversed()[0], null, null, null)
+                // FolderRepository.create(request.filename, "file", request.filename.split('/').reversed()[0], null, null, null)
 
                 val uploadId = S3Config.makeClient()?.let {
                     FolderSystemService.initiateMultipartUpload(it, request.filename)
@@ -133,7 +139,7 @@ fun Route.folderRoutes() {
     route("/images") {
 
         post {
-            val request = call.receive<GetPathRequest>()
+            /*val request = call.receive<GetPathRequest>()
 
             val fileInCache = File(".cache/images/${request.path}")
 
@@ -151,7 +157,7 @@ fun Route.folderRoutes() {
                 call.respondFile(File(".cache/images/${request.path}"))
             } else {
                 call.respondFile(fileInCache)
-            }
+            }*/
         }
     }
 }

@@ -6,19 +6,13 @@ import {FormFields} from "../../components/modules/Form.tsx";
 import {useForm} from "react-hook-form";
 import {useMutation, useQueryClient} from "react-query";
 import {useModal} from "../../hooks/useModal.ts";
-import {useUserStore} from "../../stores/useUserStore.ts";
 import {useAxios} from "../../config/axios.ts";
 import {useTranslation} from "react-i18next";
-import {useStorage} from "../../hooks/useStorage.ts";
-import {FilePaths, useLocalStorage} from "../../hooks/useLocalStorage.ts";
 
 export function ModalDeleteMedia() {
     const {setAlerts} = useAlerts()
-    const {user} = useUserStore()
     const {activeStorage} = useFileStore()
     const {closeModal} = useModal()
-    const {getPath} = useStorage()
-    const {getItem} = useLocalStorage()
 
     const client = useQueryClient()
     const API = useAxios()
@@ -30,9 +24,9 @@ export function ModalDeleteMedia() {
 
     const {mutate} = useMutation(
         async () => {
-            await API.post("/folders/delete", {
+            await API.post("/storages/delete", {
                 id: activeStorage!.id,
-                path: getPath(activeStorage!.path, user!.file_path, getItem(FilePaths.path)!)
+                is_folder: !activeStorage?.name
             })
         }, {
         onSuccess: () => {

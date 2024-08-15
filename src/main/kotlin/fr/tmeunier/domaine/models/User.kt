@@ -1,8 +1,10 @@
 package fr.tmeunier.domaine.models
 
+import fr.tmeunier.domaine.services.serializer.UUIDSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
+import java.util.*
 
 
 data class User(
@@ -10,7 +12,7 @@ data class User(
     val name: String,
     val email: String,
     val password: String,
-    val filePath: String?,
+    val filePath: UUID?,
     val layout: Boolean,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
@@ -19,19 +21,21 @@ data class User(
 @Serializable
 data class UsersResponse(
     val id: Int = 0,
-    val name: String = "",
-    val email: String = "",
-    @SerialName("created_at") val createdAt: String = "",
-    @SerialName("file_path") val filePath: String?,
+    val name: String,
+    val email: String,
+    @SerialName("created_at") val createdAt: String,
+    @Serializable(with = UUIDSerializer::class)
+    @SerialName("file_path") val filePath: UUID?,
     val permissions: List<String> = emptyList()
 )
 
 @Serializable
 data class UserWidthPermissionResponse(
-    val id: Int = 0,
-    val name: String = "",
-    val email: String = "",
-    @SerialName("file_path") val filePath: String?,
+    val id: Int,
+    val name: String,
+    val email: String,
+    @Serializable(with = UUIDSerializer::class)
+    @SerialName("file_path") val filePath: UUID?,
     val permissions: List<String> = emptyList()
 )
 

@@ -10,6 +10,7 @@ import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useFileStore} from "../../stores/useFileStore.ts";
 import {useTranslation} from "react-i18next";
+import {useStorage} from "../../hooks/useStorage.ts";
 
 const schema = z.object({
     path: z.string().min(2)
@@ -22,6 +23,7 @@ export function ModalMoveMedia() {
     const {setAlerts} = useAlerts()
     const {activeStorage} = useFileStore()
     const {t} = useTranslation()
+    const {getNewPath} = useStorage()
 
     const API = useAxios()
     const client = useQueryClient()
@@ -39,7 +41,7 @@ export function ModalMoveMedia() {
             await API.post("/folders/move", {
                 id: activeStorage!.id,
                 path: activeStorage!.path,
-                new_path: path === './' ? activeStorage?.path.split('/').reverse()[0]  : path + '/' + activeStorage!.path
+                new_path: getNewPath(activeStorage!.path, path, activeStorage?.name)
             })
         }, {
             onSuccess: () => {

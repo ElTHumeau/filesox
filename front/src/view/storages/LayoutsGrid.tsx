@@ -12,8 +12,8 @@ export function LayoutsGrid({files, folders}: { files: FileType[] | undefined, f
     const {setPath} = useCurrentPath()
     const {t} = useTranslation()
 
-    const handleDoubleClick = (folder_name: string) => {
-        setPath(folder_name)
+    const handleDoubleClick = (folder: FolderType) => {
+        setPath(folder.path, folder.id)
     }
 
     const handleFocus = (file: FileType) => {
@@ -37,9 +37,9 @@ export function LayoutsGrid({files, folders}: { files: FileType[] | undefined, f
                             e.stopPropagation();
                         }}
                         onDoubleClick={() => {
-                            handleDoubleClick(folder.path);
+                            handleDoubleClick(folder);
                         }}
-                        className={`min-w-full md:min-w-72 flex gap-3 items-center px-4 py-2 rounded-lg border border-gray-200 ${activeStorage && activeStorage.path === folder.path ? 'bg-indigo-50 text-indigo-500 shadow-md cursor-pointer' : 'cursor-pointer shadow-md bg-white text-black'}`}
+                        className={`min-w-full md:min-w-72 flex gap-3 items-center px-4 py-2 rounded-lg border border-gray-200 ${activeStorage && 'path' in activeStorage && activeStorage.path === folder.path ? 'bg-indigo-50 text-indigo-500 shadow-md cursor-pointer' : 'cursor-pointer shadow-md bg-white text-black'}`}
                     >
                         <LayoutCardGrid name={folder.path} isFolder={true}>
                             <img src="images/folder-icon.png" alt="folder-icon" width="42" height="42" />
@@ -64,7 +64,7 @@ export function LayoutsGrid({files, folders}: { files: FileType[] | undefined, f
                             handleFocus(file);
                         }}
                         tabIndex={0}
-                        className={`flex gap-3 items-center px-4 py-2 border border-gray-200 rounded-md min-w-full md:min-w-72 md:max-w-72 ${activeStorage && activeStorage.path === file.path ? 'bg-indigo-50 text-indigo-500 shadow-md cursor-pointer' : 'cursor-pointer shadow-md bg-white'}`}
+                        className={`flex gap-3 items-center px-4 py-2 border border-gray-200 rounded-md min-w-full md:min-w-72 md:max-w-72 ${activeStorage && 'name' in activeStorage && activeStorage.name === file.name ? 'bg-indigo-50 text-indigo-500 shadow-md cursor-pointer' : 'cursor-pointer shadow-md bg-white'}`}
                     >
                         <LayoutCardGrid name={file.name} isFolder={false} size={file.size}>
                             <LayoutModules file={file} />

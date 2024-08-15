@@ -5,6 +5,40 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.util.UUID
 
+// --- Storage
+@Serializable
+data class GetStorageByPathRequest(
+    val path : String
+)
+
+@Serializable
+data class UpdateStorageRequest(
+    @Serializable(with = UUIDSerializer::class)
+    val id: UUID,
+    val name: String,
+    @SerialName("new_name") val newName: String,
+    @Serializable(with = UUIDSerializer::class)
+    @SerialName("parent_id") val parentId: UUID?
+)
+
+@Serializable
+data class MoveStorageRequest(
+    @Serializable(with = UUIDSerializer::class)
+    val id: UUID,
+    val path: String,
+    @SerialName("new_path") val newPath: String,
+    @SerialName("is_folder") val isFolder: Boolean = false
+)
+
+@Serializable
+data class DeleteStorageRequest(
+    @Serializable(with = UUIDSerializer::class)
+    val id: UUID,
+    @SerialName("is_folder") val isFolder: Boolean = false
+)
+
+// -- Folders
+
 @Serializable
 data class Folder(
     @Serializable(with = UUIDSerializer::class)
@@ -15,20 +49,8 @@ data class Folder(
 @Serializable
 data class FolderCreateRequest(
     val path: String,
-    val parent: String?
-)
-
-@Serializable
-data class FolderMoveRequest(
     @Serializable(with = UUIDSerializer::class)
-    val id: UUID,
-    val path: String,
-    @SerialName("new_path") val newPath: String
-)
-
-@Serializable
-data class GetPathRequest(
-    val path: String?
+    @SerialName("parent_id") val parentId: UUID?
 )
 
 @Serializable

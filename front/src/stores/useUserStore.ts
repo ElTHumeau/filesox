@@ -7,6 +7,7 @@ export interface User {
     email: string;
     layout: boolean;
     file_path: string;
+    path_id: string;
     roles: string[];
 }
 

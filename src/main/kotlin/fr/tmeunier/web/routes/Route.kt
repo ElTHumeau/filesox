@@ -51,7 +51,7 @@ fun Application.configurationRoute() {
         authRouting()
 
         authenticate("jwt") {
-            folderRoutes()
+            storageRoute()
             profileRouting()
 
             get("/hello-word") {

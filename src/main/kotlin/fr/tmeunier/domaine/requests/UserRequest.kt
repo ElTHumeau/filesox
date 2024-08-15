@@ -1,7 +1,9 @@
 package fr.tmeunier.domaine.requests
 
+import fr.tmeunier.domaine.services.serializer.UUIDSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import java.util.UUID
 
 @Serializable
 data class UserRequest(
@@ -31,7 +33,8 @@ data class AdminUserRequest(
     val id: Int? = null,
     val name: String,
     val email: String,
-    @SerialName("file_path") val filePath: String,
+    @Serializable(with = UUIDSerializer::class)
+    @SerialName("file_path") val filePath: UUID? = null,
     val layout: Boolean? = false,
     val permissions: Array<Int>,
     val password: String? = null
