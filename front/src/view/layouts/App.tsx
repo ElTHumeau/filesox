@@ -26,7 +26,6 @@ import {ModalDeleteMedia} from "../modals/ModalDeleteMedia.tsx";
 import {ModalEditMedia} from "../modals/ModalEditMedia.tsx";
 import {useModal} from "../../hooks/useModal.ts";
 import {Modal} from "../../components/modules/Modal.tsx";
-import {ButtonLayout} from "../../components/layouts/modules/ButtonLayout.tsx";
 import {useFileStore} from "../../stores/useFileStore.ts";
 import {useAuth} from "../../context/modules/AuthContext.tsx";
 import {ButtonDownload} from "../../components/layouts/modules/ButtonDownload..tsx";
@@ -57,7 +56,6 @@ export function App() {
     return <div>
         <Navbar>
             <NavItems>
-
                 <>
                     <NavItemsLeft>
                         {!sidebarOpen &&
@@ -99,7 +97,6 @@ export function App() {
                                         onClick={() => openModal(() => <ModalInformationMedia/>, "lg")}/>
                                 </>
                             }
-                            <ButtonLayout/>
                             <ButtonDownload/>
                             {role([RoleEnum.CREATE_OBJECT], user!.roles) && (
                                 <ButtonIcon svg={Upload} title={t('tooltip.upload')}/>
