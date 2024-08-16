@@ -3,6 +3,7 @@ package fr.tmeunier.domaine.requests
 import fr.tmeunier.domaine.services.serializer.UUIDSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.h2.util.DateTimeUtils
 import java.util.UUID
 
 // --- Storage
@@ -61,8 +62,14 @@ data class DownloadRequest(
 
 // --- Uploads
 @Serializable
-data class InitialUpload(
-    val filename: String,
+data class InitialUploadRequest(
+    val name: String,
+    val size: Long,
+    val type: String,
+    @SerialName("last_modified") val lastModified: Long,
+    @SerialName("web_relative_path") val webRelativePath: String?,
+    @Serializable(with = UUIDSerializer::class)
+    @SerialName("parent_id") val parentId: UUID?,
     @SerialName("total_chunks") val totalChunks: Int
 )
 

@@ -40,16 +40,10 @@ object SyncS3ToDatabaseService {
                     if (content.key!!.endsWith("/")) {
                         FolderRepository.create(content.key!!, parentId)
                     } else {
-                        val fileUUID = FileRepository.create(
-                            name = content.key!!.split('/').last(),
-                            size = content.size!!.toHumanReadableValue(),
-                            icon = StorageService.getIconForFile(content.key!!),
-                            parentId = parentId
-                        )
 
                         client.copyObject(CopyObjectRequest {
                             bucket = S3Config.bucketName
-                            key = fileUUID.toString()
+                            key = UUID.randomUUID().toString() + content.key!!.split('/').last()
                             copySource = S3Config.bucketName + "/" + content.key!!.split('/').last()
                         })
 

@@ -1,12 +1,15 @@
 package fr.tmeunier.domaine.repositories
 
 import fr.tmeunier.config.Database
-import fr.tmeunier.domaine.repositories.FolderRepository.Folders
+import fr.tmeunier.domaine.requests.InitialUploadRequest
 import fr.tmeunier.domaine.response.S3File
+import fr.tmeunier.domaine.services.filesSystem.StorageService
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.time.Instant
+import java.time.LocalDateTime
 import java.util.UUID
 
 object FileRepository {
@@ -19,6 +22,7 @@ object FileRepository {
         val name = varchar("name", length = 255)
         val size = varchar("size", 10)
         val icon = varchar("icon", length = 255)
+        val type = varchar("type", length = 50)
         val parentId = (uuid("parent_id") references FolderRepository.Folders.id).nullable()
         val updatedAt = datetime("updated_at")
 
@@ -71,15 +75,16 @@ object FileRepository {
         return files
     }
 
-    fun create (name: String, size: String, icon: String, parentId: UUID?): UUID {
+    fun create (file: InitialUploadRequest, parentId: UUID?): UUID {
         return transaction(database) {
             Files.insert {
                 it[id] = UUID.randomUUID()
-                it[Files.name] = name
-                it[Files.size] = size
-                it[Files.icon] = icon
+                it[Files.name] = file.name
+                it[Files.size] = file.size.toString()
+                it[Files.type] = file.type
+                it[Files.icon] = StorageService.getIconForFile(file.name)
                 it[Files.parentId] = parentId
-                it[Files.updatedAt] = java.time.LocalDateTime.now()
+                it[Files.updatedAt] = LocalDateTime.ofInstant(Instant.ofEpochMilli(file.lastModified), java.time.ZoneId.systemDefault())
             }
         } get Files.id
     }

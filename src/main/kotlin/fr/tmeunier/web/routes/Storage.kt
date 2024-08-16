@@ -2,9 +2,13 @@ package fr.tmeunier.web.routes
 
 import aws.sdk.kotlin.services.s3.model.S3Exception
 import fr.tmeunier.config.S3Config
+import fr.tmeunier.domaine.repositories.FileRepository
+import fr.tmeunier.domaine.repositories.FolderRepository
 import fr.tmeunier.domaine.requests.CompletedUpload
-import fr.tmeunier.domaine.requests.InitialUpload
+import fr.tmeunier.domaine.requests.InitialUploadRequest
+import fr.tmeunier.domaine.response.UploadCompleteResponse
 import fr.tmeunier.domaine.services.filesSystem.FolderSystemService
+import fr.tmeunier.domaine.services.filesSystem.StorageService
 import fr.tmeunier.web.controller.storage.FolderController
 import fr.tmeunier.web.controller.storage.StorageController
 import io.ktor.http.*
@@ -14,6 +18,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.runBlocking
+import java.util.*
 
 fun Route.storageRoute() {
 
@@ -48,15 +53,24 @@ fun Route.storageRoute() {
 
         route("/upload") {
             post("/init") {
-                val request = call.receive<InitialUpload>()
-                // FolderRepository.create(request.filename, "file", request.filename.split('/').reversed()[0], null, null, null)
+                val request = call.receive<InitialUploadRequest>()
+
+                // Create folder if it doesn't exist
+                val parentId = if (request.webRelativePath === "") {
+                    request.parentId
+                } else {
+                    request.webRelativePath?.let { it1 -> createFolderUploadFile(it1, request.parentId) }
+                }
+
+                val uuid = FileRepository.create(request, parentId)
+                val filename = uuid.toString() + '.' + StorageService.getExtension(request.type)
 
                 val uploadId = S3Config.makeClient()?.let {
-                    FolderSystemService.initiateMultipartUpload(it, request.filename)
+                    FolderSystemService.initiateMultipartUpload(it, filename)
                 }
 
                 if (uploadId != null) {
-                    call.respond(HttpStatusCode.OK, mapOf("uploadId" to uploadId))
+                    call.respond(HttpStatusCode.OK, UploadCompleteResponse(uploadId, filename))
                 } else {
                     call.respond(HttpStatusCode.InternalServerError, "Failed to initiate upload")
                 }
@@ -159,5 +173,19 @@ fun Route.storageRoute() {
                 call.respondFile(fileInCache)
             }*/
         }
+    }
+}
+
+fun createFolderUploadFile(path: String, parentId: UUID?): UUID {
+    val folderPathRequest = path.substringBeforeLast("/") + '/'
+    val folderParent = parentId?.let { FolderRepository.findById(it) }
+    val folderParentPath = if (folderParent !== null) folderParent.path else ""
+    val folder = FolderRepository.findByPath(folderParentPath + folderPathRequest)
+
+    return if (folder == null) {
+        val folderPath = (folderParent?.path ?: "") + folderPathRequest
+        FolderRepository.create(folderPath, parentId ?: folderParent?.id)
+    } else {
+        folder.id
     }
 }

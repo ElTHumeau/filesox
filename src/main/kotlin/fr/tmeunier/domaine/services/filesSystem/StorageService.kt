@@ -35,6 +35,10 @@ object StorageService {
         }
     }
 
+    fun getExtension(typeFile: String): String {
+        return typeFile.split("/").reversed()[0].split(".").reversed()[0]
+    }
+
     fun Long.toHumanReadableValue(): String {
         var bytes = this
         if (-1000 < bytes && bytes < 1000) {
@@ -73,12 +77,5 @@ object StorageService {
                 zos.closeEntry()
             }
         }
-    }
-
-    fun getParentPath(filepath: String, isFolder: Boolean): String? {
-        val cleanedPath = if (isFolder) filepath.trimEnd('/') else filepath
-        val parent = cleanedPath.substringBeforeLast("/")
-
-        return if (parent == cleanedPath || parent.isEmpty()) null else "$parent/"
     }
 }

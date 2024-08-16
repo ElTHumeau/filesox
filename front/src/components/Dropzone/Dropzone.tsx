@@ -4,65 +4,69 @@ import './dropzone.css';
 import {useFileStore} from "../../stores/useFileStore.ts";
 import {useAxios} from "../../config/axios.ts";
 import {useQueryClient} from "react-query";
-import {useCurrentPath} from "../../context/modules/CurrentPathContext.tsx";
-import {useStorage} from "../../hooks/useStorage.ts";
-import {useUserStore} from "../../stores/useUserStore.ts";
 import {FilePaths, useLocalStorage} from "../../hooks/useLocalStorage.ts";
 
 export function Dropzone({children}: { children: ReactNode }) {
     const {setFiles} = useFileStore();
     const API = useAxios()
     const queryClient = useQueryClient()
-    const {user} = useUserStore()
-    const {getPath} = useStorage()
     const {getItem} = useLocalStorage()
 
-    const handleFileUpload = async (file: File) => {
-        const chunkSize = 1024 * 1024 * 5; // 5 MB chunk size
-        const totalChunks = Math.ceil(file.size / chunkSize);
+    const handleFileUpload = async (files: File[]) => {
+        const chunkSize = 1024 * 1024 * 5; // 5MB
+        const parent_id = getItem(FilePaths.id) === 'null' ? null : getItem(FilePaths.id);
 
-        // initialisation de l'upload
-        const initResponse = await API.post("/folders/upload/init", {
-                filename: getPath(file.path, user?.file_path!, getItem(FilePaths.path)!),
-                total_chunks: totalChunks,
-            },
-            {
-                headers: {
-                    "Content-Type": "application/json",
+        console.log(parent_id)
+
+        for (const file of Array.from(files)) {
+            const totalChunks = Math.ceil(file.size / chunkSize);
+
+            const initResponse = await API.post("/files/upload/init", {
+                    name: file.name,
+                    size: file.size,
+                    type: file.type,
+                    last_modified: file.lastModified,
+                    web_relative_path: file.webkitRelativePath,
+                    parent_id: parent_id,
+                    total_chunks: totalChunks,
                 },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+
+
+            const uploadResponse = initResponse.data;
+            const chunks = createFileChunks(file, chunkSize);
+
+            for (let index = 0; index < chunks.length; index++) {
+                const chunk = chunks[index];
+                const formData = new FormData();
+                formData.append('uploadId', uploadResponse.upload_id);
+                formData.append('chunkNumber', (index + 1).toString());
+                formData.append('totalChunks', totalChunks.toString());
+                formData.append('file', chunk, uploadResponse.filename);
+
+                await API.post("/files/upload", formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                });
+            }
+
+            await API.post("/files/upload/complete", {
+                upload_id: uploadResponse.upload_id,
+                filename: uploadResponse.filename,
             });
 
-
-        const uploadId = initResponse.data.uploadId;
-        const chunks = createFileChunks(file, chunkSize);
-
-        for (let index = 0; index < chunks.length; index++) {
-            const chunk = chunks[index];
-            const formData = new FormData();
-            formData.append('uploadId', uploadId.toString());
-            formData.append('chunkNumber', (index + 1).toString());
-            formData.append('totalChunks', totalChunks.toString());
-            formData.append('file', chunk, getPath(file.path, user?.file_path!, getItem(FilePaths.path)!),);
-
-            // Assurez-vous que `mutate` est asynchrone et retourne une promesse
-            await API.post("/folders/upload", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            });
+            await queryClient.invalidateQueries("storage")
         }
 
-        // Finalisation de l'upload
-        await API.post("/folders/upload/complete", {
-            upload_id: uploadId.toString(),
-            filename: getPath(file.path, user?.file_path!, getItem(FilePaths.path)!),
-        });
-
-        await queryClient.invalidateQueries("storage")
     };
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
-        acceptedFiles.forEach(handleFileUpload);
+        handleFileUpload(acceptedFiles);
     }, [setFiles]);
 
     const {getRootProps, isDragActive} = useDropzone({
