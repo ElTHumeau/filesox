@@ -4,6 +4,7 @@ import fr.tmeunier.config.Database
 import fr.tmeunier.domaine.requests.InitialUploadRequest
 import fr.tmeunier.domaine.response.S3File
 import fr.tmeunier.domaine.services.filesSystem.StorageService
+import fr.tmeunier.domaine.services.filesSystem.StorageService.toHumanReadableValue
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.javatime.datetime
@@ -20,7 +21,7 @@ object FileRepository {
 
         val id = uuid("id")
         val name = varchar("name", length = 255)
-        val size = varchar("size", 10)
+        val size = long("size")
         val icon = varchar("icon", length = 255)
         val type = varchar("type", length = 50)
         val parentId = (uuid("parent_id") references FolderRepository.Folders.id).nullable()
@@ -41,8 +42,9 @@ object FileRepository {
                 S3File(
                     it[Files.id],
                     it[Files.name],
+                    it[Files.type],
+                    it[Files.size].toHumanReadableValue(),
                     it[Files.parentId],
-                    it[Files.size],
                     it[Files.icon]
                 )
             }.firstOrNull()
@@ -64,8 +66,9 @@ object FileRepository {
                     S3File(
                         it[Files.id],
                         it[Files.name],
+                        it[Files.type],
+                        it[Files.size].toHumanReadableValue(),
                         it[Files.parentId],
-                        it[Files.size],
                         it[Files.icon]
                     )
                 )
@@ -80,7 +83,7 @@ object FileRepository {
             Files.insert {
                 it[id] = UUID.randomUUID()
                 it[Files.name] = file.name
-                it[Files.size] = file.size.toString()
+                it[Files.size] = file.size
                 it[Files.type] = file.type
                 it[Files.icon] = StorageService.getIconForFile(file.name)
                 it[Files.parentId] = parentId

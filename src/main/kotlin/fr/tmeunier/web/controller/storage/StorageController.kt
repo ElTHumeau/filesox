@@ -40,7 +40,7 @@ object StorageController {
 
             FolderRepository.update(request.id, request.newName, request.parentId)
         } else {
-            FolderRepository.update(request.id, request.name, null)
+            FileRepository.update(request.id, request.newName, null)
         }
 
         call.respond(HttpStatusCode.OK)

@@ -10,9 +10,10 @@ data class S3File(
     @Serializable(with = UUIDSerializer::class)
     val id: UUID,
     val name: String,
+    val type: String,
+    val size: String,
     @Serializable(with = UUIDSerializer::class)
     @SerialName("parent_id") val parentId: UUID?,
-    val size: String?,
     val icon: String?,
 )
 

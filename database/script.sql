@@ -109,7 +109,7 @@ CREATE TABLE files
     id         BINARY(16) PRIMARY KEY,
     parent_id  BINARY(16),
     name       VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL,
-    size       varchar(10)                        NOT NULL,
+    size       LONG                       NOT NULL,
     icon       VARCHAR(255)                       NOT NULL,
     type       VARCHAR(50)                       NOT NULL,
     updated_at DATETIME                           NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -5,10 +5,12 @@ import fr.tmeunier.config.S3Config
 import fr.tmeunier.domaine.repositories.FileRepository
 import fr.tmeunier.domaine.repositories.FolderRepository
 import fr.tmeunier.domaine.requests.CompletedUpload
+import fr.tmeunier.domaine.requests.GetPathImageRequest
 import fr.tmeunier.domaine.requests.InitialUploadRequest
 import fr.tmeunier.domaine.response.UploadCompleteResponse
 import fr.tmeunier.domaine.services.filesSystem.FolderSystemService
 import fr.tmeunier.domaine.services.filesSystem.StorageService
+import fr.tmeunier.web.controller.storage.FileController
 import fr.tmeunier.web.controller.storage.FolderController
 import fr.tmeunier.web.controller.storage.StorageController
 import io.ktor.http.*
@@ -23,27 +25,21 @@ import java.util.*
 fun Route.storageRoute() {
 
     route("/storages") {
-        post {
-            StorageController.listFoldersAndFiles(call)
-        }
+        post { StorageController.listFoldersAndFiles(call) }
 
-        post("/update") {
-            StorageController.update(call)
-        }
+        post("/update") { StorageController.update(call) }
 
-        post("/move") {
-            StorageController.move(call)
-        }
+        post("/move") { StorageController.move(call) }
 
-        post("/delete") {
-            StorageController.delete(call)
-        }
+        post("/delete") { StorageController.delete(call) }
     }
 
     route("/folders") {
-        post("/create") {
-            FolderController.create(call)
-        }
+        post("/create") { FolderController.create(call) }
+    }
+
+    route("/images") {
+        post {FileController.image(call)}
     }
 
     route("/files") {
@@ -150,30 +146,7 @@ fun Route.storageRoute() {
         }
     }
 
-    route("/images") {
 
-        post {
-            /*val request = call.receive<GetPathRequest>()
-
-            val fileInCache = File(".cache/images/${request.path}")
-
-            println(fileInCache.exists())
-
-            if (!fileInCache.exists()) {
-                S3Config.makeClient()
-                    ?.let { it1 ->
-                        FolderSystemService.downloadFileMultipart(
-                            it1,
-                            request.path!!,
-                            ".cache/images/${request.path}"
-                        )
-                    }
-                call.respondFile(File(".cache/images/${request.path}"))
-            } else {
-                call.respondFile(fileInCache)
-            }*/
-        }
-    }
 }
 
 fun createFolderUploadFile(path: String, parentId: UUID?): UUID {

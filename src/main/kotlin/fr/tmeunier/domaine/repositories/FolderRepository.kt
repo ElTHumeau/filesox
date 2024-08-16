@@ -12,7 +12,7 @@ object FolderRepository {
 
     private val database = Database.getConnexion()
 
-    object Folders : Table() {
+    object Folders : Table("folders") {
         val id = uuid("id")
         val path = varchar("path", length = 255)
         val parentId = (uuid("parent_id") references id).nullable()

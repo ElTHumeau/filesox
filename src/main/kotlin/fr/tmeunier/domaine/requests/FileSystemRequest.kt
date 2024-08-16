@@ -38,8 +38,14 @@ data class DeleteStorageRequest(
     @SerialName("is_folder") val isFolder: Boolean = false
 )
 
-// -- Folders
+// --- Images
+@Serializable
+data class GetPathImageRequest(
+    val path: String,
+    val type: String
+)
 
+// -- Folders
 @Serializable
 data class Folder(
     @Serializable(with = UUIDSerializer::class)

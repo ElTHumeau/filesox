@@ -12,12 +12,13 @@ export function LayoutModules({file}: { file: FileType }) {
                     const urls: Record<string, any> = {};
                     if (file.icon === 'file') {
                         let response = await API.post("/images", {
-                            'path': file.path,
+                            path: file.id,
+                            type: file.type
                         }, {
                             responseType: 'blob'
                         });
 
-                        urls[file.path] = URL.createObjectURL(response.data);
+                        urls[file.id] = URL.createObjectURL(response.data);
                     }
 
                     setImageUrl(urls);
@@ -34,7 +35,7 @@ export function LayoutModules({file}: { file: FileType }) {
     return <div>
         {file.icon === 'file' ? (
             <img
-                src={`${imageUrl[file.path]}`}
+                src={`${imageUrl[file.id]}`}
                 alt={file.name}
                 className="object-cover"
                 width="48"
