@@ -5,18 +5,19 @@ import {useFileStore} from "../../stores/useFileStore.ts";
 import {useAxios} from "../../config/axios.ts";
 import {useQueryClient} from "react-query";
 import {FilePaths, useLocalStorage} from "../../hooks/useLocalStorage.ts";
+import {useProgressBar} from "../../stores/useProgressBar.ts";
 
 export function Dropzone({children}: { children: ReactNode }) {
     const {setFiles} = useFileStore();
     const API = useAxios()
     const queryClient = useQueryClient()
     const {getItem} = useLocalStorage()
+    const {setUploadLogin, setVal} = useProgressBar()
 
     const handleFileUpload = async (files: File[]) => {
         const chunkSize = 1024 * 1024 * 5; // 5MB
         const parent_id = getItem(FilePaths.id) === 'null' ? null : getItem(FilePaths.id);
-
-        console.log(parent_id)
+        setUploadLogin(true);
 
         for (const file of Array.from(files)) {
             const totalChunks = Math.ceil(file.size / chunkSize);
@@ -53,6 +54,8 @@ export function Dropzone({children}: { children: ReactNode }) {
                         "Content-Type": "multipart/form-data",
                     },
                 });
+
+                setVal(Math.round(((index + 1) / totalChunks) * 100));
             }
 
             await API.post("/files/upload/complete", {
@@ -63,6 +66,7 @@ export function Dropzone({children}: { children: ReactNode }) {
             await queryClient.invalidateQueries("storage")
         }
 
+        setUploadLogin(false);
     };
 
     const onDrop = useCallback((acceptedFiles: File[]) => {

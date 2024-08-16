@@ -8,7 +8,7 @@ import {useCurrentPath} from "../context/modules/CurrentPathContext.tsx";
 
 export function Dashboard() {
     const {files, folders, setFiles, setFolders, setActiveStorage} = useFileStore();
-    let {currentPath, setPath} = useCurrentPath()
+    const {currentPath, setPath} = useCurrentPath()
     const API = useAxios()
 
     const {isLoading} = useQuery(

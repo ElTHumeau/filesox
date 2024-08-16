@@ -35,10 +35,13 @@ import {useRoles} from "../../hooks/useRoles.ts";
 import {RoleEnum} from "../../types/enum/RoleEnum.ts";
 import {useUserStore} from "../../stores/useUserStore.ts";
 import {ModalInformationMedia} from "../modals/ModalInformationMedia.tsx";
+import ProgressBar from "../../components/modules/ProgressBar.tsx";
+import {useProgressBar} from "../../stores/useProgressBar.ts";
 
 export function App() {
     const {openModal} = useModal()
     const {logout} = useAuth()
+    const {uploadLogin} = useProgressBar()
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const {activeStorage} = useFileStore()
     const nav = useNavigate()
@@ -54,6 +57,7 @@ export function App() {
     }
 
     return <div>
+        {uploadLogin && <ProgressBar/>}
         <Navbar>
             <NavItems>
                 <>
