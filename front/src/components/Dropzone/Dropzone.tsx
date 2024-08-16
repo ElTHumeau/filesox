@@ -16,8 +16,10 @@ export function Dropzone({children}: { children: ReactNode }) {
 
     const handleFileUpload = async (files: File[]) => {
         const chunkSize = 1024 * 1024 * 5; // 5MB
+        const totalChunksFiles = files.map(file => Math.ceil(file.size / chunkSize)).reduce((a, b) => a + b, 0);
         const parent_id = getItem(FilePaths.id) === 'null' ? null : getItem(FilePaths.id);
         setUploadLogin(true);
+
 
         for (const file of Array.from(files)) {
             const totalChunks = Math.ceil(file.size / chunkSize);
@@ -55,7 +57,7 @@ export function Dropzone({children}: { children: ReactNode }) {
                     },
                 });
 
-                setVal(Math.round(((index + 1) / totalChunks) * 100));
+                setVal(Math.round(((index + 1) / totalChunksFiles) * 100));
             }
 
             await API.post("/files/upload/complete", {

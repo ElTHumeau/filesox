@@ -14,5 +14,5 @@ export const useProgressBar = create<State & Action>((set) => ({
     value: 0,
     uploadLogin: false,
     setVal: (value) => set({value}),
-    setUploadLogin: (uploadLogin) => set({uploadLogin})
+    setUploadLogin: (uploadLogin) => set({uploadLogin}),
 }));

@@ -23,7 +23,7 @@ object FileRepository {
         val name = varchar("name", length = 255)
         val size = long("size")
         val icon = varchar("icon", length = 255)
-        val type = varchar("type", length = 50)
+        val type = varchar("type", length = 255)
         val parentId = (uuid("parent_id") references FolderRepository.Folders.id).nullable()
         val updatedAt = datetime("updated_at")
 
