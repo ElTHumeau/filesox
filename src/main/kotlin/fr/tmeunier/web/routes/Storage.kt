@@ -5,7 +5,6 @@ import fr.tmeunier.config.S3Config
 import fr.tmeunier.domaine.repositories.FileRepository
 import fr.tmeunier.domaine.repositories.FolderRepository
 import fr.tmeunier.domaine.requests.CompletedUpload
-import fr.tmeunier.domaine.requests.GetPathImageRequest
 import fr.tmeunier.domaine.requests.InitialUploadRequest
 import fr.tmeunier.domaine.response.UploadCompleteResponse
 import fr.tmeunier.domaine.services.filesSystem.FolderSystemService
@@ -149,7 +148,7 @@ fun Route.storageRoute() {
 
 }
 
-fun createFolderUploadFile(path: String, parentId: UUID?): UUID {
+suspend fun createFolderUploadFile(path: String, parentId: UUID?): UUID {
     val folderPathRequest = path.substringBeforeLast("/") + '/'
     val folderParent = parentId?.let { FolderRepository.findById(it) }
     val folderParentPath = if (folderParent !== null) folderParent.path else ""

@@ -100,6 +100,7 @@ CREATE TABLE folders
     path       VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL,
     parent_id  BINARY(16),
     updated_at DATETIME                           NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at DATETIME                           NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (parent_id) REFERENCES folders (id)
 );

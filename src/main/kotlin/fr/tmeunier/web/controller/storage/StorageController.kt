@@ -63,16 +63,20 @@ object StorageController {
         val request = call.receive<DeleteStorageRequest>()
 
         if (request.isFolder) {
-            val files = FileRepository.findAllByParentId(request.id.toString())
+            val folder = FolderRepository.findById(request.id)
+            val folders = folder?.path?.let { FolderRepository.findByIdOrPath(it) }
 
-            files.forEach { file ->
-                S3Config.makeClient()?.let { S3ActionService.delete(it, file.name) }
+            folders?.forEach { folder ->
+                val files = FileRepository.findAllByParentId(folder.id.toString())
+
+                files.forEach { file ->
+                    S3Config.makeClient()?.let { S3ActionService.delete(it, file.name) }
+                }
+
+                FileRepository.deleteByParentId(folder.id)
             }
 
-            FolderRepository.delete(request.id)
-            FolderRepository.deleteByParentId(request.id)
-
-            FileRepository.deleteByParentId(request.id)
+            folders?.forEach { folder -> FolderRepository.delete(folder.id) }
         } else {
             val file = FileRepository.findById(request.id)
 

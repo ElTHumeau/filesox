@@ -18,6 +18,7 @@ object FolderRepository {
         val id = uuid("id")
         val path = varchar("path", length = 255)
         val parentId = (uuid("parent_id") references id).nullable()
+        val createdAt = datetime("created_at")
         val updatedAt = datetime("updated_at")
 
         override val primaryKey = PrimaryKey(id)
@@ -87,7 +88,7 @@ object FolderRepository {
                 Folders.select { Folders.path.isNull() }
             }
 
-            query.forEach {
+            query.orderBy(Folders.createdAt to SortOrder.DESC).forEach {
                 folders.add(
                     S3Folder(
                         it[Folders.id],
@@ -110,6 +111,7 @@ object FolderRepository {
                 it[Folders.path] = path
                 it[Folders.parentId] = parentId
                 it[Folders.updatedAt] = java.time.LocalDateTime.now()
+                it[Folders.createdAt] = java.time.LocalDateTime.now()
             }
         } get Folders.id
     }
