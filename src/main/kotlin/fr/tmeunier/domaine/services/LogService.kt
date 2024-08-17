@@ -1,11 +1,13 @@
 package fr.tmeunier.domaine.services
 
+import ch.qos.logback.core.joran.action.Action
 import fr.tmeunier.domaine.repositories.LogRepository
 
 object LogService {
-    const val ACTION_CREATE = "create"
-    const val ACTION_UPDATE = "update"
-    const val ACTION_DELETE = "delete"
+    const val ACTION_CREATE = "created"
+    const val ACTION_UPDATE = "updated"
+    const val ACTION_DELETE = "deleted"
+    const val ACTION_UPLOAD = "uploaded"
     const val ACTION_RESTORE = "restore"
     const val ACTION_LOGIN = "login"
 

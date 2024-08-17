@@ -1,8 +1,10 @@
 package fr.tmeunier.domaine.repositories
 
 import fr.tmeunier.config.Database
+import fr.tmeunier.config.Security
 import fr.tmeunier.domaine.requests.InitialUploadRequest
 import fr.tmeunier.domaine.response.S3File
+import fr.tmeunier.domaine.services.LogService
 import fr.tmeunier.domaine.services.filesSystem.StorageService
 import fr.tmeunier.domaine.services.filesSystem.StorageService.toHumanReadableValue
 import org.jetbrains.exposed.sql.*
@@ -78,7 +80,9 @@ object FileRepository {
         return files
     }
 
-    fun create (file: InitialUploadRequest, parentId: UUID?): UUID {
+    suspend fun create (file: InitialUploadRequest, parentId: UUID?): UUID {
+        LogService.add(Security.getUserId(), LogService.ACTION_UPLOAD, "${file.name} file uploaded")
+
         return transaction(database) {
             Files.insert {
                 it[id] = UUID.randomUUID()
@@ -92,7 +96,9 @@ object FileRepository {
         } get Files.id
     }
 
-    fun update (id: UUID, name: String, parentId: UUID?) {
+    suspend fun update (id: UUID, name: String, parentId: UUID?) {
+        LogService.add(Security.getUserId(), LogService.ACTION_UPDATE, "${name} file updated")
+
         transaction(database) {
             Files.update({ Files.id eq id }) {
                 it[Files.name] = name
@@ -111,7 +117,9 @@ object FileRepository {
         }
     }
 
-    fun delete(id: UUID) {
+    suspend fun delete(id: UUID) {
+        LogService.add(Security.getUserId(), LogService.ACTION_DELETE, "${id} file deleted")
+
         transaction(database) {
             Files.deleteWhere { Files.id eq id }
         }
