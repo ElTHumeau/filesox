@@ -12,7 +12,7 @@ export function LayoutModules({file}: { file: FileType }) {
                     const urls: Record<string, any> = {};
                     const type = file.type === 'image/svg+xml' ? 'text' : 'blob';
 
-                    if (file.icon === 'file') {
+                    if (file.icon === 'image') {
                         const response = await API.post("/images", {
                             path: file.id,
                             type: file.type
@@ -38,9 +38,8 @@ export function LayoutModules({file}: { file: FileType }) {
         }, [file]
     )
 
-
     return <div>
-        {file.icon === 'file' ? (
+        {file.icon === "image" ? (
             <img
                 src={`${imageUrl[file.id]}`}
                 alt={file.name}
@@ -48,8 +47,11 @@ export function LayoutModules({file}: { file: FileType }) {
                 width="48"
                 height="48"
             />
-        ) : (
-            <img src={`images/${file.icon}-icon.png`} alt="folder-icon.png" width={48} height={48}/>
-        )}
+        ) : file.icon === "file" ? (
+                <img src={`images/file-icon.png`} alt="file-icon.png" width={48} height={48}/>
+            )
+            : (
+                <img src={`images/${file.icon}-icon.png`} alt={`${file.icon}-icon.png`} width={48} height={48}/>
+            )}
     </div>
 }
