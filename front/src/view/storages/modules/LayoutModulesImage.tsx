@@ -10,15 +10,22 @@ export function LayoutModules({file}: { file: FileType }) {
             const fetchImages = async () => {
                 try {
                     const urls: Record<string, any> = {};
+                    const type = file.type === 'image/svg+xml' ? 'text' : 'blob';
+
                     if (file.icon === 'file') {
-                        let response = await API.post("/images", {
+                        const response = await API.post("/images", {
                             path: file.id,
                             type: file.type
                         }, {
-                            responseType: 'blob'
+                            responseType: type
                         });
 
-                        urls[file.id] = URL.createObjectURL(response.data);
+                        if (file.type === 'image/svg+xml') {
+                            const blob = new Blob([response.data], {type: 'image/svg+xml'});
+                            urls[file.id] = URL.createObjectURL(blob);
+                        } else {
+                            urls[file.id] = URL.createObjectURL(response.data);
+                        }
                     }
 
                     setImageUrl(urls);
