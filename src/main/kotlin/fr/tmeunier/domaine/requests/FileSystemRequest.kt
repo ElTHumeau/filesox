@@ -1,5 +1,6 @@
 package fr.tmeunier.domaine.requests
 
+import aws.smithy.kotlin.runtime.util.Uuid
 import fr.tmeunier.domaine.services.serializer.UUIDSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -28,7 +29,8 @@ data class MoveStorageRequest(
     val id: UUID,
     val path: String,
     @SerialName("new_path") val newPath: String,
-    @SerialName("is_folder") val isFolder: Boolean = false
+    @Serializable(with = UUIDSerializer::class)
+    @SerialName("parent_id") val parentId: UUID?,
 )
 
 @Serializable

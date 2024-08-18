@@ -9,8 +9,9 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
 import {useFileStore} from "../../stores/useFileStore.ts";
-import {Edit2, FolderPlus, SquarePen} from "lucide-react";
+import {SquarePen} from "lucide-react";
 import {useTranslation} from "react-i18next";
+import {useStorage} from "../../hooks/useStorage.ts";
 
 const schema = z.object({
     name: z.string().min(2)
@@ -22,6 +23,7 @@ export function ModalEditMedia() {
     const {closeModal} = useModal()
     const {setAlerts} = useAlerts()
     const {activeStorage} = useFileStore()
+    const {getPathOrName} = useStorage()
 
     const API = useAxios()
     const client = useQueryClient()
@@ -34,7 +36,7 @@ export function ModalEditMedia() {
     } = useForm<FormFields>({
         resolver: zodResolver(schema),
         defaultValues: {
-            name: activeStorage && 'name' in  activeStorage && activeStorage.name || activeStorage && 'path' in  activeStorage && activeStorage.path
+            name: getPathOrName()
         }
     })
 
@@ -42,7 +44,7 @@ export function ModalEditMedia() {
         async (name: string ) => {
             await API.post("/storages/update", {
                 id: activeStorage!.id,
-                name: activeStorage && 'name' in  activeStorage && activeStorage.name || activeStorage && 'path' in  activeStorage && activeStorage.path,
+                name: getPathOrName(),
                 new_name: name,
                 parent_id: activeStorage && 'parent_id' in  activeStorage && activeStorage.parent_id || null
             })

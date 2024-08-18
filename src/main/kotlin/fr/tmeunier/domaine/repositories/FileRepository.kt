@@ -108,7 +108,7 @@ object FileRepository {
         }
     }
 
-    fun move (id: UUID, parentId: UUID) {
+    fun move (id: UUID, parentId: UUID?) {
         transaction(database) {
             Files.update({ Files.id eq id }) {
                 it[Files.parentId] = parentId

@@ -1,4 +1,7 @@
+import {useFileStore} from "../stores/useFileStore.ts";
+
 export const useStorage = () => {
+    const {activeStorage} = useFileStore()
 
     const getPath = (path: string, userPath: string, currentPath: string) => {
         currentPath === 'null' ? currentPath = '' : currentPath
@@ -10,9 +13,25 @@ export const useStorage = () => {
         return userPath + currentPath + path
     }
 
+    const isFolder = () => {
+        if (activeStorage && 'name' in  activeStorage && activeStorage.name) {
+            return false
+        } else if (activeStorage && 'path' in  activeStorage && activeStorage.path) {
+            return true
+        }
+    }
+
+    const getPathOrName = () => {
+        if (activeStorage && 'name' in  activeStorage && activeStorage.name) {
+            return activeStorage.name
+        } else if (activeStorage && 'path' in  activeStorage && activeStorage.path) {
+            return activeStorage.path
+        }
+    }
+
     const getNewPath = (path: string, formData: string, name? : string) => {
-        let isFolder = !name
-        let lastFolder = path.split('/').reverse()[1]
+        const isFolder = !name
+        const lastFolder = path.split('/').reverse()[1]
 
         if (isFolder) {
             return formData === './' ? lastFolder + '/' : formData + '/' + path
@@ -21,5 +40,5 @@ export const useStorage = () => {
         }
     }
 
-    return {getPath, getNewPath}
+    return {isFolder, getPath, getPathOrName, getNewPath}
 }

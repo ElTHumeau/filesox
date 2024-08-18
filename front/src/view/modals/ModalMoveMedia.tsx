@@ -23,9 +23,8 @@ export function ModalMoveMedia() {
     const {closeModal} = useModal()
     const {setAlerts} = useAlerts()
     const {activeStorage} = useFileStore()
+    const {isFolder, getPathOrName} = useStorage()
     const {t} = useTranslation()
-    const {getNewPath} = useStorage()
-
     const API = useAxios()
     const client = useQueryClient()
 
@@ -35,14 +34,18 @@ export function ModalMoveMedia() {
         formState: {errors},
     } = useForm<FormFields>({
         resolver: zodResolver(schema),
+        defaultValues: {
+            path: isFolder() ? getPathOrName() : ''
+        }
     })
 
     const {mutate} = useMutation(
         async (path: string ) => {
-            await API.post("/folders/move", {
+            await API.post("/storages/move", {
                 id: activeStorage!.id,
-                path: activeStorage!.path,
-                new_path: getNewPath(activeStorage!.path, path, activeStorage?.name)
+                path: getPathOrName(),
+                new_path: path,
+                parent_id: activeStorage!.parent_id
             })
         }, {
             onSuccess: () => {
@@ -60,7 +63,7 @@ export function ModalMoveMedia() {
         <ModalHeader>
             <h2 className="flex items-center gap-2 text-2xl">
                 <span className="text-indigo-500"><MoveUpRight height={28} width={28} /></span>
-                {t('title.modal.edit_media')}
+                {t('title.modal.move_media')}
             </h2>
         </ModalHeader>
 

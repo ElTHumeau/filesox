@@ -48,12 +48,20 @@ object StorageController {
 
     suspend fun move(call: ApplicationCall) {
         val request = call.receive<MoveStorageRequest>()
-        val folder = FolderRepository.findByPath(request.path)
+        val isFolder = request.path.endsWith('/')
 
-        if (request.isFolder) {
-            FolderRepository.update(request.id, request.newPath, folder?.id)
+        if (isFolder) {
+            val np = request.newPath.replace(request.path, "")
+            val newFolderParent = FolderRepository.findByPath(np)
+            val folders = FolderRepository.findByIdOrPath(request.path)
+
+            folders.forEach { folder ->
+                val name = folder.path.replace(request.path, request.newPath)
+                FolderRepository.update(folder.id, name, newFolderParent?.id)
+            }
         } else {
-            FileRepository.update(request.id, request.newPath, folder?.id)
+            val newParentFolder = FolderRepository.findByPath(request.newPath)
+            FileRepository.move(request.id, newParentFolder?.id )
         }
 
         call.respond(HttpStatusCode.OK)

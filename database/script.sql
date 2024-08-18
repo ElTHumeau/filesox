@@ -87,7 +87,7 @@ CREATE TABLE logs
     id         INT PRIMARY KEY AUTO_INCREMENT,
     user_id    INT          NOT NULL,
     action     VARCHAR(255) NOT NULL,
-    subject    VARCHAR(255) NOT NULL,
+    subject    VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL,
     created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (user_id) REFERENCES users (id)
