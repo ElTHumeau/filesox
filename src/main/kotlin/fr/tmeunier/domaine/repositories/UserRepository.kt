@@ -35,7 +35,7 @@ object UserRepository {
         }
     }
 
-    suspend fun create(name: String, email: String, password: String, filePath: UUID? = null): Int {
+    suspend fun create(name: String, email: String, password: String, filePath: UUID?): Int {
         if (Security.getUserId() != 0) {
             LogService.add(Security.getUserId(), LogService.ACTION_CREATE, "${name} created")
         }
@@ -45,7 +45,6 @@ object UserRepository {
                 it[Users.name] = name
                 it[Users.email] = email
                 it[Users.filePath] = filePath
-                it[Users.layout] = false
                 it[Users.password] = HashService.hashPassword(password)
                 it[Users.createdAt] = LocalDateTime.now()
                 it[Users.updatedAt] = LocalDateTime.now()
@@ -53,14 +52,26 @@ object UserRepository {
         }
     }
 
-    suspend fun update(id: Int, name: String, email: String, layout: Boolean?): Int {
+    suspend fun update(id: Int, name: String, email: String): Int {
         LogService.add(Security.getUserId(), LogService.ACTION_UPDATE, "${name} updated")
 
         return transaction(database) {
             Users.update({ Users.id eq id }) {
                 it[Users.name] = name
                 it[Users.email] = email
-                layout?.let { value -> it[Users.layout] = value }
+                it[Users.updatedAt] = LocalDateTime.now()
+            }
+        }
+    }
+
+    suspend fun adminUpdate(id: Int, name: String, email: String, filePath: UUID?): Int {
+        LogService.add(Security.getUserId(), LogService.ACTION_UPDATE, "${name} updated")
+
+        return transaction(database) {
+            Users.update({ Users.id eq id }) {
+                it[Users.name] = name
+                it[Users.email] = email
+                it[Users.filePath] = filePath
                 it[Users.updatedAt] = LocalDateTime.now()
             }
         }

@@ -1,10 +1,15 @@
-import {ModalBody, ModalFooter, ModalHeader} from "../../../../components/modules/Modal.tsx";
-import {Button} from "../../../../components/modules/Button.tsx";
+import {
+    ModalBody,
+    ModalFooterButton,
+    ModalHeaderLogo
+} from "../../../../components/modules/Modal.tsx";
+import {ButtonBig} from "../../../../components/modules/Button.tsx";
 import {useMutation, useQueryClient} from "react-query";
 import {useModal} from "../../../../hooks/useModal.ts";
 import {useAlerts} from "../../../../context/modules/AlertContext.tsx";
 import {useAxios} from "../../../../config/axios.ts";
 import {useTranslation} from "react-i18next";
+import {Trash2} from "lucide-react";
 
 export function AdminDeleteUserModal({userId}: {userId: number}) {
     const {closeModal} = useModal()
@@ -24,24 +29,28 @@ export function AdminDeleteUserModal({userId}: {userId: number}) {
     });
 
     return <>
-        <ModalHeader>
-            <h2 className="text-lg text-indigo-950 font-semibold">
-                {t('title.admin.user.delete.title')}
-            </h2>
-        </ModalHeader>
+        <ModalHeaderLogo color="danger">
+            <Trash2 height="42" width="42"/>
+        </ModalHeaderLogo>
         <ModalBody>
             <p className="text-center  py-4">
                 {t('title.admin.user.delete.message')}
             </p>
         </ModalBody>
-        <ModalFooter>
-            <Button
+        <ModalFooterButton>
+            <ButtonBig
+                color="white"
+                onClick={() => closeModal()}
+            >
+                {t('button.cancel')}
+            </ButtonBig>
+            <ButtonBig
                 color="danger"
                 type="button"
                 onClick={() => mutate(userId)}
             >
                 {t('button.delete')}
-            </Button>
-        </ModalFooter>
+            </ButtonBig>
+        </ModalFooterButton>
     </>
 }

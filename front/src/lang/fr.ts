@@ -70,7 +70,10 @@ export const fr = {
             },
             placeholder: {
                 email: 'john.doe@exemple.com',
-                path: '/dossier',
+                path: 'dossier/',
+                name: 'John Doe',
+                password: '********',
+                file_path: 'dossier/',
             }
         },
 

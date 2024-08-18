@@ -42,7 +42,7 @@ object ProfileController {
         val request = call.receive<UserUpdateRequest>()
         val userId = Security.getUserId()
 
-        UserRepository.update(userId, request.name, request.email, request.layout)
+        UserRepository.update(userId, request.name, request.email)
 
         return call.respond(HttpStatusCode.OK)
     }

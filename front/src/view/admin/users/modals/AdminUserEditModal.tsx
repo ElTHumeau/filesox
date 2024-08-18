@@ -13,6 +13,9 @@ import {permissionsSchemaType, UserType} from "../../../../types/api/userType.ts
 import {useRoles} from "../../../../hooks/useRoles.ts";
 import {useAxios} from "../../../../config/axios.ts";
 import {useTranslation} from "react-i18next";
+import {UserPen} from "lucide-react";
+import Select from "react-tailwindcss-select";
+import {SelectValue} from "react-tailwindcss-select/dist/components/type";
 
 const schema = z.object({
     name: z.string().min(3),
@@ -23,17 +26,12 @@ const schema = z.object({
 type FormFields = z.infer<typeof schema>
 
 export function AdminEditUserModal({user}: { user: UserType }) {
-    const [isAdmin, setAdmin] = useState(
-        user.permissions.includes('Administrator')
-    )
-    const [permissions, setPermissions] = useState<number[]>([])
-
     const {t} = useTranslation()
     const API = useAxios()
     const queryClient = useQueryClient()
     const {setAlerts} = useAlerts()
     const {closeModal} = useModal()
-    const {getPermissions} = useRoles()
+    const {getPermissionsValue} = useRoles()
 
     const {
         register,
@@ -44,24 +42,28 @@ export function AdminEditUserModal({user}: { user: UserType }) {
         defaultValues: {
             name: user.name,
             email: user.email,
-            file_path: user.file_path
+            file_path: user.file_path || './',
         }
     })
 
     const {isLoading, data} = useQuery(
         'permissions',
         async () => {
-            let response = await API.get('/admin/permissions')
+            const response = await API.get('/admin/permissions')
             return permissionsSchemaType.parse(response.data)
         },
         {
         refetchOnWindowFocus: false
     })
 
+    const [permissions, setPermissions] = useState<SelectValue>(getPermissionsValue(data || [], user.permissions))
 
     const {mutate} = useMutation(
-        async (data: FormFields) => {
-            await API.post('/admin/users/update/' + user.id, {...data, permissions})
+        async (formData: FormFields) => {
+            await API.post('/admin/users/update/' + user.id, {
+                ...formData,
+                permissions: Array.isArray(permissions) ? permissions.map((p) => parseInt(p.value)) : [],
+            })
         }
         , {
         onSuccess: () => {
@@ -71,17 +73,16 @@ export function AdminEditUserModal({user}: { user: UserType }) {
         }
     })
 
-    const onSubmit: SubmitHandler<FormFields> = (dataForm: any) => {
-        const p = getPermissions(user.permissions, permissions, data)
-        console.log(p)
-        mutate({...dataForm, permissions: p, id: user.id})
+    const onSubmit: SubmitHandler<FormFields> = (formData: FormFields) => {
+        mutate({...formData})
     }
 
     if (isLoading) return <div>Loading...</div>;
 
     return <>
         <ModalHeader>
-            <h2 className="text-lg font-semibold">
+            <h2 className="flex items-center gap-2 text-2xl">
+                <span className="text-indigo-500"><UserPen  height={28} width={28}/></span>
                 {t('title.admin.user.edit')}
             </h2>
         </ModalHeader>
@@ -124,47 +125,15 @@ export function AdminEditUserModal({user}: { user: UserType }) {
                 </FormField>
                 <FormField>
                     <FormLabel htmlFor="permission">{t('input.label.permissions')}</FormLabel>
-                    <div className="flex items-center gap-2 my-3">
-                        <input
-                            type="checkbox"
-                            value={data && data[0].id}
-                            className={"rounded border-gray-400 cursor-pointer"}
-                            defaultChecked={user.permissions.includes(data![0].name)}
-                            onChange={(e) => {
-                                if (e.target.checked) {
-                                    setAdmin(true)
-                                    setPermissions([...permissions, data![0].id])
-                                } else {
-                                    setAdmin(false)
-                                    setPermissions(permissions.filter((id) => id !== data![0].id))
-                                }
-                            }}
-                        />
-                        <label>{data && data[0].name}</label>
-                    </div>
-
-                    <Row cols={2}>
-                        {data && data.slice(1).map((permission: any) => (
-                            <div key={permission.id} className="flex items-center gap-2">
-                                <input
-                                    type="checkbox"
-                                    id={permission.id}
-                                    value={permission.id}
-                                    className={`rounded border-gray-400 ${isAdmin ? "cursor-not-allowed" : "cursor-pointer"}`}
-                                    defaultChecked={user.permissions.includes(permission.name)}
-                                    disabled={isAdmin}
-                                    onChange={(e) => {
-                                        if (e.target.checked) {
-                                            setPermissions([...permissions, permission.id])
-                                        } else {
-                                            setPermissions(permissions.filter((id) => id !== permission.id))
-                                        }
-                                    }}
-                                />
-                                <label htmlFor={permission.id}>{permission.name}</label>
-                            </div>
-                        ))}
-                    </Row>
+                    <Select
+                        isMultiple={true}
+                        isSearchable={false}
+                        isClearable={false}
+                        value={permissions}
+                        primaryColor={"indigo"}
+                        options={data?.map((p) => ({ label: p.name, value: p.id.toString() })) || []}
+                        onChange={(v) => setPermissions(v)}
+                    />
                 </FormField>
             </ModalBody>
             <ModalFooter>

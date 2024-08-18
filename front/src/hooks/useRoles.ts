@@ -1,18 +1,12 @@
 import {RoleEnum} from "../types/enum/RoleEnum.ts";
+import {PermissionType} from "../types/api/userType.ts";
+import {SelectValue} from "react-tailwindcss-select/dist/components/type";
 
 export function useRoles() {
-    const  getPermissions = (userPermissions: string[], formPermissions: number[], permissions : any) => {
-        const userPermissionIds = permissions.map((permission: any) => {
-            if (userPermissions.includes(permission.name)) {
-                return permission.id
-            }
-        })
-
-        if (typeof formPermissions !== 'undefined' && formPermissions.length === 0) {
-            return userPermissionIds.filter((permissionId: number | undefined) => permissionId !== undefined)
-        }
-
-        return formPermissions
+    const getPermissionsValue = (permissions: PermissionType[], userPermissions: string[]): SelectValue => {
+        return permissions
+            .filter(permission => userPermissions.includes(permission.name))
+            .map(permission => ({ label: permission.name, value: permission.id.toString(), disabled: false }));
     }
 
     const role = (permissions: string[], userPermissions : string[]) => {
@@ -29,5 +23,5 @@ export function useRoles() {
         return false
     }
 
-    return {getPermissions, role}
+    return {getPermissionsValue, role}
 }

@@ -3,7 +3,7 @@ import {Pagination} from "../../../components/modules/Pagination.tsx";
 import {useState} from "react";
 import {useQuery} from "react-query";
 import {Button, ButtonIcon} from "../../../components/modules/Button.tsx";
-import {Plus, SquarePen, Trash2} from "lucide-react";
+import {Plus, SquarePen, Trash2, Users} from "lucide-react";
 import {useModal} from "../../../hooks/useModal.ts";
 import {AdminDeleteUserModal} from "./modals/AdminUserDeleteModal.tsx";
 import {AdminCreateUserModal} from "./modals/AdminUserCreateModal.tsx";
@@ -22,7 +22,7 @@ export function AdminUsers() {
     const {data, isLoading} = useQuery(
         ['users', page],
         async () => {
-            let response = await API.get('/admin/users?page=' + page)
+            const response = await API.get('/admin/users?page=' + page)
             return usersSchemaType.parse(response.data)
         }
     );
@@ -34,9 +34,12 @@ export function AdminUsers() {
     return <div className="px-7 py-4">
 
         <div className="flex justify-between items-center  mb-4">
-            <h1 className="text-2xl text-indigo-950 font-semibold">
-                {t('title.admin.users')}
-            </h1>
+            <div className="flex justify-end items-center gap-3">
+               <Users className="text-indigo-500"/>
+                <h1 className="text-2xl text-indigo-950 font-semibold">
+                    {t('title.admin.users')}
+                </h1>
+            </div>
 
             <Button title="create user" color="primary" onClick={() => openModal(() => <AdminCreateUserModal/>)}>
                 <Plus size={16} className="mr-2"/>
@@ -61,7 +64,7 @@ export function AdminUsers() {
                         <TableCell>{user.name}</TableCell>
                         <TableCell>{user.email}</TableCell>
                         <TableCell>{user.permissions[0] === 'Administration' ? <Pill type={"danger"}>{user.permissions}</Pill> : ''}</TableCell>
-                        <TableCell>{user.file_path}</TableCell>
+                        <TableCell>{user.file_path === null ? './' : user.file_path}</TableCell>
                         <TableCell>{user.created_at}</TableCell>
                         <TableCell height="py-2.5">
                             <div className="flex gap-2">

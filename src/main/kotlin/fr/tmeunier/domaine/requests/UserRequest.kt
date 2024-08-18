@@ -41,6 +41,23 @@ data class AdminUserRequest(
 )
 
 @Serializable
+data class AdminUserCreateRequest(
+    val name: String,
+    val email: String,
+    val password: String,
+    @SerialName("file_path") val filePath: String? = null,
+    val permissions: Array<Int> = emptyArray()
+)
+
+@Serializable
+data class AdminUpdateCreateRequest(
+    val name: String,
+    val email: String,
+    @SerialName("file_path") val filePath: String? = null,
+    val permissions: Array<Int> = emptyArray()
+)
+
+@Serializable
 data class UserUpdateRequest(
     val name: String,
     val email: String,

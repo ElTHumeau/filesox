@@ -5,9 +5,9 @@ export interface UserType {
     id: number;
     name: string;
     email: string;
-    file_path?: string;
     created_at: string;
     permissions: string[];
+    file_path: string | null;
     layout?: boolean;
 }
 
@@ -23,19 +23,22 @@ export interface UpdateProfileType {
 }
 
 export interface CreateUserType {
-    id: number,
     name: string,
     email: string,
     file_path: string,
-    permissions: number[]
+    password: string,
 }
 
 export interface UpdateUserType {
     id: number,
     name: string,
     email: string,
-    file_path: string,
-    permissions: number[]
+    file_path: string
+}
+
+export interface PermissionType {
+    id: number;
+    name: string;
 }
 
 // schema zod

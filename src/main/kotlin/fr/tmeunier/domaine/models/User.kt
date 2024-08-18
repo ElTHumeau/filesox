@@ -24,8 +24,7 @@ data class UsersResponse(
     val name: String,
     val email: String,
     @SerialName("created_at") val createdAt: String,
-    @Serializable(with = UUIDSerializer::class)
-    @SerialName("file_path") val filePath: UUID?,
+    @SerialName("file_path") val filePath: String?,
     val permissions: List<String> = emptyList()
 )
 
