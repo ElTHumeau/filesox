@@ -21,6 +21,7 @@ export const fr = {
                 delete_folder: 'Supprimer le dossier',
                 edit_media: 'Modifier le média',
                 edit_folder: 'Modifier le dossier',
+                delete_share: "Voulez-vous vraiment supprimer ce partage ?",
             },
             admin: {
                 dashboard: 'Tableau de bord',
@@ -67,6 +68,8 @@ export const fr = {
                 permissions: 'Permissions',
                 file_path: 'Chemin racine',
                 username: 'Nom d\'utilisateur',
+                optional_password: 'Mot de passe (optionnel)',
+                share_duration: 'Durée du partage',
             },
             placeholder: {
                 email: 'john.doe@exemple.com',
@@ -74,6 +77,16 @@ export const fr = {
                 name: 'John Doe',
                 password: '********',
                 file_path: 'dossier/',
+                share_duration: 'Durée du partage',
+            },
+            options: {
+                shares: {
+                    hours: 'Heures',
+                    days: 'Jours',
+                    weeks: 'Semaines',
+                    months: 'Mois',
+                    years: 'Années',
+                }
             }
         },
 
@@ -93,6 +106,10 @@ export const fr = {
                 profile: {
                     edit: 'Profil modifié avec succès',
                     edit_password: 'Mot de passe modifié avec succès',
+                },
+                shares: {
+                    create: "Votre partage a été créé avec succès",
+                    delete: "Votre partage a été supprimé avec succès",
                 }
             },
             error: {
@@ -114,6 +131,7 @@ export const fr = {
             register: 'Inscription',
             move: 'Déplacer',
             close: 'Fermer',
+            share: 'Partager',
         },
 
         table: {
@@ -127,6 +145,8 @@ export const fr = {
             subject: 'Sujet',
             path: 'Chemin',
             expires_at: 'Expire le',
+            expired_at: 'Expire le',
+            no_data: 'Aucune donnée disponible',
         },
 
         tooltip: {
@@ -136,6 +156,8 @@ export const fr = {
             move: 'Déplacer',
             download: 'Télécharger',
             upload: 'Téléverser',
+            copy: 'Copier',
+            eye: 'Voir',
         },
     }
 }

@@ -30,6 +30,12 @@ fun Route.storageRoute() {
 
         post("/move") { StorageController.move(call) }
 
+        post("/share") { StorageController.share(call) }
+
+        get("/share/{uuid}") {
+            StorageController.getShared(call)
+        }
+
         post("/delete") { StorageController.delete(call) }
     }
 
@@ -144,8 +150,6 @@ fun Route.storageRoute() {
             }
         }
     }
-
-
 }
 
 suspend fun createFolderUploadFile(path: String, parentId: UUID?): UUID {

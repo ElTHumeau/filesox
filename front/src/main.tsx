@@ -24,6 +24,7 @@ import {initReactI18next} from "react-i18next";
 import i18n from "i18next";
 import {fr} from "./lang/fr.ts";
 import {en} from "./lang/en.ts";
+import {ShowShare} from "./view/shares/ShowShare.tsx";
 
 const queryClient = new QueryClient()
 
@@ -52,6 +53,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                                     <Route path="/" element={<CurrentPathProvider/>}>
                                         <Route index element={<Dashboard/>}/>
                                     </Route>
+
+                                    <Route path="/shares/:uuid" element={<ShowShare/>}/>
 
                                     <Route path="/profile" element={<Profile/>}>
                                         <Route index element={<ProfileEdit/>}/>

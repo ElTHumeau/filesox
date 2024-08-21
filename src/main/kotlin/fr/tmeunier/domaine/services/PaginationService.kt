@@ -7,7 +7,7 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import kotlin.math.ceil
 
-class PaginationService {
+object PaginationService {
 
     @Serializable
     data class PaginationResponse<T>(

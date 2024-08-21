@@ -12,7 +12,7 @@ export function Pagination({from, to,  currentPage, totalPage, onPageChange}: {
 
     useEffect(() => {
         arrayNumberPage({from: from, to: to, total_pages: totalPage})
-    }, [from, to, totalPage])
+    }, [arrayNumberPage, from, to, totalPage])
 
     const handlePageChange = useCallback(
         (page: number) => {
@@ -71,7 +71,6 @@ export function Pagination({from, to,  currentPage, totalPage, onPageChange}: {
                 </svg>
             </a>
         </div>
-        {/* On mobile version */}
         <div className="flex items-center justify-between text-sm text-gray-600 font-medium sm:hidden">
             <a onClick={() => handlePageChange(currentPage - 1)}
                className="px-4 py-2 border rounded-lg duration-150 hover:bg-gray-50">Previous</a>

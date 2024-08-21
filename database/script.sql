@@ -58,12 +58,13 @@ CREATE TABLE users_permissions
 -- table shares
 CREATE TABLE shares
 (
-    id         INT PRIMARY KEY AUTO_INCREMENT,
+    id         BINARY(16) PRIMARY KEY,
     user_id    INT          NOT NULL,
-    path       VARCHAR(255) NOT NULL,
+    storage_id BINARY(16) NOT NULL,
+    type      VARCHAR(10) NOT NULL,
     password   VARCHAR(255),
     created_at DATETIME     NOT NULL,
-    expires_at DATETIME     NOT NULL,
+    expired_at DATETIME     NOT NULL,
 
     FOREIGN KEY (user_id) REFERENCES users (id)
 );

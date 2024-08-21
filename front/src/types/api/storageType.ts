@@ -1,3 +1,5 @@
+import {z} from "zod";
+
 export interface FileType {
     id: string;
     name: string;
@@ -13,4 +15,12 @@ export interface FolderType {
     parent_id?: string;
 }
 
-export type ActiveStorageType<T> = T |null;
+export type ActiveStorageType<T> = T | null;
+
+export const ListModalShareSchemaType = z.array(
+    z.object({
+        id: z.string().uuid(),
+        expired_at: z.string(),
+        created_at: z.string(),
+    })
+);

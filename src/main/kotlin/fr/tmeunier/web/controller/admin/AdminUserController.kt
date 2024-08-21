@@ -24,7 +24,7 @@ object AdminUserController {
     suspend fun getAll(call: ApplicationCall) {
         val page = call.parameters["page"]?.toInt() ?: 1
 
-        val response =  PaginationService().paginate(page, 10, { UserRepository.Users.selectAll() }) { row ->
+        val response =  PaginationService.paginate(page, 10, { UserRepository.Users.selectAll() }) { row ->
             UsersResponse(
                 id = row[UserRepository.Users.id],
                 name = row[UserRepository.Users.name],

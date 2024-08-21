@@ -15,7 +15,7 @@ export function AdminLogs() {
     const {data, isLoading} = useQuery(
         ['logs', page],
         async () => {
-            let response = await  API.get('/admin/logs?page=' + page)
+            const response = await  API.get('/admin/logs?page=' + page)
             return adminLogsSchemaType.parse(response.data)
         },
     );

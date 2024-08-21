@@ -39,3 +39,10 @@ export function TableCell({children, height = "py-4"}: { children: ReactNode, he
         {children}
     </td>
 }
+
+export function TableNoData({text, colspan = 8}: { text: string, colspan: number }) {
+
+    return <tr>
+        <td colSpan={colspan} className="p-6 text-center">{text}</td>
+    </tr>
+}

@@ -14,7 +14,7 @@ object AdminLogController  {
     suspend fun getAll(call: ApplicationCall) {
         val page = call.parameters["page"]?.toInt() ?: 1
 
-        val response = PaginationService().paginate(page, 10, { LogRepository.findAll() }) { row ->
+        val response = PaginationService.paginate(page, 10, { LogRepository.findAll() }) { row ->
             LogsResponses(
                 row[LogRepository.Logs.id],
                 row[LogRepository.Logs.action],

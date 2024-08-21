@@ -20,7 +20,6 @@ import {Outlet, useLocation, useNavigate} from "react-router-dom";
 import {Navbar, NavItem, NavItems, NavItemsLeft, NavItemsRight} from "../../components/layouts/nav.tsx";
 import {ButtonIcon} from "../../components/modules/Button.tsx";
 import {ModalCreateFolder} from "../modals/folders/ModalCreateFolder.tsx";
-import {ModalShareMedia} from "../modals/ModalShareMedia.tsx";
 import {ModalMoveMedia} from "../modals/ModalMoveMedia.tsx";
 import {ModalDeleteMedia} from "../modals/ModalDeleteMedia.tsx";
 import {ModalEditMedia} from "../modals/ModalEditMedia.tsx";
@@ -37,6 +36,7 @@ import {useUserStore} from "../../stores/useUserStore.ts";
 import {ModalInformationMedia} from "../modals/ModalInformationMedia.tsx";
 import ProgressBar from "../../components/modules/ProgressBar.tsx";
 import {useProgressBar} from "../../stores/useProgressBar.ts";
+import {ModalShareMedia} from "../modals/shares/ModalShareMedia.tsx";
 
 export function App() {
     const {openModal} = useModal()
@@ -83,7 +83,7 @@ export function App() {
                                 <>
                                     {role([RoleEnum.SHARE_OBJECT], user!.roles) && (
                                         <ButtonIcon svg={Share2} title={t('tooltip.share')}
-                                                    onClick={() => openModal(() => <ModalShareMedia/>, "md")}/>
+                                                    onClick={() => openModal(() => <ModalShareMedia/>, "lg")}/>
                                     )}
                                     {role([RoleEnum.EDIT_OBJECT], user!.roles) && (
                                         <ButtonIcon svg={SquarePen} title={t('tooltip.rename')}
