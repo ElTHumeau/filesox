@@ -24,13 +24,13 @@ export function ModalInformationMedia() {
                 {activeStorage && 'path' in activeStorage &&
                     <div className="flex flex-col py-3">
                         <dt className="mb-1 text-indigo-500">Chemain:</dt>
-                        <dd className="mb-1 text-gray-500">{activeStorage.path}</dd>
+                        <dd className="mb-1 text-gray-500 break-words whitespace-normal">{activeStorage.path}</dd>
                     </div>
                 }
                 {activeStorage && 'name' in activeStorage &&
                     <div className="flex flex-col py-3">
                         <dt className="mb-1 text-indigo-500">Nom:</dt>
-                        <dd className="mb-1 text-gray-500">{activeStorage.name}</dd>
+                        <dd className="mb-1 text-gray-500 break-words whitespace-normal">{activeStorage.name}</dd>
                     </div>
                 }
                 {activeStorage && 'size' in activeStorage &&
