@@ -111,7 +111,7 @@ object StorageController {
             val file = FileRepository.findById(request.id)
 
             S3Config.makeClient()?.let { S3ActionService.delete(it, file?.id.toString()) }
-            FileRepository.delete(request.id)
+            FileRepository.delete(file!!.name, request.id)
         }
 
         call.respond(HttpStatusCode.OK)

@@ -117,8 +117,8 @@ object FileRepository {
         }
     }
 
-    suspend fun delete(id: UUID) {
-        LogService.add(Security.getUserId(), LogService.ACTION_DELETE, "${id} file deleted")
+    suspend fun delete(name: String, id: UUID) {
+        LogService.add(Security.getUserId(), LogService.ACTION_DELETE, "${name} file deleted")
 
         transaction(database) {
             Files.deleteWhere { Files.id eq id }
