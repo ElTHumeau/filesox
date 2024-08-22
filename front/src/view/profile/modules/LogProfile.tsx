@@ -5,6 +5,7 @@ import {useState} from "react";
 import {Pill} from "../../../components/modules/Pill.tsx";
 import {useAxios} from "../../../config/axios.ts";
 import {logsProfileSchemaType} from "../../../types/api/userType.ts";
+import {Loader} from "../../../components/modules/Loader/Loader.tsx";
 
 export function ProfileLog() {
     const API = useAxios()
@@ -12,13 +13,13 @@ export function ProfileLog() {
     const {data, isLoading} = useQuery(
         ['logs', page],
         async () => {
-            let response = await API.get('/profile/logs?page=' + page)
+            const response = await API.get('/profile/logs?page=' + page)
             return logsProfileSchemaType.parse(response.data)
         },
     );
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <Loader/>;
     }
 
     return <div className="px-7 py-4">

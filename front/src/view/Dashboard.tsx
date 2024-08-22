@@ -5,6 +5,7 @@ import {LayoutsGrid} from "./storages/LayoutsGrid.tsx";
 import {Breadcrumb} from "../components/modules/Breadcrumb.tsx";
 import {useAxios} from "../config/axios.ts";
 import {useCurrentPath} from "../context/modules/CurrentPathContext.tsx";
+import {Loader} from "../components/modules/Loader/Loader.tsx";
 
 export function Dashboard() {
     const {files, folders, setFiles, setFolders, setActiveStorage} = useFileStore();
@@ -29,9 +30,9 @@ export function Dashboard() {
         })
 
 
-    if (isLoading) return <div className="flex items-center justify-center h-[87.5vh]">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
-    </div>
+    if (isLoading) {
+        return <Loader/>;
+    }
 
     return <div className="px-4 py-7 h-[87.5vh]" onClick={() => setActiveStorage(null)}>
         <Dropzone>

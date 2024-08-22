@@ -7,6 +7,7 @@ import {useAxios} from "../../config/axios.ts";
 import {adminLogsSchemaType} from "../../types/api/adminType.ts";
 import {useTranslation} from "react-i18next";
 import {Archive} from "lucide-react";
+import {Loader} from "../../components/modules/Loader/Loader.tsx";
 
 export function AdminLogs() {
     const [page, setPage] = useState(1)
@@ -22,7 +23,7 @@ export function AdminLogs() {
     );
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <Loader/>;
     }
 
     return <div className="px-7 py-4">

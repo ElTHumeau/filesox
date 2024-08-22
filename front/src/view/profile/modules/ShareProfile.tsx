@@ -17,6 +17,7 @@ import {ClipboardCopy, Trash2} from "lucide-react";
 import {ModalDeleteShares} from "../../modals/shares/ModalDeleteShare.tsx";
 import {ButtonIcon} from "../../../components/modules/Button.tsx";
 import {Pagination} from "../../../components/modules/Pagination.tsx";
+import {Loader} from "../../../components/modules/Loader/Loader.tsx";
 
 export function ProfileShare() {
     const [page, setPage] = useState(1)
@@ -33,7 +34,7 @@ export function ProfileShare() {
     );
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <Loader/>;
     }
 
     return <div className="px-7 py-4">

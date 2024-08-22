@@ -17,6 +17,7 @@ import {ButtonIcon} from "../../components/modules/Button.tsx";
 import {ClipboardCopy, Share2, Trash2} from "lucide-react";
 import {useModal} from "../../hooks/useModal.ts";
 import {ModalDeleteShares} from "../modals/shares/ModalDeleteShare.tsx";
+import {Loader} from "../../components/modules/Loader/Loader.tsx";
 
 export function AdminShares() {
     const [page, setPage] = useState(1)
@@ -33,7 +34,7 @@ export function AdminShares() {
     );
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <Loader/>;
     }
 
     return <div className="px-7 py-4">

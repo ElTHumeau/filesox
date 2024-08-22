@@ -7,6 +7,7 @@ import {ButtonIcon} from "../../../../components/modules/Button.tsx";
 import {ClipboardCopy, Trash2} from "lucide-react";
 import {ModalDeleteShares} from "../ModalDeleteShare.tsx";
 import {useModal} from "../../../../hooks/useModal.ts";
+import {Loader} from "../../../../components/modules/Loader/Loader.tsx";
 
 export function ModalShareListMedia() {
     const API = useAxios()
@@ -23,7 +24,7 @@ export function ModalShareListMedia() {
     );
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <Loader/>;
     }
 
     return <>
