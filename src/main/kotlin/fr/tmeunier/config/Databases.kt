@@ -1,16 +1,31 @@
 package fr.tmeunier.config
 
+import io.github.cdimascio.dotenv.Dotenv
+import io.github.cdimascio.dotenv.dotenv
 import org.jetbrains.exposed.sql.Database
 
 object Database {
      private lateinit var connexion: Database;
 
-    fun init(host: String, database: String, user: String, password: String) {
+    private val dotenv: Dotenv = dotenv {
+        directory = "."
+        filename = ".env"
+        ignoreIfMalformed = true
+        ignoreIfMissing = true
+    }
+
+    private val db_host = dotenv["DB_HOST"] ?: "0.0.0.0"
+    private val db_port = dotenv["DB_PORT"] ?: "3306"
+    private val db_name = dotenv["DB_NAME"] ?: "cdn"
+    private val db_username = dotenv["DB_USER"] ?: "cdn"
+    private val db_password = dotenv["DB_PASSWORD"] ?: "cdn"
+
+    fun init() {
         connexion =  Database.connect(
-            url = "jdbc:mariadb://${host}:3306/${database}",
+            url = "jdbc:mariadb://${db_host}:${db_port}/${db_name}",
             driver = "org.mariadb.jdbc.Driver",
-            user = user,
-            password = password
+            user = db_username,
+            password = db_password
         )
     }
 

@@ -10,7 +10,7 @@ import io.ktor.util.*
 
 
 fun main() {
-    Database.init("127.0.0.1", "tmeunier-cdn", "tmeunier-cdn", "tmeunier-cdn")
+    Database.init()
 
     embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
         .start(wait = true)

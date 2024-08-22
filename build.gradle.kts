@@ -29,6 +29,8 @@ dependencies {
     implementation("io.ktor:ktor-server-cors-jvm")
     implementation("io.ktor:ktor-server-content-negotiation-jvm")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm")
+    implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
+
 
     // Exposed
     implementation("org.jetbrains.exposed:exposed-core:0.41.1")
