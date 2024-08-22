@@ -44,7 +44,7 @@ export function ProfileLog() {
             </TableBody>
         </Table>
 
-        {data && data.total_pages > 1 &&
+        {data &&
             <Pagination
                 from={data.from}
                 to={data.to}

@@ -53,6 +53,10 @@ export const fr = {
                     menu: 'Menu',
                     administration: 'Administration',
                 }
+            },
+            pagination: {
+                previous: 'Précédent',
+                next: 'Suivant',
             }
         },
 
