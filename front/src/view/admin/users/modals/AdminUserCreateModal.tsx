@@ -1,6 +1,6 @@
 import {SubmitHandler, useForm} from "react-hook-form";
 import {ModalBody, ModalFooter, ModalHeader} from "../../../../components/modules/Modal.tsx";
-import {FormError, FormField, FormFields, FormLabel} from "../../../../components/modules/Form.tsx";
+import {FormDescription, FormError, FormField, FormFields, FormLabel} from "../../../../components/modules/Form.tsx";
 import {Button} from "../../../../components/modules/Button.tsx";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -15,6 +15,8 @@ import {useTranslation} from "react-i18next";
 import {UserPlus} from "lucide-react";
 import Select from "react-tailwindcss-select";
 import {SelectValue} from "react-tailwindcss-select/dist/components/type";
+import {Loader} from "../../../../components/modules/Loader/Loader.tsx";
+import {TypoCode} from "../../../../components/modules/Typo.tsx";
 
 const schema = z.object({
     name: z.string().min(3),
@@ -71,7 +73,7 @@ export function AdminCreateUserModal() {
         mutate({...data})
     }
 
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading) return <Loader/>;
 
     return <>
         <ModalHeader>
@@ -82,6 +84,9 @@ export function AdminCreateUserModal() {
         </ModalHeader>
         <FormFields onSubmit={handleSubmit(onSubmit)}>
             <ModalBody>
+                <FormDescription>
+                    Si vous souhaitez que l'utilisateur est l'espace de stockage racine, remplisser le champs <TypoCode>./</TypoCode>.
+                </FormDescription>
                 <Row cols={2}>
                     <FormField>
                         <FormLabel htmlFor="name">{t('input.label.name')}</FormLabel>

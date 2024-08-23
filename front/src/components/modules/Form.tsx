@@ -13,6 +13,13 @@ export function FormLabel({children, htmlFor}: LabelProps) {
     </label>
 }
 
+
+export function FormDescription({children}: { children: ReactNode }) {
+    return <p className="prose text-sm text-gray-700 mt-1 mb-2">
+        {children}
+    </p>
+}
+
 export function FormError({children}: { children: React.ReactNode }) {
     return <span className="text-red-500">{children}</span>
 }

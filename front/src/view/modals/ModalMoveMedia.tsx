@@ -1,5 +1,5 @@
 import {ModalBody, ModalFooter, ModalHeader} from "../../components/modules/Modal.tsx";
-import {FormError, FormField, FormFields, FormLabel} from "../../components/modules/Form.tsx";
+import {FormDescription, FormError, FormField, FormFields, FormLabel} from "../../components/modules/Form.tsx";
 import {Button} from "../../components/modules/Button.tsx";
 import {useModal} from "../../hooks/useModal.ts";
 import {useAlerts} from "../../context/modules/AlertContext.tsx";
@@ -12,6 +12,7 @@ import {useFileStore} from "../../stores/useFileStore.ts";
 import {useTranslation} from "react-i18next";
 import {useStorage} from "../../hooks/useStorage.ts";
 import {MoveUpRight} from "lucide-react";
+import {TypoCode} from "../../components/modules/Typo.tsx";
 
 const schema = z.object({
     path: z.string().min(2)
@@ -69,6 +70,9 @@ export function ModalMoveMedia() {
 
         <FormFields onSubmit={handleSubmit(onSubmit)}>
             <ModalBody>
+                <FormDescription>
+                    Si vous voulez déplacer le dossier à la racine remplicer le champs: <TypoCode>./</TypoCode>.
+                </FormDescription>
                 <FormLabel htmlFor="name">
                     {t('input.label.path')}
                 </FormLabel>
