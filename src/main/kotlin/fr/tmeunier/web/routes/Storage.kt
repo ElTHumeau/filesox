@@ -26,6 +26,11 @@ fun Route.storageRoute() {
     route("/storages") {
         post { StorageController.listFoldersAndFiles(call) }
 
+
+        post("/download") {
+            StorageController.download(call)
+        }
+
         post("/update") { StorageController.update(call) }
 
         post("/move") { StorageController.move(call) }
@@ -48,9 +53,6 @@ fun Route.storageRoute() {
     }
 
     route("/files") {
-        post("/download") {
-            FolderController.download(call)
-        }
 
         route("/upload") {
             post("/init") {

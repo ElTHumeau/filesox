@@ -22,41 +22,6 @@ object FolderController {
         call.respond(HttpStatusCode.Created)
     }
 
-    suspend fun download(call: ApplicationCall) {
-        val request = call.receive<DownloadRequest>()
-
-        if (request.isFolder) {
-            val zipFile = File(".cache/media/${request.path}.zip")
-
-            if (!zipFile.exists()) {
-                S3Config.makeClient()?.let {
-                    FolderSystemService.downloadFolder(it, request.path, ".cache/media/${request.path}")
-                }
-
-                StorageService.zipFolder(".cache/media/${request.path}", ".cache/media/${request.path}.zip")
-                call.respondFile(File(".cache/media/${request.path}.zip"))
-            } else {
-                call.respondFile(zipFile)
-            }
-        } else {
-            val fileInCache = File(".cache/media/${request.path}")
-
-            if (!fileInCache.exists()) {
-                S3Config.makeClient()
-                    ?.let { it1 ->
-                        FolderSystemService.downloadFileMultipart(
-                            it1,
-                            "${request.path}",
-                            ".cache/media/${request.path}"
-                        )
-                    }
-                call.respondFile(File(".cache/media/${request.path}"))
-            } else {
-                call.respondFile(fileInCache)
-            }
-        }
-    }
-
     suspend fun upload(call: ApplicationCall) {
         val multipart = call.receiveMultipart()
         var uploadId: String? = null

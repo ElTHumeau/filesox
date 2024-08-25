@@ -64,6 +64,8 @@ data class FolderCreateRequest(
 
 @Serializable
 data class DownloadRequest(
+    @Serializable(with = UUIDSerializer::class)
+    val id: UUID,
     val path: String,
     @SerialName("is_folder") val isFolder: Boolean = false
 )

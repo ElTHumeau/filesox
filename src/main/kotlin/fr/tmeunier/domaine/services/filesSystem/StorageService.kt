@@ -37,6 +37,11 @@ object StorageService {
     }
 
     fun getExtension(typeFile: String): String {
+
+        if (typeFile.endsWith(".dmg")) {
+            return "x-diskcopy"
+        }
+
         return typeFile.split("/").reversed()[0].split(".").reversed()[0]
     }
 

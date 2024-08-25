@@ -37,29 +37,6 @@ object FolderSystemService {
         }
     }
 
-    suspend fun downloadFolder(client: S3Client, remotePath: String, localPath: String) {
-
-        client.listObjectsV2Paginated {
-            bucket = S3Config.bucketName
-            delimiter = "/"
-            prefix = remotePath
-            maxKeys = 1000
-        }.collect { res ->
-            res.contents?.forEach { s3Object ->
-                val key = s3Object.key!!
-                val localFilePath = Paths.get(localPath, key.removePrefix(remotePath))
-
-                if (key !== remotePath && key.endsWith("/")) {
-                    if (!Files.exists(localFilePath)) {
-                        Files.createDirectories(localFilePath)
-                    }
-                } else {
-                    downloadFileMultipart(client, key, localFilePath.toString())
-                }
-            }
-        }
-    }
-
     suspend fun initiateMultipartUpload(client: S3Client, key: String): String? {
         val multipartRes = client.createMultipartUpload {
             checksumAlgorithm = ChecksumAlgorithm.Sha256

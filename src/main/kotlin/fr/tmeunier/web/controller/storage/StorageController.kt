@@ -8,6 +8,7 @@ import fr.tmeunier.domaine.repositories.FolderRepository
 import fr.tmeunier.domaine.repositories.ShareRepository
 import fr.tmeunier.domaine.requests.*
 import fr.tmeunier.domaine.services.filesSystem.s3.S3ActionService
+import fr.tmeunier.domaine.services.filesSystem.s3.S3DownloadService
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -25,6 +26,19 @@ object StorageController {
         val files = FileRepository.findAllByParentId(folder?.id.toString())
 
         call.respond(S3Response(folder, folders, files))
+    }
+
+    suspend fun download(call: ApplicationCall) {
+        val request = call.receive<DownloadRequest>()
+        try {
+            if (request.isFolder) {
+               S3Config.makeClient()?.let {  }
+            } else {
+                S3Config.makeClient()?.let { S3DownloadService.downloadFile(call, it, request.id.toString(), request.path) }
+            }
+        } catch (e: Exception) {
+            call.respond(HttpStatusCode.InternalServerError, "Erreur lors du téléchargement: ${e.message}")
+        }
     }
 
     suspend fun update(call: ApplicationCall) {

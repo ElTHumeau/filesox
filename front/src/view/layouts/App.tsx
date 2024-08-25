@@ -99,9 +99,9 @@ export function App() {
                                     )}
                                     <ButtonIcon svg={Info} title={t('tooltip.information')}
                                         onClick={() => openModal(() => <ModalInformationMedia/>, "lg")}/>
+                                    <ButtonDownload/>
                                 </>
                             }
-                            <ButtonDownload/>
                             {role([RoleEnum.CREATE_OBJECT], user!.roles) && (
                                 <ButtonIcon svg={Upload} title={t('tooltip.upload')}/>
                             )}
