@@ -2,6 +2,7 @@ package fr.tmeunier.web.routes
 
 import aws.sdk.kotlin.services.s3.model.S3Exception
 import fr.tmeunier.config.S3Config
+import fr.tmeunier.config.Security
 import fr.tmeunier.domaine.repositories.FileRepository
 import fr.tmeunier.domaine.repositories.FolderRepository
 import fr.tmeunier.domaine.requests.CompletedUpload
@@ -19,6 +20,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.runBlocking
+import withAnyRole
 import java.util.*
 
 fun Route.storageRoute() {
@@ -26,25 +28,31 @@ fun Route.storageRoute() {
     route("/storages") {
         post { StorageController.listFoldersAndFiles(call) }
 
-        post("/download") {
-            StorageController.download(call)
+        withAnyRole(Security.ADMIN, Security.DOWNLOAD) {
+            post("/download") { StorageController.download(call) }
         }
 
-        post("/update") { StorageController.update(call) }
-
-        post("/move") { StorageController.move(call) }
-
-        post("/share") { StorageController.share(call) }
-
-        get("/share/{uuid}") {
-            StorageController.getShared(call)
+        withAnyRole(Security.ADMIN, Security.EDIT_FILE) {
+            post("/update") { StorageController.update(call) }
+            post("/move") { StorageController.move(call) }
         }
 
-        post("/delete") { StorageController.delete(call) }
+        withAnyRole(Security.ADMIN, Security.SHARE_FILE) {
+            post("/share") { StorageController.share(call) }
+            get("/share/{uuid}") {
+                StorageController.getShared(call)
+            }
+        }
+
+        withAnyRole(Security.ADMIN, Security.DELETE_FILE_FOLDER) {
+            post("/delete") { StorageController.delete(call) }
+        }
     }
 
     route("/folders") {
-        post("/create") { FolderController.create(call) }
+        withAnyRole(Security.ADMIN, Security.CREATE_FILE_FOLDER) {
+            post("/create") { FolderController.create(call) }
+        }
     }
 
     route("/images") {
@@ -52,7 +60,6 @@ fun Route.storageRoute() {
     }
 
     route("/files") {
-
         route("/upload") {
             post("/init") {
                 val request = call.receive<InitialUploadRequest>()
