@@ -108,7 +108,7 @@ export function App() {
                 <SidebarMenuContent>
                     <SidebarMenu>
                         <SidebarTitleMenu>{t('title.nav.sub.menu')}</SidebarTitleMenu>
-                        <SidebarMenuItem href="/" svg={Home}>{t('title.nav.dashboard')}</SidebarMenuItem>
+                        <SidebarMenuItem href="/" active="/" svg={Home}>{t('title.nav.dashboard')}</SidebarMenuItem>
                         {role([RoleEnum.CREATE_OBJECT], user!.roles) && (
                             <SidebarMenuItem svg={FolderPlus}
                                              onClick={() => openModal(() => <ModalCreateFolder/>, "md")}>
@@ -118,7 +118,7 @@ export function App() {
                     </SidebarMenu>
                     <SidebarMenu>
                         <SidebarTitleMenu>{t('title.nav.profile')}</SidebarTitleMenu>
-                        <SidebarMenuItem href="/profile" svg={User}>
+                        <SidebarMenuItem href="/profile"  active="/profile/*" svg={User}>
                             {t('title.nav.profile')}
                         </SidebarMenuItem>
                     </SidebarMenu>
@@ -127,16 +127,16 @@ export function App() {
                             <SidebarTitleMenu>
                                 {t('title.nav.sub.administration')}
                             </SidebarTitleMenu>
-                            <SidebarMenuItem href="/admin/settings" svg={Settings}>
+                            <SidebarMenuItem href="/admin/settings" active="/admin/settings" svg={Settings}>
                                 {t('title.nav.settings')}
                             </SidebarMenuItem>
-                            <SidebarMenuItem href="/admin/users" svg={Users}>
+                            <SidebarMenuItem href="/admin/users" active="/admin/users" svg={Users}>
                                 {t('title.nav.users')}
                             </SidebarMenuItem>
-                            <SidebarMenuItem href="/admin/shares" svg={Share2}>
+                            <SidebarMenuItem href="/admin/shares" active="/admin/shares" svg={Share2}>
                                 {t('title.nav.shares')}
                             </SidebarMenuItem>
-                            <SidebarMenuItem href="/admin/logs" svg={Archive}>
+                            <SidebarMenuItem href="/admin/logs" active="/admin/logs" svg={Archive}>
                                 {t('title.nav.logs')}
                             </SidebarMenuItem>
                         </SidebarMenu>
