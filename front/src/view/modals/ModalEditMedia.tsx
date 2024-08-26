@@ -46,7 +46,7 @@ export function ModalEditMedia() {
                 id: activeStorage!.id,
                 name: getPathOrName(),
                 new_name: name,
-                parent_id: activeStorage && 'parent_id' in  activeStorage && activeStorage.parent_id || null
+                parent_id: activeStorage?.parent_id || null
             })
         }, {
             onSuccess: () => {

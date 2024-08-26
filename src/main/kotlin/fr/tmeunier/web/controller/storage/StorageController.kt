@@ -56,7 +56,7 @@ object StorageController {
 
             FolderRepository.update(request.id, request.newName, request.parentId)
         } else {
-            FileRepository.update(request.id, request.newName, null)
+            FileRepository.update(request.id, request.newName, request.parentId)
         }
 
         call.respond(HttpStatusCode.OK)
