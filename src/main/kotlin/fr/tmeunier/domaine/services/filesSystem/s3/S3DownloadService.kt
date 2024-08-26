@@ -4,9 +4,9 @@ import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.model.GetObjectRequest
 import aws.smithy.kotlin.runtime.content.toFlow
 import fr.tmeunier.config.S3Config
-import fr.tmeunier.domaine.models.FolderModel
 import fr.tmeunier.domaine.repositories.FileRepository
 import fr.tmeunier.domaine.repositories.FolderRepository
+import fr.tmeunier.domaine.response.S3Folder
 import fr.tmeunier.domaine.services.filesSystem.StorageService
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.util.UUID
+import java.util.zip.Deflater
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
@@ -52,9 +53,9 @@ object S3DownloadService {
         }
     }
 
-    suspend fun downloadFolder(call: ApplicationCall, client: S3Client, id: UUID, file: String) {
+    suspend fun downloadFolder(call: ApplicationCall, client: S3Client, id: UUID) {
         val rootFolder = FolderRepository.findById(id) ?: run {
-            call.respond(HttpStatusCode.NotFound, "Dossier non trouvé")
+            call.respond(HttpStatusCode.NotFound, "Unable to find folder")
             return
         }
 
@@ -74,41 +75,41 @@ object S3DownloadService {
             coroutineScope {
                 val channel = Channel<ByteArray>(Channel.UNLIMITED)
                 val zipJob = launch {
-                    val buffer = ByteArray(8192)
                     val byteArrayOutputStream = ByteArrayOutputStream()
                     val zipOutputStream = ZipOutputStream(byteArrayOutputStream)
+                    zipOutputStream.setLevel(Deflater.NO_COMPRESSION) // Désactive la compression pour les gros fichiers
 
-                    suspend fun addFolderToZip(folder: FolderModel, parentPath: String = "") {
+                    suspend fun addFolderToZip(folder: S3Folder, parentPath: String = "") {
                         val folderPath = if (parentPath.isEmpty()) folder.path + "/" else "$parentPath${folder.path}/"
-
                         val files = FileRepository.findAllByParentId(folder.id.toString())
 
                         files.forEach { file ->
                             val zipEntry = ZipEntry("$folderPath${file.name}")
+                            zipEntry.size = file.size.toLong() // Définit la taille du fichier à l'avance
                             zipOutputStream.putNextEntry(zipEntry)
 
-                            val getObjectRequest = GetObjectRequest.builder()
-                                .bucket(S3Config.bucketName)
-                                .key(file.id)
-                                .build()
-
-                            client.getObject(getObjectRequest) { response ->
-                                response.body?.use { inputStream ->
-                                    var bytesRead: Int
-                                    while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-                                        zipOutputStream.write(buffer, 0, bytesRead)
-
-                                        if (byteArrayOutputStream.size() > 1024 * 1024) { // 1MB buffer
-                                            channel.send(byteArrayOutputStream.toByteArray())
-                                            byteArrayOutputStream.reset()
-                                        }
+                            client.getObject(GetObjectRequest {
+                                key = file.id.toString() + "." + StorageService.getExtension(file.name)
+                                bucket = S3Config.bucketName
+                            }) { response ->
+                                response.body?.toFlow(8192)?.buffer(100)?.collect { dataPart ->
+                                    withContext(Dispatchers.IO) {
+                                        zipOutputStream.write(dataPart)
+                                        zipOutputStream.flush()
                                     }
                                 }
                             }
+
                             zipOutputStream.closeEntry()
+
+                            // Vide le buffer après chaque fichier
+                            if (byteArrayOutputStream.size() > 0) {
+                                channel.send(byteArrayOutputStream.toByteArray())
+                                byteArrayOutputStream.reset()
+                            }
                         }
 
-                        val subFolders = dataService.getSubFolders(folder.id)
+                        val subFolders = FolderRepository.findByIdOrParentId(folder.id.toString())
                         subFolders.forEach { subFolder ->
                             addFolderToZip(subFolder, folderPath)
                         }

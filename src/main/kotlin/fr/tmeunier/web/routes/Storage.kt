@@ -26,7 +26,6 @@ fun Route.storageRoute() {
     route("/storages") {
         post { StorageController.listFoldersAndFiles(call) }
 
-
         post("/download") {
             StorageController.download(call)
         }

@@ -32,12 +32,12 @@ object StorageController {
         val request = call.receive<DownloadRequest>()
         try {
             if (request.isFolder) {
-               S3Config.makeClient()?.let {  }
+               S3Config.makeClient()?.let { S3DownloadService.downloadFolder(call, it, request.id) }
             } else {
                 S3Config.makeClient()?.let { S3DownloadService.downloadFile(call, it, request.id.toString(), request.path) }
             }
         } catch (e: Exception) {
-            call.respond(HttpStatusCode.InternalServerError, "Erreur lors du téléchargement: ${e.message}")
+            call.respond(HttpStatusCode.InternalServerError, "Error downloading: ${e.message}")
         }
     }
 
