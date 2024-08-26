@@ -100,6 +100,13 @@ object StorageController {
 
     suspend fun getShared(call: ApplicationCall) {
         val id = UUID.fromString(call.parameters["uuid"])
+        val share = ShareRepository.findAllById(id)
+
+        return call.respond(HttpStatusCode.OK, share)
+    }
+
+    suspend fun shareDownlaod(call: ApplicationCall) {
+        val id = UUID.fromString(call.parameters["uuid"])
         val share = ShareRepository.findById(id)
 
         if (share.expiredAt.isBefore(java.time.LocalDateTime.now())) {
