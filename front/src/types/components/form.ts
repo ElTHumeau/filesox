@@ -1,7 +1,7 @@
 import {FormEvent, ReactNode} from "react";
 
 export interface LabelProps {
-    children: any,
+    children: ReactNode,
     htmlFor: string
 }
 

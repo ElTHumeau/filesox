@@ -7,7 +7,7 @@ import {
     Archive,
     FolderPlus,
     Home, Info,
-    LogOut, Menu, MoveUpRight,
+    Menu, MoveUpRight,
     Settings,
     Share2,
     SquarePen,
@@ -16,7 +16,7 @@ import {
     User,
     Users
 } from "lucide-react";
-import {Outlet, useLocation, useNavigate} from "react-router-dom";
+import {Outlet, useLocation} from "react-router-dom";
 import {Navbar, NavItem, NavItems, NavItemsLeft, NavItemsRight} from "../../components/layouts/nav.tsx";
 import {ButtonIcon} from "../../components/modules/Button.tsx";
 import {ModalCreateFolder} from "../modals/folders/ModalCreateFolder.tsx";
@@ -26,7 +26,6 @@ import {ModalEditMedia} from "../modals/ModalEditMedia.tsx";
 import {useModal} from "../../hooks/useModal.ts";
 import {Modal} from "../../components/modules/Modal.tsx";
 import {useFileStore} from "../../stores/useFileStore.ts";
-import {useAuth} from "../../context/modules/AuthContext.tsx";
 import {ButtonDownload} from "../../components/layouts/modules/ButtonDownload..tsx";
 import {useState} from "react";
 import {useTranslation} from "react-i18next";
@@ -40,21 +39,13 @@ import {ModalShareMedia} from "../modals/shares/ModalShareMedia.tsx";
 
 export function App() {
     const {openModal} = useModal()
-    const {logout} = useAuth()
     const {uploadLogin} = useProgressBar()
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const {activeStorage} = useFileStore()
-    const nav = useNavigate()
     const location = useLocation()
     const {t} = useTranslation()
     const {role} = useRoles()
     const {user} = useUserStore()
-
-    const handleClickLogout = (e: MouseEvent) => {
-        e.preventDefault()
-        logout()
-        nav('/login')
-    }
 
     return <div>
         {uploadLogin && <ProgressBar/>}
@@ -129,9 +120,6 @@ export function App() {
                         <SidebarTitleMenu>{t('title.nav.profile')}</SidebarTitleMenu>
                         <SidebarMenuItem href="/profile" svg={User}>
                             {t('title.nav.profile')}
-                        </SidebarMenuItem>
-                        <SidebarMenuItem svg={LogOut} onClick={(e) => handleClickLogout(e)}>
-                            {t('title.nav.logout')}
                         </SidebarMenuItem>
                     </SidebarMenu>
                     {role([RoleEnum.ADMIN], user!.roles) && (
