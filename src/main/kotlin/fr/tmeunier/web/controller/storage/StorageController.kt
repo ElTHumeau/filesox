@@ -1,5 +1,6 @@
 package fr.tmeunier.web.controller.storage
 
+import aws.smithy.kotlin.runtime.util.type
 import fr.tmeunier.config.S3Config
 import fr.tmeunier.config.Security
 import fr.tmeunier.domaine.response.S3Response
@@ -9,6 +10,7 @@ import fr.tmeunier.domaine.repositories.ShareRepository
 import fr.tmeunier.domaine.requests.*
 import fr.tmeunier.domaine.services.filesSystem.s3.S3ActionService
 import fr.tmeunier.domaine.services.filesSystem.s3.S3DownloadService
+import fr.tmeunier.domaine.services.utils.HashService
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -98,9 +100,29 @@ object StorageController {
 
     suspend fun getShared(call: ApplicationCall) {
         val id = UUID.fromString(call.parameters["uuid"])
-        val share = ShareRepository.findAllById(id)
+        val share = ShareRepository.findById(id)
 
-        return call.respond(HttpStatusCode.OK, share)
+        if (share.expiredAt.isBefore(java.time.LocalDateTime.now())) {
+            call.respond(HttpStatusCode.BadRequest, "Share expired")
+        }
+
+        if (share.password != null) {
+            val request = call.receive<CheckPasswordShareRequest>()
+            if (!HashService.hashVerify(request.password, share.password)) {
+                call.respond(HttpStatusCode.BadRequest, "Invalid password")
+            }
+        }
+
+        if (share.type === "file") {
+            val file = FileRepository.findById(share.storageId)
+            S3Config.makeClient()?.let { file?.name?.let { it1 ->
+                S3DownloadService.downloadFile(call, it, file?.id.toString(),
+                    it1
+                )
+            } }
+        } else {
+            S3Config.makeClient()?.let { S3DownloadService.downloadFolder(call, it, share.storageId)}
+        }
     }
 
     suspend fun delete(call: ApplicationCall) {

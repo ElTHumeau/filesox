@@ -18,12 +18,15 @@ import {ClipboardCopy, Share2, Trash2} from "lucide-react";
 import {useModal} from "../../hooks/useModal.ts";
 import {ModalDeleteShares} from "../modals/shares/ModalDeleteShare.tsx";
 import {Loader} from "../../components/modules/Loader/Loader.tsx";
+import {environmentVariables} from "../../config/env.ts";
+import {useAlerts} from "../../context/modules/AlertContext.tsx";
 
 export function AdminShares() {
     const [page, setPage] = useState(1)
     const API = useAxios()
     const {t} = useTranslation();
     const {openModal} = useModal()
+    const {setAlerts} = useAlerts()
 
     const {data, isLoading} = useQuery(
         ['shares', page],
@@ -32,6 +35,11 @@ export function AdminShares() {
             return adminSharesSchemaType.parse(response.data)
         },
     );
+
+    const handleCopy = (id: string) => {
+        navigator.clipboard.writeText(environmentVariables.VITE_API_URL + '/storages/share/dl/' + id)
+        setAlerts('success', t('alerts.success.shares.copy'))
+    }
 
     if (isLoading) {
         return <Loader/>;
@@ -65,7 +73,7 @@ export function AdminShares() {
                             <TableCell>{share.created_at}</TableCell>
                             <TableCell>
                                 <div className="flex items-center gap-2">
-                                    <ButtonIcon title="copy" onClick={() => console.log("copy copy")} svg={ClipboardCopy}/>
+                                    <ButtonIcon title="copy" onClick={() => handleCopy(share.id)} svg={ClipboardCopy}/>
                                     <ButtonIcon title="delete" onClick={() => openModal(() => <ModalDeleteShares
                                         url={`/admin/shares/delete}`} shareId={share.id}/>, 'md')} svg={Trash2}/>
                                 </div>

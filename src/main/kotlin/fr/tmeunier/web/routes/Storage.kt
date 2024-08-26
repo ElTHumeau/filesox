@@ -39,7 +39,7 @@ fun Route.storageRoute() {
 
         withAnyRole(Security.ADMIN, Security.SHARE_FILE) {
             post("/share") { StorageController.share(call) }
-            get("/share/{uuid}") {
+            get("/share/dl/{uuid}") {
                 StorageController.getShared(call)
             }
         }

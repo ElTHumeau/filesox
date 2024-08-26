@@ -8,12 +8,15 @@ import {ClipboardCopy, Trash2} from "lucide-react";
 import {ModalDeleteShares} from "../ModalDeleteShare.tsx";
 import {useModal} from "../../../../hooks/useModal.ts";
 import {Loader} from "../../../../components/modules/Loader/Loader.tsx";
+import {environmentVariables} from "../../../../config/env.ts";
+import {useAlerts} from "../../../../context/modules/AlertContext.tsx";
 
 export function ModalShareListMedia() {
     const API = useAxios()
     const {activeStorage} = useFileStore()
     const {t} = useTranslation()
     const {openModal} = useModal()
+    const {setAlerts} = useAlerts()
 
     const {data, isLoading} = useQuery(
         ['shares', activeStorage!.id],
@@ -22,6 +25,11 @@ export function ModalShareListMedia() {
             return ListModalShareSchemaType.parse(response.data)
         },
     );
+
+    const handleCopy = (id: string) => {
+        navigator.clipboard.writeText(environmentVariables.VITE_API_URL + '/storages/share/dl/' + id)
+        setAlerts('success', t('alerts.success.shares.copy'))
+    }
 
     if (isLoading) {
         return <Loader/>;
@@ -40,7 +48,7 @@ export function ModalShareListMedia() {
                             <li className="col-span-2">{share.expired_at}</li>
                             <li>
                                 <div className="flex items-center gap-2">
-                                    <ButtonIcon title="copy" onClick={() => console.log("copy copy")}
+                                    <ButtonIcon title="copy" onClick={() => handleCopy(share.id)}
                                                 svg={ClipboardCopy}/>
                                     <ButtonIcon title="delete" onClick={() => openModal(() => <ModalDeleteShares
                                         url={`/profile/shares/delete`} shareId={share.id}/>, 'md')} svg={Trash2}/>

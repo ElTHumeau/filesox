@@ -20,3 +20,8 @@ data class CreateShareRequest(
     val duration: Int,
     @SerialName("type_duration") val typeDuration: String
 )
+
+@Serializable
+data class CheckPasswordShareRequest(
+    val password: String
+)

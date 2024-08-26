@@ -114,6 +114,7 @@ export const fr = {
                 shares: {
                     create: "Votre partage a été créé avec succès",
                     delete: "Votre partage a été supprimé avec succès",
+                    copy: "Le lien de partage a été copié avec succès",
                 }
             },
             error: {

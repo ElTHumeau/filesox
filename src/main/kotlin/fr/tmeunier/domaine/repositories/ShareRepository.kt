@@ -1,6 +1,7 @@
 package fr.tmeunier.domaine.repositories
 
 import fr.tmeunier.config.Database
+import fr.tmeunier.domaine.models.ShareModel
 import fr.tmeunier.domaine.response.ShareShowResponse
 import fr.tmeunier.domaine.services.utils.HashService
 import fr.tmeunier.domaine.services.utils.formatDate
@@ -59,6 +60,22 @@ object ShareRepository {
                         createdAt = it[Shares.createdAt].toString()
                     )
                 }
+        }
+    }
+
+    fun findById(id: UUID): ShareModel {
+        return transaction(database) {
+            Shares.select { Shares.id eq id }
+                .map {
+                    ShareModel(
+                        id = it[Shares.id],
+                        storageId = it[Shares.storageId],
+                        type = it[Shares.type],
+                        password = it[Shares.password],
+                        expiredAt = it[Shares.expiredAt],
+                    )
+                }
+                .first()
         }
     }
 
