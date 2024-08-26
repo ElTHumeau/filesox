@@ -29,6 +29,10 @@ export const useStorage = () => {
         }
     }
 
+    const getFolderName = (path: string) => {
+        return path.split('/').reverse()[1]
+    }
+
     const getNewPath = (path: string, formData: string, name? : string) => {
         const isFolder = !name
         const lastFolder = path.split('/').reverse()[1]
@@ -40,5 +44,5 @@ export const useStorage = () => {
         }
     }
 
-    return {isFolder, getPath, getPathOrName, getNewPath}
+    return {isFolder, getPath, getFolderName, getPathOrName, getNewPath}
 }

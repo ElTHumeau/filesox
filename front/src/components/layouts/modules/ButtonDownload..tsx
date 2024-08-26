@@ -5,7 +5,7 @@ import {ButtonIcon} from "../../modules/Button.tsx";
 import {useAxios} from "../../../config/axios.ts";
 
 export function ButtonDownload() {
-    const {isFolder, getPathOrName} = useStorage()
+    const {isFolder, getPathOrName, getFolderName} = useStorage()
     const {activeStorage} = useFileStore()
     const API = useAxios()
 
@@ -37,7 +37,7 @@ export function ButtonDownload() {
             const a = document.createElement('a');
             a.style.display = 'none';
             a.href = url;
-            a.download = getPathOrName() as string;
+            a.download = !isFolder() ? getPathOrName() as string : getFolderName(getPathOrName() as string) + '.zip';
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);

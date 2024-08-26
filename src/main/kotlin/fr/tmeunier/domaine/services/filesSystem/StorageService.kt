@@ -58,6 +58,17 @@ object StorageService {
         return String.format("%.2f %cB", bytes / 1000.0, ci.current())
     }
 
+    fun parseFileSize(sizeString: String): Long {
+        val numericPart = sizeString.replace(",", ".").replace(Regex("[^\\d.]"), "")
+        val size = numericPart.toDoubleOrNull() ?: return -1
+        return when {
+            sizeString.endsWith("MB", ignoreCase = true) -> (size * 1024 * 1024).toLong()
+            sizeString.endsWith("KB", ignoreCase = true) -> (size * 1024).toLong()
+            sizeString.endsWith("B", ignoreCase = true) -> size.toLong()
+            else -> size.toLong() // Assume bytes if no unit is specified
+        }
+    }
+
     fun zipFolder(folderPath: String, zipFilePath: String) {
         val folder = File(folderPath)
         val zipFile = File(zipFilePath)

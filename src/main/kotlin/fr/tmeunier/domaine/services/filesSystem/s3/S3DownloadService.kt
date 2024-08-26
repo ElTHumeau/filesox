@@ -8,6 +8,7 @@ import fr.tmeunier.domaine.repositories.FileRepository
 import fr.tmeunier.domaine.repositories.FolderRepository
 import fr.tmeunier.domaine.response.S3Folder
 import fr.tmeunier.domaine.services.filesSystem.StorageService
+import fr.tmeunier.domaine.services.filesSystem.StorageService.toHumanReadableValue
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -59,83 +60,53 @@ object S3DownloadService {
             return
         }
 
-        val zipFilename = "${rootFolder.path}.zip"
+        val zipFilename = "toto.zip"
+
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        ZipOutputStream(byteArrayOutputStream).use { zipOutputStream ->
+            suspend fun addFolderToZip(folder: S3Folder, parentPath: String = "") {
+                val folderPath = if (parentPath.isEmpty()) "${folder.path}/" else "$parentPath${folder.path}/"
+                val files = FileRepository.findAllByParentId(folder.id.toString())
+
+                files.forEach { file ->
+                    val zipEntry = ZipEntry("$folderPath${file.name}")
+                    val parsedSize = StorageService.parseFileSize(file.size)
+
+                    if (parsedSize >= 0) {
+                        zipEntry.size = parsedSize
+                    }
+
+                    zipOutputStream.putNextEntry(zipEntry)
+
+                    client.getObject(GetObjectRequest {
+                        key = file.id.toString() + "." + StorageService.getExtension(file.name)
+                        bucket = S3Config.bucketName
+                    }) { response ->
+                        response.body?.toFlow(8192)?.buffer(100)?.collect { dataPart ->
+                            withContext(Dispatchers.IO) {
+                                zipOutputStream.write(dataPart)
+                            }
+                        }
+                    }
+
+                    zipOutputStream.closeEntry()
+                }
+
+                val subFolders = FolderRepository.findByIdOrParentId(folder.id.toString())
+                subFolders.forEach { subFolder ->
+                    addFolderToZip(subFolder, folderPath)
+                }
+            }
+
+            addFolderToZip(rootFolder)
+        }
+
+        val zipBytes = byteArrayOutputStream.toByteArray()
 
         call.response.header(
             HttpHeaders.ContentDisposition,
-            ContentDisposition.Attachment.withParameter(
-                ContentDisposition.Parameters.FileName, zipFilename
-            ).toString()
+            ContentDisposition.Attachment.withParameter(ContentDisposition.Parameters.FileName, zipFilename).toString()
         )
-        call.response.header(HttpHeaders.CacheControl, "no-cache, no-store, must-revalidate")
-        call.response.header(HttpHeaders.Pragma, "no-cache")
-        call.response.header(HttpHeaders.Expires, "0")
-
-        call.respondOutputStream(ContentType.Application.Zip) {
-            coroutineScope {
-                val channel = Channel<ByteArray>(Channel.UNLIMITED)
-                val zipJob = launch {
-                    val byteArrayOutputStream = ByteArrayOutputStream()
-                    val zipOutputStream = ZipOutputStream(byteArrayOutputStream)
-                    zipOutputStream.setLevel(Deflater.NO_COMPRESSION) // Désactive la compression pour les gros fichiers
-
-                    suspend fun addFolderToZip(folder: S3Folder, parentPath: String = "") {
-                        val folderPath = if (parentPath.isEmpty()) folder.path + "/" else "$parentPath${folder.path}/"
-                        val files = FileRepository.findAllByParentId(folder.id.toString())
-
-                        files.forEach { file ->
-                            val zipEntry = ZipEntry("$folderPath${file.name}")
-                            zipEntry.size = file.size.toLong() // Définit la taille du fichier à l'avance
-                            zipOutputStream.putNextEntry(zipEntry)
-
-                            client.getObject(GetObjectRequest {
-                                key = file.id.toString() + "." + StorageService.getExtension(file.name)
-                                bucket = S3Config.bucketName
-                            }) { response ->
-                                response.body?.toFlow(8192)?.buffer(100)?.collect { dataPart ->
-                                    withContext(Dispatchers.IO) {
-                                        zipOutputStream.write(dataPart)
-                                        zipOutputStream.flush()
-                                    }
-                                }
-                            }
-
-                            zipOutputStream.closeEntry()
-
-                            // Vide le buffer après chaque fichier
-                            if (byteArrayOutputStream.size() > 0) {
-                                channel.send(byteArrayOutputStream.toByteArray())
-                                byteArrayOutputStream.reset()
-                            }
-                        }
-
-                        val subFolders = FolderRepository.findByIdOrParentId(folder.id.toString())
-                        subFolders.forEach { subFolder ->
-                            addFolderToZip(subFolder, folderPath)
-                        }
-                    }
-
-                    addFolderToZip(rootFolder)
-                    zipOutputStream.close()
-
-                    if (byteArrayOutputStream.size() > 0) {
-                        channel.send(byteArrayOutputStream.toByteArray())
-                    }
-                    channel.close()
-                }
-
-                val writeJob = launch {
-                    for (chunk in channel) {
-                        withContext(Dispatchers.IO) {
-                            write(chunk)
-                            flush()
-                        }
-                    }
-                }
-
-                zipJob.join()
-                writeJob.join()
-            }
-        }
+        call.respondBytes(zipBytes, ContentType.Application.Zip)
     }
 }
