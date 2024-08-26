@@ -1,4 +1,4 @@
-import {ComponentType, ReactNode} from "react";
+import {ComponentType, MouseEventHandler, ReactNode} from "react";
 import {Link, useLocation} from "react-router-dom";
 import {ChevronLeft} from "lucide-react";
 
@@ -42,7 +42,7 @@ export function SidebarMenuItem({svg: SvgComponent, children, href, onClick}: {
     svg: ComponentType<any>,
     children: ReactNode,
     href?: string,
-    onClick?: (event: MouseEvent) => void | undefined
+    onClick?: MouseEventHandler<HTMLButtonElement> | undefined
 }) {
     const location = useLocation();
     let isActive;

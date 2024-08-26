@@ -10,7 +10,6 @@ export function ButtonDownload() {
     const API = useAxios()
 
     const handleClickDownload = async () => {
-
         try {
             const response = await API.post("/storages/download", {
                 id: activeStorage?.id,

@@ -8,9 +8,6 @@ const schema = z.object({
     username: z.string().min(3),
     email: z.string().email(),
     password: z.string().min(8),
-    confirmPassword: z.string().refine(data => data === schema.password, {
-        message: 'Passwords do not match'
-    })
 })
 
 type FormFields = z.infer<typeof schema>
@@ -83,21 +80,6 @@ export default function Register() {
                         />
                         {errors.password &&
                             <FormError>{errors.password.message}</FormError>
-                        }
-                    </FormField>
-                </div>
-                <div>
-                    <FormLabel htmlFor="confirmPassword">
-                        {t('input.label.password_confirm')}
-                    </FormLabel>
-                    <FormField>
-                        <input
-                            {...register('confirmPassword')}
-                            type="password"
-                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                        />
-                        {errors.confirmPassword &&
-                            <FormError>{errors.confirmPassword.message}</FormError>
                         }
                     </FormField>
                 </div>

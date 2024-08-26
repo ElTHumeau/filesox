@@ -1,4 +1,4 @@
-import React, {ReactNode} from "react";
+import {ReactNode} from "react";
 import {FormFieldsProps, LabelProps} from "../../types/components/form.ts";
 
 export function FormFields({children, onSubmit}: FormFieldsProps) {
@@ -7,12 +7,11 @@ export function FormFields({children, onSubmit}: FormFieldsProps) {
     </form>
 }
 
-export function FormLabel({children, htmlFor}: LabelProps) {
+export function FormLabel({children, htmlFor}: LabelProps): JSX.Element {
     return <label htmlFor={htmlFor} className="block text-sm font-medium leading-6 text-gray-900">
         {children}
     </label>
 }
-
 
 export function FormDescription({children}: { children: ReactNode }) {
     return <p className="prose text-sm text-gray-700 mt-1 mb-2">
