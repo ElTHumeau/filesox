@@ -154,7 +154,7 @@ export function App() {
                     )}
                 </SidebarMenuContent>
                 <SidebarMenuContent>
-                    <SidebarItemVersion>v 1.0.8</SidebarItemVersion>
+                    <SidebarItemVersion>v 0.0.1</SidebarItemVersion>
                 </SidebarMenuContent>
             </Sidebar>
 
