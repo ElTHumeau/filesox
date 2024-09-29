@@ -75,6 +75,20 @@ object ShareRepository {
             .first()
     }
 
+    //Get all shares with export date before now
+    suspend fun findAllExpired(): List<ShareModel> = dbQuery {
+        Shares.select { Shares.expiredAt less LocalDateTime.now() }
+            .map {
+                ShareModel(
+                    id = it[Shares.id],
+                    storageId = it[Shares.storageId],
+                    type = it[Shares.type],
+                    password = it[Shares.password],
+                    expiredAt = it[Shares.expiredAt],
+                )
+            }
+    }
+
     suspend fun create(storageId: UUID, type: String, userId: Int, password: String?, expiredAt: LocalDateTime) =
         dbQuery {
             Shares.insert {
