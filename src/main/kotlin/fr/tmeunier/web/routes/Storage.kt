@@ -20,7 +20,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.runBlocking
-import withAnyRole
+import fr.tmeunier.core.permissions.withAnyRole
 import java.util.*
 
 fun Route.storageRoute() {

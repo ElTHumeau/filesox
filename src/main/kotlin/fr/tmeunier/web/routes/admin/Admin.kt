@@ -7,7 +7,7 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import withRole
+import fr.tmeunier.core.permissions.withRole
 
 fun Route.adminRouting() {
     route("admin") {

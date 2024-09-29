@@ -30,7 +30,7 @@ object AdminUserController {
                 name = row[UserRepository.Users.name],
                 email = row[UserRepository.Users.email],
                 createdAt = formatDate(row[UserRepository.Users.createdAt]),
-                filePath = row[UserRepository.Users.filePath]?.let { FolderRepository.findById(it)?.path } ?: null,
+                filePath = row[UserRepository.Users.filePath]?.let { FolderRepository.findById(it)?.path },
                 permissions = UsersPermissionsRepository.findUserPermissions(row[UserRepository.Users.id])
             )
         }

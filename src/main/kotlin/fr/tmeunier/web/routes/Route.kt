@@ -12,11 +12,10 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.*
-import roleBased
-import withRole
+import fr.tmeunier.core.permissions.roleBased
+import fr.tmeunier.core.permissions.withRole
 
 val RolesKey = AttributeKey<Set<String>>("roles")
 
