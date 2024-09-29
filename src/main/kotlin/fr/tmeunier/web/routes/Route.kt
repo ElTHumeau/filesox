@@ -55,12 +55,6 @@ fun Application.configurationRoute() {
             storageRoute()
             profileRouting()
 
-            get("/hello-word") {
-                val requiredRoles = call.attributes.getOrNull(RolesKey)
-                call.respondText("Route - Required Roles: $requiredRoles")
-                call.respond(mapOf("hello" to Security.getUserId()))
-            }
-
             route("/"){
 
                 withRole(Security.ADMIN){
