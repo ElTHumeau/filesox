@@ -6,7 +6,7 @@ import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Row} from "../../../../components/modules/Grid.tsx";
 import {useMutation, useQuery, useQueryClient} from "react-query";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useAlerts} from "../../../../context/modules/AlertContext.tsx";
 import {useModal} from "../../../../hooks/useModal.ts";
 import {permissionsSchemaType, UserType} from "../../../../types/api/userType.ts";
@@ -16,6 +16,7 @@ import {useTranslation} from "react-i18next";
 import {UserPen} from "lucide-react";
 import Select from "react-tailwindcss-select";
 import {SelectValue} from "react-tailwindcss-select/dist/components/type";
+import {Loader} from "../../../../components/modules/Loader/Loader.tsx";
 
 const schema = z.object({
     name: z.string().min(3),
@@ -56,7 +57,13 @@ export function AdminEditUserModal({user}: { user: UserType }) {
         refetchOnWindowFocus: false
     })
 
-    const [permissions, setPermissions] = useState<SelectValue>(getPermissionsValue(data || [], user.permissions))
+    const [permissions, setPermissions] = useState<SelectValue>([])
+
+    useEffect(() => {
+        if (data) {
+            setPermissions(getPermissionsValue(data, user.permissions))
+        }
+    }, [data, user.permissions])
 
     const {mutate} = useMutation(
         async (formData: FormFields) => {
@@ -77,7 +84,7 @@ export function AdminEditUserModal({user}: { user: UserType }) {
         mutate({...formData})
     }
 
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading) return <div><Loader/></div>;
 
     return <>
         <ModalHeader>
