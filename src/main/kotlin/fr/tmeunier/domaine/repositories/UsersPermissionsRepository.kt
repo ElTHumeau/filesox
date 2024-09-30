@@ -66,8 +66,14 @@ object UsersPermissionsRepository {
     }
 
     suspend fun sync(userId: Int, permissionsId: List<Int>) = dbQuery {
-        UsersPermissions.deleteWhere { UsersPermissions.userId eq userId }
-        create(userId, permissionsId)
+        transaction {
+            UsersPermissions.deleteWhere { UsersPermissions.userId eq userId }
+
+            UsersPermissions.batchInsert(permissionsId) { permissionId ->
+                this[UsersPermissions.userId] = userId
+                this[UsersPermissions.permissionId] = permissionId
+            }
+        }
     }
 
     suspend fun delete(userId: Int) = dbQuery {

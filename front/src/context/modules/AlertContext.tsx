@@ -1,5 +1,5 @@
 import {createContext, FC, useContext, useState} from "react";
-import {AlertsContextProps, AlertsProviderProps} from "../../types/components/alert.ts";
+import {AlertsContextProps, AlertsProviderProps} from "@/types/components/alert.ts";
 import {AlertsFlash} from "../../view/layouts/modules/AlertsFlash.tsx";
 
 interface AlertType {

@@ -1,14 +1,14 @@
-import {FormError, FormField, FormFields, FormLabel} from "../../components/modules/Form.tsx";
+import {FormError, FormField, FormFields, FormLabel} from "@components/modules/Form.tsx";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
 import {useNavigate} from "react-router-dom";
-import {useAuth} from "../../context/modules/AuthContext.tsx";
+import {useAuth} from "@context/modules/AuthContext.tsx";
 import {useMutation} from "react-query";
-import {useAlerts} from "../../context/modules/AlertContext.tsx";
+import {useAlerts} from "@context/modules/AlertContext.tsx";
 import axios from "axios";
-import {loginSchemaType} from "../../types/api/authType.ts";
-import {BASE_URL} from "../../config/axios.ts";
+import {loginSchemaType} from "@/types/api/authType.ts";
+import {BASE_URL} from "@config/axios.ts";
 import {useTranslation} from "react-i18next";
 
 const schema = z.object({
