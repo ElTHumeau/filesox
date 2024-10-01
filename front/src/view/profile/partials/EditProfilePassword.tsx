@@ -2,17 +2,24 @@ import {Card, CardBody} from "@components/modules/Card.tsx";
 import {FormError, FormField, FormFields, FormLabel} from "@components/modules/Form.tsx";
 import {Button} from "@components/modules/Button.tsx";
 import {useProfileEditPasswordApi} from "@/api/profileApi.ts";
+import {useTranslation} from "react-i18next";
 
 export function EditProfilePassword() {
     const {form, onSubmit} = useProfileEditPasswordApi()
+    const {t} = useTranslation()
+
     return <>
         <Card>
             <CardBody>
-                <h2 className="text-xl font-semibold mb-4">Edit Password</h2>
+                <h2 className="text-xl font-semibold mb-4">
+                    {t('title.profile.edit_password')}
+                </h2>
 
                 <FormFields onSubmit={form.handleSubmit(onSubmit)}>
                     <FormField>
-                        <FormLabel htmlFor="password">Password</FormLabel>
+                        <FormLabel htmlFor="password">
+                            {t('input.label.password')}
+                        </FormLabel>
                         <input
                             {...form.register('password')}
                             type="password"
@@ -21,7 +28,9 @@ export function EditProfilePassword() {
                         <FormError>{form.formState.errors.password?.message}</FormError>
                     </FormField>
                     <FormField>
-                        <FormLabel htmlFor="confirm_password">Confirm Password</FormLabel>
+                        <FormLabel htmlFor="confirm_password">
+                            {t('input.label.password_confirm')}
+                        </FormLabel>
                         <input
                             {...form.register('confirm_password')}
                             type="password"
@@ -31,7 +40,9 @@ export function EditProfilePassword() {
                     </FormField>
 
                     <div className="flex justify-end mt-4">
-                        <Button color={'primary'} type={'submit'}>Edit password</Button>
+                        <Button color={'primary'} type={'submit'}>
+                            {t('button.save')}
+                        </Button>
                     </div>
                 </FormFields>
             </CardBody>

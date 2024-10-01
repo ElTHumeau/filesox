@@ -2,19 +2,25 @@ import {Card, CardBody} from "@components/modules/Card.tsx";
 import {FormError, FormField, FormFields, FormLabel} from "@components/modules/Form.tsx";
 import {Button} from "@components/modules/Button.tsx";
 import {useEditProfileApi} from "@/api/profileApi.ts";
+import {useTranslation} from "react-i18next";
 
 export function EditProfileInformation() {
     const {form, onSubmit} = useEditProfileApi()
+    const {t} = useTranslation()
 
     return (
         <Card>
             <CardBody>
-                <h2 className="text-xl font-semibold mb-4">Edit Profile Information</h2>
+                <h2 className="text-xl font-semibold mb-4">
+                    {t('title.profile.edit')}
+                </h2>
 
                 <FormFields onSubmit={form.handleSubmit(onSubmit)}>
 
                     <FormField>
-                        <FormLabel htmlFor="name">Name</FormLabel>
+                        <FormLabel htmlFor="name">
+                            {t('input.label.name')}
+                        </FormLabel>
                         <input
                             {...form.register('name')}
                             type="text"
@@ -23,7 +29,9 @@ export function EditProfileInformation() {
                             <FormError>{form.formState.errors.name?.message}</FormError>
                     </FormField>
                     <FormField>
-                        <FormLabel htmlFor="name">Email</FormLabel>
+                        <FormLabel htmlFor="name">
+                            {t('input.label.email')}
+                        </FormLabel>
                         <input
                             {...form.register('email')}
                             type="email"
@@ -33,7 +41,9 @@ export function EditProfileInformation() {
                     </FormField>
 
                     <div className="flex justify-end mt-4">
-                        <Button color={'primary'} type={'submit'}>Edit profile</Button>
+                        <Button color={'primary'} type={'submit'}>
+                            {t('button.save')}
+                        </Button>
                     </div>
                 </FormFields>
             </CardBody>

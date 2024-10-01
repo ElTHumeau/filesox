@@ -21,7 +21,7 @@ export function ModalMoveMedia() {
         <ModalBody>
             <FormFields id="form-move-storage" onSubmit={form.handleSubmit(onSubmit)}>
                 <FormDescription>
-                    Si vous voulez déplacer le dossier à la racine remplicer le champs: <TypoCode>./</TypoCode>.
+                    {t('input.description.move_storage')}: <TypoCode>./</TypoCode>.
                 </FormDescription>
                 <FormLabel htmlFor="name">
                     {t('input.label.path')}

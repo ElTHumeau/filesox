@@ -9,10 +9,11 @@ export const fr = {
                 register: 'Créer un compte',
             },
             profile: {
-                edit_password: 'Modifier le mot de passe',
-                edit: 'Modifier le profil',
+                edit_password: 'Modifier mon mot de passe',
+                edit: 'Modifier mon profil',
             },
             modal: {
+                information_media: 'Information Média',
                 move_media: 'Déplacer le média',
                 share_media: 'Partager le média',
                 create_folder: 'Créer un dossier',
@@ -62,6 +63,7 @@ export const fr = {
 
         input: {
             label: {
+                id: 'Id',
                 email: 'Email',
                 password: 'Mot de passe',
                 password_confirm: 'Confirmer le mot de passe',
@@ -74,6 +76,8 @@ export const fr = {
                 username: 'Nom d\'utilisateur',
                 optional_password: 'Mot de passe (optionnel)',
                 share_duration: 'Durée du partage',
+                size: 'Taille',
+                file_type: 'Type de fichier',
             },
             placeholder: {
                 email: 'john.doe@exemple.com',
@@ -91,6 +95,10 @@ export const fr = {
                     months: 'Mois',
                     years: 'Années',
                 }
+            },
+            description: {
+                move_storage : "Si vous voulez déplacer le dossier à la racine remplicer le champs",
+                create_user: "Si vous souhaitez que l'utilisateur est l'espace de stockage racine, remplisser le champs",
             }
         },
 
@@ -149,7 +157,6 @@ export const fr = {
             user: 'Utilisateur',
             subject: 'Sujet',
             path: 'Chemin',
-            expires_at: 'Expire le',
             expired_at: 'Expire le',
             no_data: 'Aucune donnée disponible',
         },
