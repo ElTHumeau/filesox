@@ -2,7 +2,7 @@ package fr.tmeunier.web.controller.storage
 
 import fr.tmeunier.config.S3Config
 import fr.tmeunier.domaine.requests.GetPathImageRequest
-import fr.tmeunier.domaine.services.filesSystem.FolderSystemService
+import fr.tmeunier.domaine.services.filesSystem.s3.S3UploadService
 import fr.tmeunier.domaine.services.filesSystem.StorageService
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -23,7 +23,7 @@ object FileController {
         if (!fileInCache.exists()) {
             S3Config.makeClient()
                 ?.let { it1 ->
-                    FolderSystemService.downloadFileMultipart(
+                    S3UploadService.downloadFileMultipart(
                         it1,
                         path,
                         localPathCache

@@ -1,9 +1,8 @@
-package fr.tmeunier.domaine.services.filesSystem
+package fr.tmeunier.domaine.services.filesSystem.s3
 
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.s3.createMultipartUpload
 import aws.sdk.kotlin.services.s3.model.*
-import aws.sdk.kotlin.services.s3.paginators.listObjectsV2Paginated
 import aws.smithy.kotlin.runtime.content.ByteStream
 import aws.smithy.kotlin.runtime.content.toFlow
 import fr.tmeunier.config.S3Config
@@ -12,7 +11,7 @@ import kotlinx.coroutines.flow.cancellable
 import java.nio.file.Files
 import java.nio.file.Paths
 
-object FolderSystemService {
+object S3UploadService {
 
     val uploads = mutableMapOf<String, MutableList<CompletedPart>>()
 

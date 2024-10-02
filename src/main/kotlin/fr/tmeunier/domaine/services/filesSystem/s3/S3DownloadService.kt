@@ -26,7 +26,7 @@ import java.util.zip.ZipOutputStream
 
 object S3DownloadService {
 
-    suspend fun downloadFile(call: ApplicationCall, client: S3Client, id: String, file: String) {
+    suspend fun downloadFileMultipart(call: ApplicationCall, client: S3Client, id: String, file: String) {
         val filename = id + "." + StorageService.getExtension(file)
 
         call.response.header(
@@ -54,7 +54,7 @@ object S3DownloadService {
         }
     }
 
-    suspend fun downloadFolder(call: ApplicationCall, client: S3Client, id: UUID) {
+    suspend fun downloadFolderMultipart(call: ApplicationCall, client: S3Client, id: UUID) {
         val rootFolder = FolderRepository.findById(id) ?: run {
             call.respond(HttpStatusCode.NotFound, "Unable to find folder")
             return

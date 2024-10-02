@@ -4,15 +4,13 @@ import aws.sdk.kotlin.services.s3.model.S3Exception
 import fr.tmeunier.config.S3Config
 import fr.tmeunier.domaine.repositories.FolderRepository
 import fr.tmeunier.domaine.requests.*
-import fr.tmeunier.domaine.services.filesSystem.FolderSystemService
-import fr.tmeunier.domaine.services.filesSystem.StorageService
+import fr.tmeunier.domaine.services.filesSystem.s3.S3UploadService
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import kotlinx.coroutines.runBlocking
-import java.io.File
 
 object FolderController {
 
@@ -29,8 +27,6 @@ object FolderController {
         var totalChunks: Int? = null
         var originalFileName: String? = null
         var fileBytes: ByteArray? = null
-
-        println("multipart " + multipart)
 
         multipart.forEachPart { part ->
             when (part) {
@@ -58,7 +54,7 @@ object FolderController {
             runBlocking {
                 try {
                     uploadId = S3Config.makeClient()?.let {
-                        FolderSystemService.uploadMultipart(it, key, uploadId, chunkNumber!!, fileBytes, totalChunks!!)
+                        S3UploadService.uploadMultipart(it, key, uploadId, chunkNumber!!, fileBytes, totalChunks!!)
                     }
                 } catch (e: S3Exception) {
                     call.respond(HttpStatusCode.BadRequest, "Error uploading chunk ${e.message}")

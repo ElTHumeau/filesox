@@ -8,7 +8,7 @@ import fr.tmeunier.domaine.repositories.FolderRepository
 import fr.tmeunier.domaine.requests.CompletedUpload
 import fr.tmeunier.domaine.requests.InitialUploadRequest
 import fr.tmeunier.domaine.response.UploadCompleteResponse
-import fr.tmeunier.domaine.services.filesSystem.FolderSystemService
+import fr.tmeunier.domaine.services.filesSystem.s3.S3UploadService
 import fr.tmeunier.domaine.services.filesSystem.StorageService
 import fr.tmeunier.web.controller.storage.FileController
 import fr.tmeunier.web.controller.storage.FolderController
@@ -21,6 +21,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.runBlocking
 import fr.tmeunier.core.permissions.withAnyRole
+import fr.tmeunier.web.controller.storage.ShareController
 import java.util.*
 
 fun Route.storageRoute() {
@@ -38,12 +39,12 @@ fun Route.storageRoute() {
         }
 
         withAnyRole(Security.ADMIN, Security.SHARE_FILE) {
-            post("/share") { StorageController.share(call) }
+            post("/share") { ShareController.share(call) }
             get("/share/dl/{uuid}") {
-                StorageController.shareDownlaod(call)
+                ShareController.shareDownload(call)
             }
             get("/share/{uuid}") {
-                StorageController.getShared(call)
+                ShareController.getShared(call)
             }
         }
 
@@ -78,7 +79,7 @@ fun Route.storageRoute() {
                 val filename = uuid.toString() + '.' + StorageService.getExtension(request.type)
 
                 val uploadId = S3Config.makeClient()?.let {
-                    FolderSystemService.initiateMultipartUpload(it, filename)
+                    S3UploadService.initiateMultipartUpload(it, filename)
                 }
 
                 if (uploadId != null) {
@@ -122,7 +123,7 @@ fun Route.storageRoute() {
                     runBlocking {
                         try {
                             S3Config.makeClient()?.let {
-                                FolderSystemService.uploadMultipart(
+                                S3UploadService.uploadMultipart(
                                     it,
                                     key,
                                     uploadId,
@@ -147,7 +148,7 @@ fun Route.storageRoute() {
                 runBlocking {
                     try {
                         S3Config.makeClient()?.let {
-                            FolderSystemService.completeMultipartUpload(it, request.filename, request.uploadId)
+                            S3UploadService.completeMultipartUpload(it, request.filename, request.uploadId)
                         }
                         call.respond(HttpStatusCode.OK, "Upload completed successfully")
                     } catch (e: S3Exception) {

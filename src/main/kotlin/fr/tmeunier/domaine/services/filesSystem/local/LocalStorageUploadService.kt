@@ -4,22 +4,12 @@ import io.ktor.http.content.*
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.util.UUID
+import java.util.*
 
-object FileStorageService {
+object LocalStorageUploadService {
 
     private val uploads = mutableMapOf<String, MutableList<File>>()
     private val uploadDir = Paths.get("storages").toFile()
-
-    fun delete(path: String) {
-        val file = Paths.get(path).toFile()
-
-        if (file.exists()) {
-            file.delete()
-        }
-    }
-
-    //upload multipart file
 
     fun initMultipart(path: String): String {
         val id = UUID.randomUUID().toString()
