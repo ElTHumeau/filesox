@@ -28,9 +28,9 @@ class S3StorageProvider: FileSystemInterface {
     override suspend fun downloadMultipart(call: ApplicationCall, id: String, isFolder: Boolean, path: String?): Unit? {
         return S3Config.makeClient()?.let {
             if (isFolder) {
-                S3DownloadService.downloadFolderMultipart(call, it, UUID.fromString(id))
+                S3DownloadService.downloadFolderMultipart(call, UUID.fromString(id))
             } else {
-                S3DownloadService.downloadFileMultipart(call, it, id, path!!)
+                S3DownloadService.downloadFileMultipart(call, id, path!!)
             }
         }
     }
