@@ -15,10 +15,8 @@ export function Dashboard() {
 
     return <div className="px-4 py-7 h-[87.5vh]" onClick={() => setActiveStorage(null)}>
         <Dropzone>
-                <Breadcrumb/>
-                {files && folders &&
-                    <LayoutsGrid files={files} folders={folders}/>
-                }
+            <Breadcrumb/>
+            <LayoutsGrid files={files} folders={folders}/>
         </Dropzone>
     </div>
 }

@@ -10,6 +10,8 @@ fun Route.storageRoute() {
     route("/storages") {
         post { StorageController.listFoldersAndFiles(call) }
 
+        get { StorageController.search(call) }
+
         withAnyRole(Security.ADMIN, Security.DOWNLOAD) {
             post("/download") { StorageController.download(call) }
         }

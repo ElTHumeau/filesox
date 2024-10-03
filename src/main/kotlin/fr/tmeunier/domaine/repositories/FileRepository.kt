@@ -39,6 +39,19 @@ object FileRepository {
         }
     }
 
+    suspend fun search(search: String): List<S3File> = dbQuery {
+        Files.select { Files.name like "%$search%" }.map {
+            S3File(
+                it[Files.id],
+                it[Files.name],
+                it[Files.type],
+                it[Files.size].toHumanReadableValue(),
+                it[Files.parentId],
+                it[Files.icon]
+            )
+        }
+    }
+
     fun findById(id: UUID): S3File? {
         return transaction {
             Files.select { Files.id eq id }.map {

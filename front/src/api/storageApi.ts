@@ -40,6 +40,28 @@ export function useStoragesApi() {
     return {isLoading}
 }
 
+export function useSearchStorageApi(search: string) {
+    const {setFolders, setFiles} = useFileStore()
+    const API = useAxios()
+
+    const {isLoading} = useQuery(
+        ['storage', search],
+        async () => {
+            const response = await API.get(`/storages?search=${search}`)
+            return response.data
+        },
+        {
+            enabled: search.length >= 3,
+            keepPreviousData: true,
+            onSuccess: (data) => {
+                setFolders(undefined)
+                setFiles(data.files)
+            },
+        })
+
+    return {isLoading}
+}
+
 export function useEditStorageApi() {
     const {closeModal} = useModal()
     const {setAlerts} = useAlerts()

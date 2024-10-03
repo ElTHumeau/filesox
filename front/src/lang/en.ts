@@ -86,6 +86,7 @@ export const en = {
                 password: '********',
                 file_path: 'folder/',
                 share_duration: 'Duration',
+                search: 'Search a file',
             },
             options: {
                 shares: {
@@ -130,6 +131,7 @@ export const en = {
                     login: 'Incorrect email or password',
                     register: 'Error during registration',
                 },
+                search: 'No results found',
             }
         },
 

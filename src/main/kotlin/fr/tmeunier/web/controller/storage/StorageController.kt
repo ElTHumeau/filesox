@@ -23,6 +23,13 @@ object StorageController {
         call.respond(S3Response(folder, folders, files))
     }
 
+    suspend fun search(call: ApplicationCall) {
+        val search = call.request.queryParameters["search"] ?: ""
+        val files = FileRepository.search(search)
+
+        call.respond(S3Response(null, null, files))
+    }
+
     suspend fun download(call: ApplicationCall) {
         val request = call.receive<DownloadRequest>()
         try {

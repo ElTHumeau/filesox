@@ -1,13 +1,19 @@
 import {
-    Sidebar, SidebarItemVersion, SidebarMenu, SidebarMenuContent,
+    Sidebar,
+    SidebarItemVersion,
+    SidebarMenu,
+    SidebarMenuContent,
     SidebarMenuItem,
     SidebarTitleMenu
 } from "@components/layouts/Sidebar.tsx";
 import {
     Archive,
     FolderPlus,
-    Home, Info,
-    LogOut, Menu, MoveUpRight,
+    Home,
+    Info,
+    LogOut,
+    Menu,
+    MoveUpRight,
     Settings,
     Share2,
     SquarePen,
@@ -37,6 +43,7 @@ import {ModalInformationMedia} from "../modals/ModalInformationMedia.tsx";
 import ProgressBar from "../../components/modules/ProgressBar.tsx";
 import {useProgressBar} from "@/stores/useProgressBar.ts";
 import {ModalShareMedia} from "../modals/shares/ModalShareMedia.tsx";
+import SearchBar from "@components/searchBar/SearchBar.tsx";
 
 export function App() {
     const {openModal} = useModal()
@@ -74,6 +81,7 @@ export function App() {
                             <div>
                                 <img src="/logo.png" alt="Logo" height="100" width="175" className="mx-auto"/>
                             </div>
+                            <SearchBar/>
                         </NavItem>
                     </NavItemsLeft>
                     <NavItemsRight>
