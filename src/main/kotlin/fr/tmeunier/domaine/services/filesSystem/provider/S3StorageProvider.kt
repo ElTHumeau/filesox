@@ -3,9 +3,12 @@ package fr.tmeunier.domaine.services.filesSystem.provider
 import aws.sdk.kotlin.services.s3.model.DeleteObjectRequest
 import fr.tmeunier.config.S3Config
 import fr.tmeunier.domaine.services.filesSystem.FileSystemInterface
+import fr.tmeunier.domaine.services.filesSystem.s3.S3DownloadService
 import fr.tmeunier.domaine.services.filesSystem.s3.S3UploadService
+import io.ktor.server.application.*
+import java.util.*
 
-object S3StorageProvider: FileSystemInterface {
+class S3StorageProvider: FileSystemInterface {
 
     override suspend fun delete(path: String) {
         val client = S3Config.makeClient()
@@ -16,12 +19,20 @@ object S3StorageProvider: FileSystemInterface {
         })
     }
 
-    override suspend fun download(path: String): ByteArray? {
-        TODO("Not yet implemented")
+    override suspend fun download(path: String, localPathCache: String) {
+        S3Config.makeClient()?.let {
+            S3DownloadService.downloadToCache(it, path, localPathCache)
+        }
     }
 
-    override suspend fun downloadMultipart(path: String, id: String): ByteArray? {
-        TODO("Not yet implemented")
+    override suspend fun downloadMultipart(call: ApplicationCall, id: String, isFolder: Boolean, path: String?): Unit? {
+        return S3Config.makeClient()?.let {
+            if (isFolder) {
+                S3DownloadService.downloadFolderMultipart(call, it, UUID.fromString(id))
+            } else {
+                S3DownloadService.downloadFileMultipart(call, it, id, path!!)
+            }
+        }
     }
 
     override suspend fun initMultipart(path: String): String? {

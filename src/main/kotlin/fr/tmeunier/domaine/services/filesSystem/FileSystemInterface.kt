@@ -1,14 +1,14 @@
 package fr.tmeunier.domaine.services.filesSystem
 
-import io.ktor.http.content.*
+import io.ktor.server.application.*
 
 interface FileSystemInterface
 {
     suspend fun delete(path: String)
 
-    suspend fun download(path: String): ByteArray?
+    suspend fun download(path: String, localPathCache: String)
 
-    suspend fun downloadMultipart(path: String, id: String): ByteArray?
+    suspend fun downloadMultipart(call: ApplicationCall, id: String, isFolder: Boolean,  path: String?): Unit?
 
     suspend fun initMultipart(path: String): String?
 

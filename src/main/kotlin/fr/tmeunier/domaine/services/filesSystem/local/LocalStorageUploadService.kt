@@ -1,15 +1,13 @@
 package fr.tmeunier.domaine.services.filesSystem.local
 
-import io.ktor.http.content.*
 import java.io.File
-import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
 
 object LocalStorageUploadService {
 
     private val uploads = mutableMapOf<String, MutableList<File>>()
-    private val uploadDir = Paths.get("storages").toFile()
+    private val uploadDir = Paths.get("storages/uploads/").toFile()
 
     fun initMultipart(path: String): String {
         val id = UUID.randomUUID().toString()
@@ -18,28 +16,29 @@ object LocalStorageUploadService {
         return id
     }
 
-    fun uploadMultipart(id: String, part: PartData.FileItem): Boolean {
-        val uploadList = uploads[id] ?: return false
-        val fileName = part.originalFileName ?: "unnamed-${System.currentTimeMillis()}"
-        val file = File("$uploadDir$fileName")
+    fun uploadMultipart(key: String, uploadId: String?, chunkNumber: Int, fileBytes: ByteArray?, totalChunks: Int): String? {
+        val tempDir = File(System.getProperty("java.io.tmpdir"), "uploads")
+        if (!tempDir.exists()) tempDir.mkdirs()
 
-        part.streamProvider().use { input ->
-            file.outputStream().buffered().use { output ->
-                input.copyTo(output)
-            }
-        }
+        val chunkFile = File(tempDir, "$uploadId-$chunkNumber")
+        chunkFile.writeBytes(fileBytes!!)
 
-        uploadList.add(file)
-
-        return true
+        return uploadId
     }
 
-    fun closeMultiPart(id: String): List<String>? {
-        val uploadList = uploads[id] ?: return null
+    fun closeMultiPart(remotePath: String, uplId: String?) {
+        val tempDir = File(System.getProperty("java.io.tmpdir"), "uploads")
+        if (!uploadDir.exists()) uploadDir.mkdirs()
 
-        val fileNames = uploadList.map { it.name }
-        uploads.remove(id)
+        val chunks = tempDir.listFiles { file -> file.name.startsWith(uplId!!) }
+            ?.sortedBy { it.name }
 
-        return fileNames
+        val finalFile = File(uploadDir, remotePath)
+        finalFile.outputStream().use { output ->
+            chunks?.forEach { chunk ->
+                chunk.inputStream().use { it.copyTo(output) }
+                chunk.delete()
+            }
+        }
     }
 }

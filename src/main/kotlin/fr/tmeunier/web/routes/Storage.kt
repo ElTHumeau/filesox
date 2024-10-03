@@ -1,17 +1,18 @@
 package fr.tmeunier.web.routes
 
 import aws.sdk.kotlin.services.s3.model.S3Exception
-import fr.tmeunier.config.S3Config
 import fr.tmeunier.config.Security
+import fr.tmeunier.core.permissions.withAnyRole
 import fr.tmeunier.domaine.repositories.FileRepository
 import fr.tmeunier.domaine.repositories.FolderRepository
 import fr.tmeunier.domaine.requests.CompletedUpload
 import fr.tmeunier.domaine.requests.InitialUploadRequest
 import fr.tmeunier.domaine.response.UploadCompleteResponse
-import fr.tmeunier.domaine.services.filesSystem.s3.S3UploadService
-import fr.tmeunier.domaine.services.filesSystem.StorageService
+import fr.tmeunier.domaine.services.filesSystem.FileSystemServiceFactory
+import fr.tmeunier.domaine.services.filesSystem.service.StorageService
 import fr.tmeunier.web.controller.storage.FileController
 import fr.tmeunier.web.controller.storage.FolderController
+import fr.tmeunier.web.controller.storage.ShareController
 import fr.tmeunier.web.controller.storage.StorageController
 import io.ktor.http.*
 import io.ktor.http.content.*
@@ -20,11 +21,10 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.runBlocking
-import fr.tmeunier.core.permissions.withAnyRole
-import fr.tmeunier.web.controller.storage.ShareController
 import java.util.*
 
 fun Route.storageRoute() {
+    val storageService = FileSystemServiceFactory.createStorageService()
 
     route("/storages") {
         post { StorageController.listFoldersAndFiles(call) }
@@ -78,9 +78,7 @@ fun Route.storageRoute() {
                 val uuid = FileRepository.create(request, parentId)
                 val filename = uuid.toString() + '.' + StorageService.getExtension(request.type)
 
-                val uploadId = S3Config.makeClient()?.let {
-                    S3UploadService.initiateMultipartUpload(it, filename)
-                }
+                val uploadId = FileSystemServiceFactory.createStorageService().initMultipart(filename)
 
                 if (uploadId != null) {
                     call.respond(HttpStatusCode.OK, UploadCompleteResponse(uploadId, filename))
@@ -122,16 +120,13 @@ fun Route.storageRoute() {
 
                     runBlocking {
                         try {
-                            S3Config.makeClient()?.let {
-                                S3UploadService.uploadMultipart(
-                                    it,
-                                    key,
-                                    uploadId,
-                                    chunkNumber!!,
-                                    fileBytes,
-                                    totalChunks!!
-                                )
-                            }
+                            FileSystemServiceFactory.createStorageService().uploadMultipart(
+                                key,
+                                uploadId,
+                                chunkNumber!!,
+                                fileBytes,
+                                totalChunks!!
+                            )
                             call.respond(HttpStatusCode.OK, "Chunk $chunkNumber uploaded successfully")
                         } catch (e: S3Exception) {
                             call.respond(HttpStatusCode.BadRequest, "Error uploading chunk ${e.message}")
@@ -147,9 +142,7 @@ fun Route.storageRoute() {
 
                 runBlocking {
                     try {
-                        S3Config.makeClient()?.let {
-                            S3UploadService.completeMultipartUpload(it, request.filename, request.uploadId)
-                        }
+                        FileSystemServiceFactory.createStorageService().closeMultiPart(request.filename, request.uploadId)
                         call.respond(HttpStatusCode.OK, "Upload completed successfully")
                     } catch (e: S3Exception) {
                         call.respond(HttpStatusCode.BadRequest, "Error completing upload ${e.message}")

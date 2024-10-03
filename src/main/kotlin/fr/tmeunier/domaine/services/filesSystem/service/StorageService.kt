@@ -1,7 +1,6 @@
-package fr.tmeunier.domaine.services.filesSystem
+package fr.tmeunier.domaine.services.filesSystem.service
 
 import java.io.*
-import java.nio.file.Files
 import java.text.StringCharacterIterator
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream

@@ -6,21 +6,21 @@ import fr.tmeunier.config.Security
 import fr.tmeunier.domaine.requests.InitialUploadRequest
 import fr.tmeunier.domaine.response.S3File
 import fr.tmeunier.domaine.services.LogService
-import fr.tmeunier.domaine.services.filesSystem.StorageService
-import fr.tmeunier.domaine.services.filesSystem.StorageService.toHumanReadableValue
+import fr.tmeunier.domaine.services.filesSystem.service.StorageService
+import fr.tmeunier.domaine.services.filesSystem.service.StorageService.toHumanReadableValue
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 object FileRepository {
 
     private val database = Database.getConnexion()
 
-    object Files : Table() {
+    object Files : Table("files") {
 
         val id = uuid("id")
         val name = varchar("name", length = 255)

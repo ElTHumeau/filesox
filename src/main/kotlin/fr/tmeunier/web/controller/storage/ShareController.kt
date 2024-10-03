@@ -1,12 +1,11 @@
 package fr.tmeunier.web.controller.storage
 
-import fr.tmeunier.config.S3Config
 import fr.tmeunier.config.Security
 import fr.tmeunier.domaine.repositories.FileRepository
 import fr.tmeunier.domaine.repositories.ShareRepository
 import fr.tmeunier.domaine.requests.CheckPasswordShareRequest
 import fr.tmeunier.domaine.requests.CreateShareRequest
-import fr.tmeunier.domaine.services.filesSystem.s3.S3DownloadService
+import fr.tmeunier.domaine.services.filesSystem.FileSystemServiceFactory
 import fr.tmeunier.domaine.services.utils.HashService
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -54,13 +53,9 @@ object ShareController {
 
         if (share.type === "file") {
             val file = FileRepository.findById(share.storageId)
-            S3Config.makeClient()?.let { file?.name?.let { it1 ->
-                S3DownloadService.downloadFile(call, it, file.id.toString(),
-                    it1
-                )
-            } }
+            FileSystemServiceFactory.createStorageService().downloadMultipart(call, file?.id.toString(), false, file?.name)
         } else {
-            S3Config.makeClient()?.let { S3DownloadService.downloadFolder(call, it, share.storageId)}
+            FileSystemServiceFactory.createStorageService().downloadMultipart(call, share.storageId.toString(), true, null)
         }
     }
 }

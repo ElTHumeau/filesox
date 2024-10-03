@@ -1,21 +1,14 @@
 package fr.tmeunier.web.controller.storage
 
-import aws.smithy.kotlin.runtime.util.type
-import fr.tmeunier.config.S3Config
-import fr.tmeunier.config.Security
-import fr.tmeunier.domaine.response.S3Response
 import fr.tmeunier.domaine.repositories.FileRepository
 import fr.tmeunier.domaine.repositories.FolderRepository
-import fr.tmeunier.domaine.repositories.ShareRepository
 import fr.tmeunier.domaine.requests.*
-import fr.tmeunier.domaine.services.filesSystem.s3.S3ActionService
-import fr.tmeunier.domaine.services.filesSystem.s3.S3DownloadService
-import fr.tmeunier.domaine.services.utils.HashService
+import fr.tmeunier.domaine.response.S3Response
+import fr.tmeunier.domaine.services.filesSystem.FileSystemServiceFactory
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
-import java.util.*
 
 object StorageController {
 
@@ -33,11 +26,7 @@ object StorageController {
     suspend fun download(call: ApplicationCall) {
         val request = call.receive<DownloadRequest>()
         try {
-            if (request.isFolder) {
-               S3Config.makeClient()?.let { S3DownloadService.downloadFolder(call, it, request.id) }
-            } else {
-                S3Config.makeClient()?.let { S3DownloadService.downloadFile(call, it, request.id.toString(), request.path) }
-            }
+            FileSystemServiceFactory.createStorageService().downloadMultipart(call,request.id.toString(), request.isFolder,  request.path)
         } catch (e: Exception) {
             call.respond(HttpStatusCode.InternalServerError, "Error downloading: ${e.message}")
         }
@@ -94,7 +83,7 @@ object StorageController {
                 val files = FileRepository.findAllByParentId(folder.id.toString())
 
                 files.forEach { file ->
-                    S3Config.makeClient()?.let { S3ActionService.delete(it, file.name) }
+                    FileSystemServiceFactory.createStorageService().delete(file.name)
                 }
 
                 FileRepository.deleteByParentId(folder.id)
@@ -104,7 +93,7 @@ object StorageController {
         } else {
             val file = FileRepository.findById(request.id)
 
-            S3Config.makeClient()?.let { S3ActionService.delete(it, file?.id.toString()) }
+            FileSystemServiceFactory.createStorageService().delete(file?.id.toString())
             FileRepository.delete(file!!.name, request.id)
         }
 

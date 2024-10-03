@@ -1,8 +1,11 @@
 package fr.tmeunier.domaine.services.filesSystem.provider
 
 import fr.tmeunier.domaine.services.filesSystem.FileSystemInterface
+import fr.tmeunier.domaine.services.filesSystem.local.LocalStorageDownloadService
 import fr.tmeunier.domaine.services.filesSystem.local.LocalStorageUploadService
+import io.ktor.server.application.*
 import java.nio.file.Paths
+import java.util.*
 
 class LocalStorageProvider: FileSystemInterface {
 
@@ -14,12 +17,16 @@ class LocalStorageProvider: FileSystemInterface {
         }
     }
 
-    override suspend fun download(path: String): ByteArray? {
-        TODO("Not yet implemented")
+    override suspend fun download(path: String, localPathCache: String) {
+        LocalStorageDownloadService.copyToCache(path, localPathCache)
     }
 
-    override suspend fun downloadMultipart(path: String, id: String): ByteArray? {
-        TODO("Not yet implemented")
+    override suspend fun downloadMultipart(call: ApplicationCall, id: String, isFolder: Boolean,  path: String?) {
+        return if (isFolder) {
+            LocalStorageDownloadService.downloadFolderMultipart(call, UUID.fromString(id))
+        } else {
+            LocalStorageDownloadService.downloadFileMultipart(call, id, path!!)
+        }
     }
 
     override suspend fun initMultipart(path: String): String {
@@ -33,7 +40,7 @@ class LocalStorageProvider: FileSystemInterface {
         fileBytes: ByteArray?,
         totalChunks: Int
     ): String? {
-        LocalStorageUploadService.uploadMultipart(
+        return LocalStorageUploadService.uploadMultipart(
             key,
             uploadId,
             chunkNumber,
@@ -43,8 +50,6 @@ class LocalStorageProvider: FileSystemInterface {
     }
 
     override suspend fun closeMultiPart(remotePath: String, uplId: String?) {
-        LocalStorageUploadService.closeMultiPart(uplId!!)
+        LocalStorageUploadService.closeMultiPart(remotePath, uplId)
     }
-
-
 }
