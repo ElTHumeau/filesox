@@ -38,7 +38,7 @@ object StorageController {
         if (request.name.endsWith('/')) {
             val folders = FolderRepository.findByIdOrPath(request.name)
 
-            folders.forEach() { folder ->
+            folders.forEach { folder ->
                 val name = folder.path.replace(request.name, request.newName)
                 FolderRepository.update(folder.id, name, folder.parentId)
             }

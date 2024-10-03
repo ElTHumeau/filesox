@@ -2,14 +2,11 @@ package fr.tmeunier.web.routes
 
 import fr.tmeunier.config.Security
 import fr.tmeunier.core.permissions.withAnyRole
-import fr.tmeunier.domaine.services.filesSystem.FileSystemServiceFactory
 import fr.tmeunier.web.controller.storage.*
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 
 fun Route.storageRoute() {
-    val storageService = FileSystemServiceFactory.createStorageService()
-
     route("/storages") {
         post { StorageController.listFoldersAndFiles(call) }
 
