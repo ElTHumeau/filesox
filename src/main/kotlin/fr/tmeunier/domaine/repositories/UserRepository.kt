@@ -4,20 +4,20 @@ import fr.tmeunier.config.Database
 import fr.tmeunier.config.Database.dbQuery
 import fr.tmeunier.config.Security
 import fr.tmeunier.domaine.models.User
-import fr.tmeunier.domaine.services.utils.HashService
 import fr.tmeunier.domaine.services.LogService
+import fr.tmeunier.domaine.services.utils.HashService
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 object UserRepository {
 
     private val database = Database.getConnexion()
 
-    object Users : Table() {
+    object Users : Table("users") {
         val id: Column<Int> = integer("id").autoIncrement()
         val name: Column<String> = varchar("name", length = 255)
         val email: Column<String> = varchar("email", length = 255)

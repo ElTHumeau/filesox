@@ -12,7 +12,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 object PermissionRepository {
     private val database = Database.getConnexion()
 
-    object Permissions : Table() {
+    object Permissions : Table("permissions") {
         val id: Column<Int> = integer("id").autoIncrement()
         val name: Column<String> = varchar("name", length = 255)
 
