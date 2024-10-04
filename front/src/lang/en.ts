@@ -23,6 +23,7 @@ export const en = {
                 edit_media: 'Edit Media',
                 edit_folder: 'Edit Folder',
                 delete_share: "Are you sure you want to delete this share ?",
+                replace_file: "You want to replace this file ?",
             },
             admin: {
                 dashboard: 'Dashboard',
@@ -124,7 +125,8 @@ export const en = {
                     delete: 'Share deleted successfully',
                     create : 'Share created successfully',
                     copy: 'Share link copied successfully',
-                }
+                },
+                upload: 'Files uploaded successfully',
             },
             error: {
                 auth: {
@@ -147,6 +149,7 @@ export const en = {
             move: 'Move',
             close: 'Close',
             share: 'Share',
+            reply: 'Remplacer',
         },
 
         table: {

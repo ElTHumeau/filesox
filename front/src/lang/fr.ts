@@ -23,6 +23,7 @@ export const fr = {
                 edit_media: 'Modifier le média',
                 edit_folder: 'Modifier le dossier',
                 delete_share: "Voulez-vous vraiment supprimer ce partage ?",
+                replace_file: "Voulez-vous remplacer ce fichier ?",
             },
             admin: {
                 dashboard: 'Tableau de bord',
@@ -124,7 +125,8 @@ export const fr = {
                     create: "Votre partage a été créé avec succès",
                     delete: "Votre partage a été supprimé avec succès",
                     copy: "Le lien de partage a été copié avec succès",
-                }
+                },
+                upload: 'Fichiers téléversés avec succès',
             },
             error: {
                 auth: {
@@ -147,6 +149,7 @@ export const fr = {
             move: 'Déplacer',
             close: 'Fermer',
             share: 'Partager',
+            reply: 'Remplacer',
         },
 
         table: {

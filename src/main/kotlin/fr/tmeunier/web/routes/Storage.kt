@@ -48,6 +48,8 @@ fun Route.storageRoute() {
 
     route("/files") {
         route("/upload") {
+            post("/verify") { UploadController.verify(call) }
+
             post("/init") { UploadController.initUploader(call) }
 
             post { UploadController.upload(call) }

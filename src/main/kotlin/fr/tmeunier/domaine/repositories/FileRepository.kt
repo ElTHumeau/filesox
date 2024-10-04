@@ -3,6 +3,7 @@ package fr.tmeunier.domaine.repositories
 import fr.tmeunier.config.Database
 import fr.tmeunier.config.Database.dbQuery
 import fr.tmeunier.config.Security
+import fr.tmeunier.domaine.repositories.FolderRepository.Folders
 import fr.tmeunier.domaine.requests.InitialUploadRequest
 import fr.tmeunier.domaine.response.S3File
 import fr.tmeunier.domaine.services.LogService
@@ -27,7 +28,7 @@ object FileRepository {
         val size = long("size")
         val icon = varchar("icon", length = 255)
         val type = varchar("type", length = 255)
-        val parentId = (uuid("parent_id") references FolderRepository.Folders.id).nullable()
+        val parentId = uuid("parent_id").references(Folders.id, onDelete =  ReferenceOption.CASCADE).nullable()
         val updatedAt = datetime("updated_at")
 
         override val primaryKey = PrimaryKey(id)
@@ -37,6 +38,10 @@ object FileRepository {
         transaction(database) {
             SchemaUtils.create(Files)
         }
+    }
+
+    suspend fun exists(name: String, parentId: UUID?): Boolean = dbQuery {
+        Files.select { Files.name eq name and (Files.parentId eq parentId) }.count() > 0
     }
 
     suspend fun search(search: String): List<S3File> = dbQuery {
@@ -84,11 +89,11 @@ object FileRepository {
         }
     }
 
-    suspend fun create(file: InitialUploadRequest, parentId: UUID?): UUID = dbQuery {
+    suspend fun create(id: UUID, file: InitialUploadRequest, parentId: UUID?): UUID = dbQuery {
         LogService.add(Security.getUserId(), LogService.ACTION_UPLOAD, "${file.name} file uploaded")
 
         Files.insert {
-            it[id] = UUID.randomUUID()
+            it[Files.id] = id
             it[name] = file.name
             it[size] = file.size
             it[type] = file.type
@@ -126,5 +131,9 @@ object FileRepository {
 
     suspend fun deleteByParentId(parentId: UUID) = dbQuery {
         Files.deleteWhere { Files.parentId eq parentId }
+    }
+
+    suspend fun deleteByParentIdAndName(name:String, parentId: UUID?) = dbQuery {
+        Files.deleteWhere { Files.name eq name and (Files.parentId eq parentId) }
     }
 }
