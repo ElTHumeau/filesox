@@ -8,20 +8,21 @@ import fr.tmeunier.domaine.services.filesSystem.service.StorageService
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
 abstract class AbstractDownloadFileSystem {
-    protected abstract suspend fun getObjectFileFlow(key: String): Flow<ByteArray>
+    protected abstract suspend fun getObjectFileFlow(
+        call: ApplicationCall,
+        key: String
+    )
+
     protected abstract suspend fun addFileToZip(file: S3File, zipEntry: ZipEntry, zipOutputStream: ZipOutputStream)
 
     suspend fun downloadFileMultipart(call: ApplicationCall, id: String, file: String) {
-        val filename = id + "." + StorageService.getExtension(file)
+        val filename = id + "." + StorageService.pathinfo(file)["extension"]
 
         call.response.header(
             HttpHeaders.ContentDisposition,
@@ -33,14 +34,7 @@ abstract class AbstractDownloadFileSystem {
         call.response.header(HttpHeaders.Pragma, "no-cache")
         call.response.header(HttpHeaders.Expires, "0")
 
-        call.respondOutputStream(ContentType.Application.OctetStream) {
-            getObjectFileFlow(filename).collect { dataPart ->
-                withContext(Dispatchers.IO) {
-                    write(dataPart)
-                    flush()
-                }
-            }
-        }
+        getObjectFileFlow(call, filename)
     }
 
     suspend fun downloadFolderMultipart(call: ApplicationCall, id: UUID) {

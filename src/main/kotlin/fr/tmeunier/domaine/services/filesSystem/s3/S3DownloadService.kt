@@ -7,18 +7,19 @@ import fr.tmeunier.config.S3Config
 import fr.tmeunier.domaine.response.S3File
 import fr.tmeunier.domaine.services.filesSystem.AbstractDownloadFileSystem
 import fr.tmeunier.domaine.services.filesSystem.service.StorageService
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.response.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.cancellable
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
-object S3DownloadService: AbstractDownloadFileSystem() {
+object S3DownloadService : AbstractDownloadFileSystem() {
     suspend fun downloadToCache(client: S3Client, remotePath: String, localPath: String) {
         client.getObject(GetObjectRequest {
             key = remotePath
@@ -40,14 +41,21 @@ object S3DownloadService: AbstractDownloadFileSystem() {
         }
     }
 
-    override suspend fun getObjectFileFlow(key: String): Flow<ByteArray> = flow {
+    override suspend fun getObjectFileFlow(call: ApplicationCall, key: String) {
         val client = S3Config.makeClient() ?: throw IllegalStateException("Unable to create S3 client")
 
-        client.getObject(GetObjectRequest {
-            this.key = key
-            bucket = S3Config.bucketName
-        }) { response ->
-            response.body?.toFlow(8192)?.collect { emit(it) }
+        call.respondOutputStream(ContentType.Application.OctetStream) {
+            client.getObject(GetObjectRequest {
+                this.key = key
+                bucket = S3Config.bucketName
+            }) { response ->
+                response.body?.toFlow(8192)?.buffer(100)?.collect { dataPart ->
+                    withContext(Dispatchers.IO) {
+                        write(dataPart)
+                        flush()
+                    }
+                }
+            }
         }
     }
 
@@ -56,7 +64,7 @@ object S3DownloadService: AbstractDownloadFileSystem() {
         zipOutputStream.putNextEntry(zipEntry)
 
         client.getObject(GetObjectRequest {
-            key = file.id.toString() + "." + StorageService.getExtension(file.name)
+            key = file.id.toString() + "." + StorageService.pathinfo(file.name)["extension"]
             bucket = S3Config.bucketName
         }) { response ->
             response.body?.toFlow(8192)?.buffer(100)?.collect { dataPart ->

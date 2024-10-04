@@ -45,7 +45,7 @@ object UploadController {
             request.webRelativePath?.let { it1 -> createFolderUploadFile(it1, request.parentId) }
         }
 
-        val filename = fileUuid.toString() + '.' + StorageService.getExtension(request.type)
+        val filename = fileUuid.toString() + '.' + StorageService.pathinfo(request.name)["extension"]
         val uploadId = FileSystemServiceFactory.createStorageService().initMultipart(filename)
 
         if (request.isExist) {
@@ -142,11 +142,11 @@ object UploadController {
         val folderParentPath = if (folderParent !== null) folderParent.path else ""
         val folder = FolderRepository.findByPath(folderParentPath + folderPathRequest)
 
-        return if (folder == null) {
-            val folderPath = (folderParent?.path ?: "") + folderPathRequest
-            FolderRepository.create(folderPath, parentId ?: folderParent?.id)
-        } else {
-            folder.id
+         if (folder !== null) {
+             return folder.id
         }
+
+        val folderPath = (folderParent?.path ?: "") + folderPathRequest
+        return  FolderRepository.create(folderPath, parentId ?: folderParent?.id)
     }
 }

@@ -35,13 +35,19 @@ object StorageService {
         }
     }
 
-    fun getExtension(typeFile: String): String {
+    fun pathinfo(path: String): Map<String, String> {
+        val file = java.io.File(path)
+        val filename = file.name
+        val basename = filename.substringBeforeLast(".")
+        val extension = filename.substringAfterLast(".", "")
+        val dirname = file.parent ?: ""
 
-        if (typeFile.endsWith(".dmg")) {
-            return "x-diskcopy"
-        }
-
-        return typeFile.split("/").reversed()[0].split(".").reversed()[0]
+        return mapOf(
+            "dirname" to dirname,
+            "basename" to basename,
+            "extension" to extension,
+            "filename" to filename
+        )
     }
 
     fun Long.toHumanReadableValue(): String {
