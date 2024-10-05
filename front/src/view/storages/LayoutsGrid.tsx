@@ -6,9 +6,11 @@ import {useTranslation} from "react-i18next";
 import {useCurrentPath} from "@context/modules/CurrentPathContext.tsx";
 import {useFileStore} from "@stores/useFileStore.ts";
 import {truncateString} from "@hooks/useStore.ts";
+import {useImageGalleryStore} from "@stores/useImageGalery.ts";
 
 export function LayoutsGrid({files, folders}: { files: FileType[] | undefined, folders: FolderType[] | undefined }) {
     const {activeStorage, setActiveStorage} = useFileStore();
+    const { setImageGallery } = useImageGalleryStore()
     const {setPath} = useCurrentPath()
     const {t} = useTranslation()
 
@@ -62,14 +64,17 @@ export function LayoutsGrid({files, folders}: { files: FileType[] | undefined, f
                     <div
                         key={index}
                         onClick={(e) => {
-                            e.stopPropagation();
                             handleFocus(file);
+                            e.stopPropagation();
+                        }}
+                        onDoubleClick={() => {
+                            setImageGallery(true, index)
                         }}
                         tabIndex={0}
                         className={`flex gap-3 items-center px-4 py-2 border border-gray-200 rounded-md min-w-full md:min-w-72 md:max-w-72 ${activeStorage && activeStorage.id === file.id ? 'bg-indigo-50 text-indigo-500 shadow-md cursor-pointer' : 'cursor-pointer shadow-md bg-white'}`}
                     >
                         <LayoutCardGrid name={file.name} isFolder={false} size={file.size}>
-                            <LayoutModules file={file}/>
+                            <LayoutModules file={file} width={48} height={48}/>
                         </LayoutCardGrid>
                     </div>
                 ))}

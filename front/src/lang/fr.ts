@@ -150,6 +150,7 @@ export const fr = {
             close: 'Fermer',
             share: 'Partager',
             reply: 'Remplacer',
+            download: 'Télécharger',
         },
 
         table: {

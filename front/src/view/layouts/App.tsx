@@ -44,6 +44,7 @@ import ProgressBar from "../../components/modules/ProgressBar.tsx";
 import {useProgressBar} from "@/stores/useProgressBar.ts";
 import {ModalShareMedia} from "../modals/shares/ModalShareMedia.tsx";
 import SearchBar from "@components/searchBar/SearchBar.tsx";
+import ImageGallery from "@components/imageGallery/ImageGallery.tsx";
 
 export function App() {
     const {openModal} = useModal()
@@ -173,6 +174,7 @@ export function App() {
             </main>
         </div>
 
+        <ImageGallery/>
         <Modal/>
     </div>
 }
