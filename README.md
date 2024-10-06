@@ -1,26 +1,17 @@
-<!-- PROJECT LOGO -->
-<br />
 <div align="center">
-  <a href="https://github.com/TheoMeunier/filemanager">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  <a href="https://github.com/TheoMeunier/Filesox">
+    <img src="doc/images/logo.svg" alt="Logo" width="100" height="100">
   </a>
 
-<h3 align="center">Filemanager</h3>
-
+<h2 align="center">Filesox</h3>
   <p align="center">
-    <br />
-    <a href="https://github.com/TheoMeunier/filemanager"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/TheoMeunier/filemanager">View Demo</a>
+    <a href="https://github.com/TheoMeunier/Filesox">View Demo</a>
     ·
-    <a href="https://github.com/TheoMeunier/filemanager/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/TheoMeunier/Filesox/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
-    <a href="https://github.com/TheoMeunier/filemanager/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/TheoMeunier/Filesox/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
-
-<!-- ABOUT THE PROJECT -->
 
 ## About The Project
 
@@ -34,27 +25,18 @@ management for businesses and developers.
 * [![Kotlin][Kotlin.js]][Kotlin-url]
 * [![MariaDB][MariaDB.js]][MariaDB-url]
 
-<!-- GETTING STARTED -->
-
 ## Getting Started
-
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+* nodejs
+* java 21
 
 ### Installation
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/TheoMeunier/filemanager
+   git clone https://github.com/TheoMeunier/filesox.git
    ```
 2. Configuring the `.env` end `front/.env` file
 
@@ -75,7 +57,7 @@ This is an example of how to list things you need to use the software and how to
 ```yml
 services:
   front:
-    image: theomeunier/filemanager-front
+    image: theomeunier/filesox-front
     container_name: filemanager_front
     restart: unless-stopped
     ports:
@@ -86,7 +68,7 @@ services:
       - app_network
 
   back:
-    image: theomeunier/filemanager-back
+    image: theomeunier/filesox-front
     container_name: filemanager_back
     restart: unless-stopped
     ports:
@@ -106,10 +88,10 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_DATABASE: filemanager
-      MYSQL_USER: filemanager
-      MYSQL_PASSWORD: filemanager
-      MYSQL_ROOT_PASSWORD: filemanager
+      MYSQL_DATABASE: filesox
+      MYSQL_USER: filesox
+      MYSQL_PASSWORD: filesox
+      MYSQL_ROOT_PASSWORD: filesox
     volumes:
       - ./storage-db:/var/lib/mysql/
       - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
@@ -121,10 +103,6 @@ networks:
     driver: bridge
 
 ```
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- CONTRIBUTING -->
 
 ## Contributing
 
@@ -140,8 +118,6 @@ Don't forget to give the project a star! Thanks again!
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
-
-<!-- LICENSE -->
 
 ## License
 
