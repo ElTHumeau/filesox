@@ -4,6 +4,8 @@ import fr.tmeunier.config.Database
 import fr.tmeunier.config.configureHTTP
 import fr.tmeunier.domaine.jobs.ShareJob
 import fr.tmeunier.domaine.repositories.*
+import fr.tmeunier.domaine.seeder.PermissionSeeder
+import fr.tmeunier.domaine.seeder.UserSeeder
 import fr.tmeunier.domaine.services.filesSystem.FileSystemServiceFactory
 import fr.tmeunier.web.routes.configurationRoute
 import io.github.cdimascio.dotenv.dotenv
@@ -15,7 +17,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 val dotenv = dotenv {}
 
-fun main() {
+suspend fun main() {
     // init config
     Database.init()
     FileSystemServiceFactory.initialize(dotenv["STORAGE"])
@@ -36,7 +38,7 @@ fun Application.module() {
     configurationRoute()
 }
 
-fun initDatabaseSchema() {
+suspend fun initDatabaseSchema() {
     transaction {
         SchemaUtils.create(UserRepository.Users)
         SchemaUtils.create(RefreshTokenRepository.RefreshToken)
@@ -49,5 +51,6 @@ fun initDatabaseSchema() {
         SchemaUtils.create(UploadedFileRepository.UploadedFiles)
     }
 
-    PermissionRepository.insertInitialPermissions()
+    PermissionSeeder.seed()
+    UserSeeder.seed()
 }

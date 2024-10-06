@@ -104,6 +104,15 @@ networks:
 
 ```
 
+#### Connect to the application
+
+Your default admin credentials are:
+
+- Email: `admin@filesox.fr`
+- Password: `admin`
+
+It is strongly recommended that you change this password immediately after your first login for security reasons.
+
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any
