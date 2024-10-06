@@ -9,7 +9,6 @@ import fr.tmeunier.domaine.services.utils.HashService
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.javatime.datetime
-import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDateTime
 import java.util.*
 
@@ -28,12 +27,6 @@ object UserRepository {
         val updatedAt: Column<LocalDateTime> = datetime("updated_at")
 
         override val primaryKey = PrimaryKey(id)
-    }
-
-    init {
-        transaction(database) {
-            SchemaUtils.create(Users)
-        }
     }
 
     suspend fun create(name: String, email: String, password: String, filePath: UUID?): Int = dbQuery {

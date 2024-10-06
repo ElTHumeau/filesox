@@ -20,12 +20,6 @@ object LogRepository {
         override val primaryKey = PrimaryKey(id)
     }
 
-    init {
-        transaction(database) {
-            SchemaUtils.create(Logs)
-        }
-    }
-
     fun findAll(): Query {
         return transaction(database) {
             Logs.innerJoin(UserRepository.Users)

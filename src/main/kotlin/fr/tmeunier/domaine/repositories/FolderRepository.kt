@@ -26,12 +26,6 @@ object FolderRepository {
         override val primaryKey = PrimaryKey(id)
     }
 
-    init {
-        transaction(database) {
-            SchemaUtils.create(Folders)
-        }
-    }
-
     suspend fun findByPath(path: String): S3Folder? = dbQuery {
         Folders.select { Folders.path eq path }.map {
             S3Folder(

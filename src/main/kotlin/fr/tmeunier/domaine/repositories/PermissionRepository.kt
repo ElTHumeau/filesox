@@ -4,8 +4,8 @@ import fr.tmeunier.config.Database
 import fr.tmeunier.config.Database.dbQuery
 import fr.tmeunier.domaine.models.Permission
 import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -19,9 +19,23 @@ object PermissionRepository {
         override val primaryKey = PrimaryKey(id)
     }
 
-    init {
+    fun insertInitialPermissions() {
+        val permissionsToInsert = listOf(
+            "Administration",
+            "Create file or folder",
+            "Delete file or folder",
+            "Download",
+            "Edit file",
+            "Share files",
+            "Rename file or folder"
+        )
+
         transaction(database) {
-            SchemaUtils.create(Permissions)
+           permissionsToInsert.forEach { permission ->
+                Permissions.insert {
+                    it[name] = permission
+                }
+            }
         }
     }
 

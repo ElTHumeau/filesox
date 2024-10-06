@@ -1,6 +1,5 @@
 package fr.tmeunier.domaine.repositories
 
-import fr.tmeunier.config.Database
 import fr.tmeunier.config.Database.dbQuery
 import fr.tmeunier.config.Security
 import fr.tmeunier.domaine.repositories.FolderRepository.Folders
@@ -19,8 +18,6 @@ import java.util.*
 
 object FileRepository {
 
-    private val database = Database.getConnexion()
-
     object Files : Table("files") {
 
         val id = uuid("id")
@@ -32,12 +29,6 @@ object FileRepository {
         val updatedAt = datetime("updated_at")
 
         override val primaryKey = PrimaryKey(id)
-    }
-
-    init {
-        transaction(database) {
-            SchemaUtils.create(Files)
-        }
     }
 
     suspend fun exists(name: String, parentId: UUID?): Boolean = dbQuery {

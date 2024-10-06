@@ -5,10 +5,12 @@ import fr.tmeunier.config.Database.dbQuery
 import fr.tmeunier.domaine.models.UploadedFile
 import fr.tmeunier.domaine.requests.InitialUploadRequest
 import fr.tmeunier.domaine.services.filesSystem.service.StorageService
-import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.javatime.datetime
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.select
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -30,12 +32,6 @@ object UploadedFileRepository {
         val updatedAt = datetime("updated_at")
 
         override val primaryKey = PrimaryKey(id)
-    }
-
-    init {
-        transaction(database) {
-            SchemaUtils.create(UploadedFiles)
-        }
     }
 
     suspend fun findByUploadedId(uploadId: UUID): UploadedFile = dbQuery {
