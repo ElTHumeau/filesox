@@ -2,6 +2,7 @@ package fr.tmeunier
 
 import fr.tmeunier.config.Database
 import fr.tmeunier.config.configureHTTP
+import fr.tmeunier.domaine.jobs.ClearStorageCacheJob
 import fr.tmeunier.domaine.jobs.ShareJob
 import fr.tmeunier.domaine.repositories.*
 import fr.tmeunier.domaine.seeder.PermissionSeeder
@@ -27,6 +28,7 @@ suspend fun main() {
 
     //jobs
     ShareJob.initJob()
+    ClearStorageCacheJob.initJob()
 
     // start server
     embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
