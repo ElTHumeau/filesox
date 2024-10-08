@@ -21,7 +21,7 @@ export default function () {
     }
 
     return (
-        <div className="relative ml-[6.5rem] pt-2">
+        <div className="relative ml-[6.5rem]">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 {isLoading ?
                     <LoaderCircle  className="animate-spin text-indigo-500"/>:

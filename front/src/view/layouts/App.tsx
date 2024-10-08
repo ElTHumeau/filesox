@@ -79,9 +79,7 @@ export function App() {
                             </NavItem>
                         }
                         <NavItem>
-                            <div>
-                                <img src="/logo.png" alt="Logo" height="100" width="175" className="mx-auto"/>
-                            </div>
+                            <img src="/logo.png" alt="Logo" height="90" width="175" className="mx-auto"/>
                             <SearchBar/>
                         </NavItem>
                     </NavItemsLeft>
@@ -106,7 +104,7 @@ export function App() {
                                                     onClick={() => openModal(() => <ModalDeleteMedia/>, "md")}/>
                                     )}
                                     <ButtonIcon svg={Info} title={t('tooltip.information')}
-                                        onClick={() => openModal(() => <ModalInformationMedia/>, "lg")}/>
+                                                onClick={() => openModal(() => <ModalInformationMedia/>, "lg")}/>
                                     <ButtonDownload/>
                                 </>
                             }
@@ -135,7 +133,7 @@ export function App() {
                     </SidebarMenu>
                     <SidebarMenu>
                         <SidebarTitleMenu>{t('title.nav.profile')}</SidebarTitleMenu>
-                        <SidebarMenuItem href="/profile"  active="/profile/*" svg={User}>
+                        <SidebarMenuItem href="/profile" active="/profile/*" svg={User}>
                             {t('title.nav.profile')}
                         </SidebarMenuItem>
                         <SidebarMenuItem svg={LogOut} onClick={() => handleClickLogout()}>
