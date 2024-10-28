@@ -68,7 +68,7 @@ services:
       - app_network
 
   back:
-    image: theomeunier/filesox-front
+    image: theomeunier/filesox-back
     container_name: filemanager_back
     restart: unless-stopped
     ports:
