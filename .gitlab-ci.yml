@@ -90,23 +90,3 @@ Substitute kubernetes env:
     expire_in: 1 week
     paths:
       - "./deployments"
-
-Deploy to cluster:
-  image: bitnami/kubectl:1.29
-  stage: deploy
-  only:
-    - tags
-  except:
-    - branches
-  script:
-    - cat $ENV_FILE > .env
-    - kubectl create namespace $NAMESPACE || true
-
-    - kubectl delete configmap --namespace $NAMESPACE $APP_SLUG-env || true
-    - kubectl create configmap --namespace $NAMESPACE $APP_SLUG-env --from-env-file ./.env
-
-    - kubectl apply -f ./deployments/*.yml
-    - kubectl rollout restart deploy --namespace $NAMESPACE $APP_SLUG-backend
-    - kubectl rollout restart deploy --namespace $NAMESPACE $APP_SLUG-frontend
-  dependencies:
-    - Substitute kubernetes env
