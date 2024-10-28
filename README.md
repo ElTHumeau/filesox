@@ -38,7 +38,7 @@ management for businesses and developers.
    ```sh
    git clone https://github.com/TheoMeunier/filesox.git
    ```
-2. Configuring the `.env` end `front/.env` file
+2. Configuring the `.env` and `front/.env` file
 
 3. Build front-end
    ```sh 
